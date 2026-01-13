@@ -1,0 +1,13 @@
+# GameMaker Studio 2 cache and temp files
+.cache/
+.temp/
+.build/
+
+# Backup files GameMaker creates
+*.yyp.backup*
+*.yy.backup*
+*.yyp.lock
+
+# Windows/Mac system files
+.DS_Store
+Thumbs.db
