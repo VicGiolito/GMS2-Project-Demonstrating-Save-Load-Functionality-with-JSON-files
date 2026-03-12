@@ -2,7 +2,7 @@ From main menu, select 'New Quick Game.'
 
 Then enter 'T' as your game name.
 
-In game, holt left control and press 'S' to save your game.
+In game, hold left control and press 'S' to save your game.
 
 Then, after you close your game, you can use the 'Load Game' feature to load your game.
 
