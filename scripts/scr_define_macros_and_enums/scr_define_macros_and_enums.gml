@@ -39,7 +39,7 @@ function scr_define_macros_and_enums(){
 		new_save_file_name
 	}
 	
-	//This will need to be a literal place within the g.master_, such as the overworld, minotaur maze, etc.;
+	//This will need to be a index within the g.master_arrays, such as the overworld, minotaur maze, etc.;
 	//it NOT simply a type of level.
 	enum dungeon_type {
 		overworld, //debug forest world
