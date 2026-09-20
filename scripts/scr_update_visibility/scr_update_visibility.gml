@@ -2,11 +2,6 @@
 
 --Should always be called after every call of scr_update_los.
 
---Should ALSO be called by an enemy after every time they move into a new cell.
-
---If this is being called by an enemy, then check_building_visibility_boolean should == FALSE;
-currently is only being used for pcs; not applicable for enemies.
-
 -- Turns BUILDING visibility on or off if they're standing on a VISIBILE cell,
 same with traps if they also have the revealed_trap_boolean == true OR the trap 
 belongs to the pc team.

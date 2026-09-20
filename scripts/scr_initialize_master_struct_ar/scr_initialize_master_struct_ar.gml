@@ -1,4 +1,15 @@
 
+/*
+
+//9-20-26: not currently in use, at least not for the load game function.
+
+Initializes our g.master_struct_ar for the first time;
+
+deletes all structs first;
+
+--g.master_level_ar must be correctly defined first.
+
+*/
 
 function scr_initialize_master_struct_ar(called_from_str){
 	
@@ -12,19 +23,19 @@ function scr_initialize_master_struct_ar(called_from_str){
 	var world_ar_len = array_length(global.master_level_ar);
 	var level_len;
 	
-	for(var d = 0; d < world_ar_len; d++) {
+	for(var yy = 0; yy < world_ar_len; yy++) {
 		
-		level_len = array_length(global.master_level_ar[d]);
+		level_len = array_length(global.master_level_ar[yy]);
 		
-		global.master_struct_ar[d] = array_create(level_len);
+		global.master_struct_ar[yy] = array_create(level_len); //This not only creates the new dungeon array [yy], but create 
 		
-		for(var l = 0; l < array_length(global.master_struct_ar[d]); l++) {
+		for(var l = 0; l < array_length(global.master_struct_ar[yy]); l++) {
 			
-			global.master_struct_ar[d][l] = array_create(AR_TOTAL_ARS);
+			global.master_struct_ar[yy][l] = array_create(AR_TOTAL_ARS);
 			
-			for(var t = 0; t < array_length(global.master_struct_ar[d][l]); t++) {
+			for(var t = 0; t < array_length(global.master_struct_ar[yy][l]); t++) { //We create an array for every different TYPE of struct on this level
 				
-				global.master_struct_ar[d][l][t] = []; 	
+				global.master_struct_ar[yy][l][t] = []; 	
 			}
 		}
 	}	

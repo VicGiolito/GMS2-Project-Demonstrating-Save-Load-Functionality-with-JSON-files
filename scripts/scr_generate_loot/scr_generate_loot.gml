@@ -18,7 +18,7 @@ function scr_generate_loot(dungeon_index,floor_index){
 			
 				loot_count++;
 				
-				new LootDrop(grid_x,grid_y,floor_index,dungeon_index,true);
+				new LootDrop(grid_x,grid_y,floor_index,dungeon_index,false);
 			}
 		}
 	

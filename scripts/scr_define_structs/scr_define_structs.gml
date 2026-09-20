@@ -71,7 +71,7 @@ function scr_define_structs(){
 				array_push(idle_conv_ar,"Kurgun says: \"Show me a worthy ogre foe and I shall make him pay!\"");
 	            array_push(idle_conv_ar,"Kurgun says: \"What use is a wizard's magic against the strength of my fist?\"");
 	            array_push(idle_conv_ar,"Kurgun says: \"'Mordra,' the wizard's name? Never met him. But if he be as strong as you say, then I'll consider it an honor to slay him.\"");
-	            array_push(idle_conv_ar,"Kurgun says: \"You want this wizard 'Mordra' dead, and I tell you I will do it. But let me be clear: I am here for the coin which was promised, and for the worthy foe, who lurks ahead.\"");
+	            array_push(idle_conv_ar,"Kurgun says: \"You want this wizard 'Mordra' dead, and I tell you I will do it. But let me be clear: I am here for the coin which was promised, and for the worthy foe, who always lurks ahead.\"");
 	            array_push(idle_conv_ar,"Kurgun roars: \"Enough of this skulking about! Point me in the direction of a real warrior!\"");
 	            array_push(idle_conv_ar,"\"Ogres?\" Kurgun says. \"I despise their race, and so hate no one more than myself.\"");
 	            array_push(idle_conv_ar,"Kurgun asks: \"Is it not enough that I bear the shame of ogre blood flowing through my veins? Let me use my father's strength then, for redemption--for revenge!\"");
@@ -109,19 +109,19 @@ function scr_define_structs(){
 				//Idle cov:
 				array_push(idle_conv_ar,"Acheron mumbles arcane formulas and figures beneath his beard.");
 	            array_push(idle_conv_ar,"Acheron mumbles arcane formulas and figures beneath his beard.");
-				array_push(idle_conv_ar,"\"Oh, I just remembered the name of an old spell!...\" Acheron's shaggy brows finally fall. \"...Never mind, I've lost it.\"");
-	            array_push(idle_conv_ar,"Acheron says: \"Mordra and I were both students of the Gray Spire, you know, though that was more than five centuries ago. I still remember how the leaves of the Golden Wood were just begin to fall during our graduation ceremony...\"");
+				array_push(idle_conv_ar,"\"Oh, I just remembered the name of an old spell!...\" Acheron's shaggy brows rise... And finally fall. \"...Never mind, I've plum lost it again.\"");
+	            array_push(idle_conv_ar,"Acheron says: \"Mordra and I were class mates in the Gray Spire, you know, though that was more than five centuries ago. I still remember how the leaves of the Golden Wood were just starting to fall on our graduation day...\"");
 	            array_push(idle_conv_ar,"Acheron says: \"Mordra and I were fast friends during our time in the Gray Spire, yet five hundred years can change a man. Now he is far beyond redemption.\"");
-	            array_push(idle_conv_ar,"Acheron says: \"Cherish this moment, even if it may be ugly. Everything falls apart, in the end. That is the natural way of the world.\"");
+	            array_push(idle_conv_ar,"Acheron says: \"Cherish this moment, even if it may yet be ugly. Everything falls apart, in the end. That is the natural way of the world.\"");
 	            array_push(idle_conv_ar,"Acheron is calculating how many gallons of sea water are left in the world while pondering the acrimonious relationship between cats and dogs.");
-	            array_push(idle_conv_ar,"Acheron is trying to remember the name of his first dog, who died more than five hundred years ago. He was a good boy.");
+	            array_push(idle_conv_ar,"Acheron is trying to remember the name of his first dog, who died some five hundred years ago. He was a good boy.");
 	            array_push(idle_conv_ar,"Acheron is calculating the air speed velocity of an unladen swallow.");
 	            array_push(idle_conv_ar,"Acheron is dividing by five, multiplying by the square root, carrying the three...");
-	            array_push(idle_conv_ar,"Acheron is calculating to the fortieth digit of Pi...");
-	            array_push(idle_conv_ar,"Acheron is remembering the moment when he met his first wife in the golden wood. He can recall her smile so clearly... And her eyes...");
-	            array_push(idle_conv_ar,"Acheron says: \"For centuries I've held fast the Gray Spire against the forces of evil. I shall not see it finally fall to this upstart 'Mordra the Menace'!\"");
+	            array_push(idle_conv_ar,"Acheron is calculating to the one-hundred and twentieth digit of Pi...");
+	            array_push(idle_conv_ar,"Acheron is remembering the moment when he met his first wife in the golden wood. He can still see her eyes, and her smile...");
+	            array_push(idle_conv_ar,"Acheron says: \"For centuries I've held fast the bulwark of the Gray Spire against the forces of evil. I shall not see it finally fall to this upstart 'Mordra the Menace'!\"");
 	            array_push(idle_conv_ar,"Acheron says: \"Mordra and I were school boy chums, once; though between you and me, I always thought he was a bit dim.\"");
-	            array_push(idle_conv_ar,"Acheron says: \"I always was the better duelist with spells, when Mordra and I were still students of the Gray Spire. I wonder who is the better duelist now?\"");
+	            array_push(idle_conv_ar,"Acheron says: \"I always was the better duelist with spells, when Mordra and I were still students, training together. I wonder who is the better duelist now?\"");
 	            array_push(idle_conv_ar,"Acheron says: \"My magic power has extended my years beyond their mortal span, yet for all of us the magic must fade away, some day. If only Mordra could have accepted this great truth as I have. Alas, he has turned instead to the unholy rites of blood sacrifice to extend his life span. Now he shall fall forever in darkness...\"");
 
 				char_sprite = spr_pc_wizard;
@@ -154,9 +154,9 @@ function scr_define_structs(){
 	            array_push(idle_conv_ar,"Roderick nocks an arrow in his bow. \"Keep a watchful eye about you!\"");
 	            array_push(idle_conv_ar,"Roderick says: \"My boots shall never tire beneath an open sky; it is the cold dungeons of the earth that make them drag.\"");
 	            array_push(idle_conv_ar,"Roderick says: \"Too long has Mordra been the scourge of the civilized world. By my bow or my steel he shall meet his end.\"");
-	            array_push(idle_conv_ar,"Roderick says: \"I never knew my parents as a child. I only ever knew their tombstones, which were cold and dark beneath the limbs of a willow bright and weeping. I have Mordra to thank for that.\"");
+	            array_push(idle_conv_ar,"Roderick says: \"I never knew my parents as a child. I only ever knew their tombstones, which were cold and dark beneath a willow bright and weeping. I have Mordra to thank for that.\"");
 	            array_push(idle_conv_ar,"Roderick says: \"I am among the few mortals in this world to have walked the land of the Fae--and lived to tell the tale.\"");
-	            array_push(idle_conv_ar,"Roderick says: \"I shall never forget the wonders that I saw in the land of the Fae... And only when I am dead can I ever hope to return there.\"");
+	            array_push(idle_conv_ar,"Roderick says: \"I shall never forget the wonders that I saw in the land of the Fae, yet even now those memories are like a dream... Only when I am dead can I hope to see that place again.\"");
 	            array_push(idle_conv_ar,"\"Stay sharp!\" Roderick tightens his scabbard. \"Enemies abound!\"");
 				
 				char_sprite = spr_pc_ranger;
@@ -182,7 +182,7 @@ function scr_define_structs(){
 	            array_push(idle_conv_ar,"Thade says: \"Don't look at me like that, I haven't done anything!\"");
 	            array_push(idle_conv_ar,"Thade checks his pockets and shifts restlessly.");
 	            array_push(idle_conv_ar,"Thade scratches his arms and his beard nervously.");
-	            array_push(idle_conv_ar,"Thade smiles, or perhaps he sneers; a previous bout of the pox plague has scarred his features into a permanent leering mask.");
+	            array_push(idle_conv_ar,"Thade smiles, or perhaps he sneers; a previous bout of the pox plague has scarred his features into a permanent leer.");
 	            array_push(idle_conv_ar,"Thade says: \"Look, I never even met the man before he sent the constable for me!\"");
 	            array_push(idle_conv_ar,"Thade says: \"It was a kangaroo court that sent me to the stocks. You think I give a damn about my fellow man after that?\"");
 	            array_push(idle_conv_ar,"Thade says: \"'Mordra,' eh? Never met the guy, but he sure has a sick sense of humor, by the looks of it.\"");
@@ -1383,7 +1383,7 @@ function scr_define_structs(){
 	
 	#region Building (interactive object)
 	
-	Building = function(enum_building_type,spawn_grid_x,spawn_grid_y,building_team_enum,level_int,visibility_boolean,cur_dungeon_enum) constructor {
+	Building = function(enum_building_type, spawn_grid_x, spawn_grid_y, building_team_enum, level_int, visibility_boolean, cur_dungeon_enum) constructor {
 		
 		struct_enum = struct_type.building; ///Used with scr_return_struct_id and other things	
 		
@@ -1479,7 +1479,7 @@ function scr_define_structs(){
 	
 	#region Loot drop (container for items in the world)
 	
-	LootDrop = function(spawn_grid_x,spawn_grid_y,level_int,cur_dungeon_enum,visibility_boolean) constructor {
+	LootDrop = function(spawn_grid_x, spawn_grid_y, level_int, cur_dungeon_enum, visibility_boolean) constructor {
 		
 		struct_enum = struct_type.loot_drop; ///Used with scr_return_struct_id and other things	
 		
@@ -1519,4 +1519,5 @@ function scr_define_structs(){
 	}
 	
 	#endregion
+	
 }

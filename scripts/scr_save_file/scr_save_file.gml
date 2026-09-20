@@ -3,7 +3,8 @@
 	dungeon_ind: is used for meta_data.sav only: this determines what dungeon will be LOADED next, and how many 
 	FLOORS will be loaded from that dungeon
 	
-	floor_ind: is used for meta_data only: this determines 
+	floor_ind: is used for meta_data only: this determines what floor is going to be used immediately after 
+	loading the game, where our camera will be focused.
 
 	Currently, this script saves EVERYTHING that is stored within our g.master_struct_ar and g.master_level_ar 
 	into the external save file,
@@ -69,7 +70,7 @@ function scr_save_file(save_game_name_str,dungeon_ind,floor_ind, called_from_str
 					}
 				}
 				else {
-					show_debug_message($"scr_save_file: the following file_path_str doesn't exist: {file_path_str}, so we were unable to delete the associated struct_data file.");	
+					show_debug_message($"scr_save_file: the following file_path_str doesn't exist: {file_path_str}, so we were unable to delete the associated struct_data file; this is likely just because there were no structs at the corresponding grid coordinates.");	
 				}
 			}
 		}

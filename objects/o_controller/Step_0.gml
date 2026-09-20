@@ -6,6 +6,19 @@ if window_get_fullscreen() == false {
 	window_set_fullscreen(true);	
 }
 
+#region Our prompt game state logic - must always be here to avoid all other game logic:
+
+if is_array(global.prompt_stack_ar) && array_length(global.prompt_stack_ar) > 0 {
+	
+	scr_prompt_step();
+	
+	exit;
+}
+
+
+
+#endregion
+
 #region Basic debug commands:
 
 if keyboard_check_released(vk_f1) game_end();
@@ -269,9 +282,9 @@ else if global.cur_game_state == game_state.start_menu || global.cur_game_state 
 	
 	if keyboard_check_released(vk_up) || keyboard_check_released(vk_down) {
 		
+		//Control cursor_pos logic:
 		if keyboard_check_released(vk_up) cursor_pos -= 1;
 		else cursor_pos += 1;
-		
 		//Cap:
 		var str_ar_len;
 		if global.cur_game_state == game_state.start_menu str_ar_len = array_length(start_menu_str_ar);
@@ -325,10 +338,6 @@ else if global.cur_game_state == game_state.start_menu || global.cur_game_state 
 					//Define grid dimensions:
 					global.grid_w = ds_grid_width(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]); //Hardly matters which one you choose, maps should always be == w and h
 					global.grid_h = ds_grid_height(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]);
-				
-					//Defunct vars only used for maze generation:	
-						//scr_define_base_terrain_type_from_dungeon_index(global.cur_dungeon_ind);
-						//global.max_floors_on_level = array_length(global.master_level_ar[global.cur_dungeon_ind]);
 					
 					//Start game:
 					scr_start_game(global.cur_dungeon_ind,global.cur_floor_ind);	
@@ -452,7 +461,7 @@ else if global.cur_game_state == game_state.main  {
 	
 	if keyboard_check(vk_lcontrol) && keyboard_check_released(ord("S")) {
 		
-		scr_save_file(global.cur_save_filename_str,global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: ctrl+'S' key, user manually saving game.");
+		scr_save_file(global.cur_save_filename_str, global.cur_dungeon_ind, global.cur_floor_ind, "o_con step event: ctrl+'S' key, user manually saving game.");
 		
 	}
 	
@@ -669,9 +678,14 @@ else if global.cur_game_state == game_state.main  {
 							global.cur_dungeon_ind += iterate_dir;	
 						}
 							
-						//Determine if the level grids and structs need to be loaded from our g.cur_save_filename_str:
+						/* This section will need work. Currently, I only want one dungeon to be in memory at any one time
+						(loaded in the g.master_struct_ar), so we'll need to code something that moves every PC at the same
+						time; only then does "off loading" the previous dungeon from memory make any sense.
+						
+						*/
 						if portal_used {
 							
+							//Determine if the level grids and structs need to be loaded from our g.cur_save_filename_str:
 							if scr_check_level_grid(global.cur_dungeon_ind,global.cur_floor_ind) == false || scr_check_level_structs(global.cur_dungeon_ind,global.cur_floor_ind) == false {
 								
 								//We need to reset our team arrays to avoid multiple copies of the same struct being added to the 
@@ -876,12 +890,15 @@ else if global.cur_game_state == game_state.main  {
 			var grid_x = pos_ar[0], grid_y = pos_ar[1];
 			pos_ar = -1;
 			
-			var struct_id = scr_return_struct_id(grid_x,grid_y,struct_type.character,global.cur_floor_ind,global.cur_dungeon_ind);
+			var struct_id = scr_return_struct_id(grid_x, grid_y, struct_type.character, global.cur_floor_ind, global.cur_dungeon_ind);
 			
 			if struct_id != false {
 				if is_struct(struct_id) {
 					if struct_id.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
+						
 						global.cur_char = struct_id;
+						
+						d($"struct_id == {struct_id}");
 						
 						/*
 						global.cur_game_state = game_state.pc_plotting_path;
@@ -928,7 +945,7 @@ else if global.cur_game_state == game_state.pc_plotting_path {
 		//If we've moved into a new cell...
 		if mouse_grid_x != path_dest_grid_x && mouse_grid_y != path_dest_grid_y {
 			
-			scr_plot_a_star_path_to_dest()
+			scr_plot_a_star_path_to_dest();
 			
 		}
 	}

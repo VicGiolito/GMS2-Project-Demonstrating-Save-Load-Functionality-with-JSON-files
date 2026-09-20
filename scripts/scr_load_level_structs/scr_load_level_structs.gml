@@ -45,7 +45,8 @@ function scr_load_level_structs(filename_str,world_index, floor_index, called_fr
     
 			    //Iterate and parse each character JSON string
 			    for (var c_i = 0; c_i < array_length(json_struct_string_array); c_i++) {
-			        var char_json_str = json_struct_string_array[c_i];
+			        
+					var char_json_str = json_struct_string_array[c_i];
         
 			        // Parse the individual character struct - this instantiates the struct
 			        var struct = json_parse(char_json_str);
@@ -66,7 +67,7 @@ function scr_load_level_structs(filename_str,world_index, floor_index, called_fr
 					
 					//Add this struct to our corresponding global team array:
 					var struct_global_team_ar = scr_return_struct_global_team_ar(struct);
-					array_push(struct_global_team_ar,struct);
+					array_push(struct_global_team_ar, struct);
 			    }
 			
 				//Now add temp array to corresponding g.master_struct_ar, make sure structure

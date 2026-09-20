@@ -6,6 +6,9 @@ randomize();
 
 //global.version_num = "v002"; //We could incoporate this into save filenames at some point to ensure we're always testing the correct version.
 
+global.prompt_stack_ar = -1; //Is used as an array containing different game states. 
+global.prompt_stack_cur_ind = 0;
+
 global.cur_game_state = game_state.start_menu;
 
 global.default_fnt = fnt_std_12;
@@ -64,7 +67,7 @@ global.base_terrain_type = terrain_type.unexplored; //Is assigned deliberately i
 
 global.master_level_ar = -1;
 
-global.master_level_ar = []; //Has the following structure g.master_level_ar[cur_dungeon_ind][cur_floor_ind][GRID_X][# cell_x,cell_y];
+global.master_level_ar = []; //Has the following structure g.master_level_ar[cur_dungeon_ind][cur_floor_ind][GRID_X - (3 grids total: terrain, LOS, and instance grid)][# cell_x,cell_y (the x and y coordinates of the corresponding grid)];
 
 for(var i = 0; i < dungeon_type.total_dungeon_types; i++) {
 	global.master_level_ar[i] = [];
@@ -74,11 +77,12 @@ global.cur_save_filename_str = "T";
 
 //Team/misc arrays:
 
-//Is defined as a nested array in scr_setup_master_struct_ar() and in scr_load_file(); has the following structure:
-//g.master_struct_ar[dungeon_ind][AR_INDEX for PC, enemy, neutral, pc_building,enemy_building,neutral_building][array containing every Character,Building,or Item struct in that dungeon]
+//Is defined as a nested array in scr_setup_master_struct_ar() and in scr_load_file() -
+//Has the following structure:
+//g.master_struct_ar[dungeon_ind][floor_index][struct_type_index : includes PC, enemy, neutral, pc_building, enemy_building, neutral_building] - inside of the struct_type array: each index will be a struct of the applicable type
 global.master_struct_ar = -1; 
 
-global.master_struct_json_str_ar = -1; //Becomes a nested array in scr_load_file(); saves the raw json strings of structs from our external file, waiting to be instantiated.
+global.master_struct_json_str_ar = -1; //Not in use; Becomes a nested array in scr_load_file(); saves the raw json strings of structs from our external file, waiting to be instantiated.
 
 global.frontier_queue = -1; //Is used as a ds_priority queue
 
@@ -126,12 +130,12 @@ prompt_box_original_spr_h = sprite_get_height(asset_get_index("spr_prompt_box"))
 max_filename_box_w = string_width("W")*32;
 max_filename_box_h = string_height("W")+8;
 
-cursor_origin_x = 0;
-cursor_origin_y = 0;
-
 #endregion
 
 #region Camera and views:
+
+cursor_origin_x = 0;
+cursor_origin_y = 0;
 
 global.cur_zoom_val = 1; //This is the zoom value that is used in our camera functions when zooming in or out.
 global.zoom_val = 0.25; //This is the value that increments or decreases our cur_zoom_val

@@ -2,6 +2,8 @@
 
 var win_w = window_get_width(), win_h = window_get_height();
 
+var gui_display_w = display_get_gui_width(), gui_display_h = display_get_gui_height();
+
 #region Main game state - Draw debug information:
 
 if global.cur_game_state == game_state.main {
@@ -9,8 +11,8 @@ if global.cur_game_state == game_state.main {
 	var title_y_buff = 16;
 
 	scr_center_font_align();
-
-	draw_text(win_w / 2, title_y_buff,string(level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
+	
+	draw_text(gui_display_w / 2, title_y_buff,string(level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
 
 	scr_reset_font_align();
 
@@ -19,7 +21,7 @@ if global.cur_game_state == game_state.main {
 	else if debug_place_struct == 2 debug_str = "ITEM";
 	else if debug_place_struct == 3 debug_str = "BUILDING";
 
-	draw_text_color(win_w-256,24,"PLACING: "+string(debug_str),c_white,c_white,c_white,c_white,1);
+	draw_text_color(gui_display_w-256,24,"PLACING: "+string(debug_str),c_white,c_white,c_white,c_white,1);
 }
 
 #endregion

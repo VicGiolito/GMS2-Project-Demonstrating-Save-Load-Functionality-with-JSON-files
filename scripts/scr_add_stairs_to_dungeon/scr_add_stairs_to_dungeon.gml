@@ -44,8 +44,8 @@ function scr_add_stairs_to_dungeon(dungeon_index,called_from_str){
 				if terrain_grid[# ran_grid_x,ran_grid_y] < terrain_type.wall_dungeon && 
 				next_terrain_grid[# ran_grid_x,ran_grid_y] < terrain_type.wall_dungeon {
 					//Create up/down stairs:
-					new Building(building_type.stair_up,ran_grid_x,ran_grid_y,char_team.neutral,f+1,true,dungeon_index); //We're placing the up stair on the level beneath b.c we don't need a up stair on the first floor
-					if f < dungeon_length-2 new Building(building_type.stair_down,ran_grid_x,ran_grid_y,char_team.neutral,f,true,dungeon_index); //if f < dungeon_length-2 : we don't want to be placing a down stair on the last floor of the dungeon
+					new Building(building_type.stair_up,ran_grid_x,ran_grid_y,char_team.neutral,f+1,false,dungeon_index); //We're placing the up stair on the level beneath b.c we don't need a up stair on the first floor
+					if f < dungeon_length-2 new Building(building_type.stair_down,ran_grid_x,ran_grid_y,char_team.neutral,f,false,dungeon_index); //if f < dungeon_length-2 : we don't want to be placing a down stair on the last floor of the dungeon
 					stairs_created = true;
 					break;
 				}

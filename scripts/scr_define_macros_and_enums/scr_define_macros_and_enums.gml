@@ -27,7 +27,7 @@ function scr_define_macros_and_enums(){
 		any //If this struct_type is used for a argument with scr_return_struct_id, and ANY struct is found in that inst_grid location, then that grid returns FALSE 
 	}
 	
-	//Enum for prompt box types - defines what type of prompt box is created to the GUI
+	//Enum for prompt box types - defines what type of prompt box is created to the GUI - edit
 	enum prompt_box_type {
 		create_new_game,
 		total_prompt_box_types
@@ -39,7 +39,7 @@ function scr_define_macros_and_enums(){
 		new_save_file_name
 	}
 	
-	//This will need to be a literal place in the game, such as the overworld, minotaur maze, etc.;
+	//This will need to be a literal place within the g.master_, such as the overworld, minotaur maze, etc.;
 	//it NOT simply a type of level.
 	enum dungeon_type {
 		overworld, //debug forest world
@@ -84,7 +84,7 @@ function scr_define_macros_and_enums(){
 	#macro GRID_LOS 2
 	#macro GRID_TOTAL_GRIDS 3
 	
-	//macros to be used with global.master_char_ar - stores structs within each level
+	//macros to be used with global.master_struct_ar - stores structs within each level; and levels themselves are stored within dungeons.
 	#macro AR_PC 0
 	#macro AR_ENEMY 1
 	#macro AR_NEUTRAL 2
@@ -98,15 +98,6 @@ function scr_define_macros_and_enums(){
 	#macro LOS_VISIBLE 0
 	#macro LOS_SHROUD 1
 	#macro LOS_FOW 2
-	
-	//Defunct - over-complicates, and makes it harder to iterate scr_generate_maze:
-	/*
-	enum maze_type {
-		recursive_backtracker, //Currently used for "minotaur maze"
-		basic_forest_world, //Currently used for "overworld"
-		total_maze_types
-	}
-	*/
 	
 	//Terrain cell enum - must match spr_terrain_*:
 	enum terrain_type {

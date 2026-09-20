@@ -13,6 +13,7 @@
     {"name":"Arrays","order":4,"path":"folders/Scripts/Arrays.yy",},
     {"name":"Cameras and Views","order":2,"path":"folders/Scripts/Cameras and Views.yy",},
     {"name":"Convenience and Misc","order":3,"path":"folders/Scripts/Convenience and Misc.yy",},
+    {"name":"Debug","order":25,"path":"folders/Scripts/Debug.yy",},
     {"name":"Defunct","order":15,"path":"folders/Scripts/Defunct.yy",},
     {"name":"External File Related","order":22,"path":"folders/Scripts/External File Related.yy",},
     {"name":"FOW and LOS","order":11,"path":"folders/Scripts/FOW and LOS.yy",},
@@ -49,6 +50,9 @@
     {"name":"Loot Drop","order":9,"path":"folders/Sprites/Loot Drop.yy",},
     {"name":"Tile Sets","order":2,"path":"folders/Tile Sets.yy",},
     {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
+    {"name":"Prompt Objects","order":4,"path":"folders/Objects/Prompt Objects.yy",},
+    {"name":"Prompts","order":10,"path":"folders/Sprites/Prompts.yy",},
+    {"name":"Prompts","order":26,"path":"folders/Scripts/Prompts.yy",},
   ],
   "ResourceOrderSettings": [
     {"name":"spr_building_palisade","order":1,"path":"sprites/spr_building_palisade/spr_building_palisade.yy",},
