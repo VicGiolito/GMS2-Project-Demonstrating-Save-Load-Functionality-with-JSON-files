@@ -13,73 +13,10 @@
 
 if global.cur_game_state == game_state.main || global.cur_game_state == game_state.pc_plotting_path {
 	
-	
-	
-	#region Go through our pc_team_ar and draw characters on this floor and dungeon:
-
-	if is_array(global.master_struct_ar) {
-
-		var ar_len = array_length(global.master_struct_ar[global.cur_dungeon_ind][global.cur_floor_ind][AR_PC]), char_struct;
-	
-		for(var i = 0; i < ar_len; i++){
-			
-			char_struct = global.master_struct_ar[global.cur_dungeon_ind][global.cur_floor_ind][AR_PC][i];
-			
-			if is_struct(char_struct) {
-				if char_struct.char_sprite != -1 && char_struct.cur_floor_level == global.cur_floor_ind {
-					if char_struct.visible_boolean == true {
-						//Draw char
-						draw_sprite(char_struct.char_sprite,char_struct.sprite_image_index,
-						char_struct.char_room_x,char_struct.char_room_y);
-						//Draw debug:
-						draw_set_font(fnt_std_10);
-						scr_center_font_align();
-						draw_text_color(char_struct.char_room_x,char_struct.char_room_y,string(char_struct.char_grid_x)+
-						","+string(char_struct.char_grid_y),c_black,c_black,c_black,c_black,1);
-						scr_reset_font_align();
-						draw_set_font(global.default_fnt);
-					}
-				}
-			}
-		}
-	}
-	
-	#endregion
-
-	#region Go through our revealed_enemies_ar and display enemies that are on the current floor (this will also display revealed neutral chars):
-	
-	//Edit 9-20-26: Where is the revealed_enemies_ar being defined?
-	
-	if is_array(revealed_enemies_ar) {
-
-		var ar_len = array_length(revealed_enemies_ar), enemy_struct;
-	
-		for(var i = 0; i < ar_len; i++){
-	
-			enemy_struct = revealed_enemies_ar[i];
-	
-			if is_struct(enemy_struct) {
-				if enemy_struct.char_sprite != -1 && enemy_struct.cur_floor_level == global.cur_floor_ind && 
-				enemy_struct.visible_boolean == true {
-					//Draw char
-					draw_sprite(enemy_struct.char_sprite,enemy_struct.sprite_image_index,
-					enemy_struct.char_room_x,enemy_struct.char_room_y);
-					//Draw debug:
-					draw_set_font(fnt_std_10);
-					scr_center_font_align();
-					draw_text_color(enemy_struct.char_room_x,enemy_struct.char_room_y,string(enemy_struct.char_grid_x)+
-					","+string(enemy_struct.char_grid_y),c_black,c_black,c_black,c_black,1);
-					scr_reset_font_align();
-					draw_set_font(global.default_fnt);
-				}
-			}
-		}
-	}
-
-	#endregion
-	
 	#region Go through our building team arrays and display buildings AND loot drops that are on the current floor:
-
+	
+	//We want our building sprites to be drawn underneath our char sprites, which is why we're drawing them above our
+	//char sprites:
 	if is_array(global.master_struct_ar) {
 
 		var building_struct, team_i = 0, team_ar;
@@ -110,6 +47,83 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 			team_i++;
 		}
 	}
+
+	#endregion
+	
+	#region Go through our pc_team_ar, neutral_team_ar, and enemy_team_ar, and draw characters ONLY on this floor and dungeon:
+
+	if is_array(global.master_struct_ar) {
+		
+		var debug_txt_offset = 32;
+		
+		for(var team_i = AR_PC; team_i <= AR_NEUTRAL; team_i++) {
+			
+			if is_array(global.master_struct_ar[global.cur_dungeon_ind][global.cur_floor_ind][team_i]) {
+				
+				var char_ar = global.master_struct_ar[global.cur_dungeon_ind][global.cur_floor_ind][team_i];
+				
+				var ar_len = array_length(char_ar), char_struct;
+				
+				for(var char_i = 0; char_i < ar_len; char_i++) {
+					
+					char_struct = char_ar[char_i];	
+					
+					if is_struct(char_struct) {
+						if char_struct.char_sprite != -1 && char_struct.cur_floor_level == global.cur_floor_ind {
+							if char_struct.visible_boolean == true || team_i == AR_PC {
+								//Draw char
+								draw_sprite(char_struct.char_sprite,char_struct.sprite_image_index,
+								char_struct.char_room_x,char_struct.char_room_y);
+								//Draw debug:
+								draw_set_font(fnt_std_10);
+								scr_center_font_align();
+								draw_text_color(char_struct.char_room_x,char_struct.char_room_y-debug_txt_offset,string(char_struct.char_grid_x)+
+								","+string(char_struct.char_grid_y),c_black,c_black,c_black,c_black,1);
+								scr_reset_font_align();
+								draw_set_font(global.default_fnt);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	#endregion
+
+	#region DEFUNCT - Go through our revealed_enemies_ar and display enemies that are on the current floor (this will also display revealed neutral chars):
+	
+	//Edit 9-20-26: Why is a revealed_enemies_ar even necessary?
+	
+	/*
+	
+	if is_array(revealed_enemies_ar) {
+
+		var ar_len = array_length(revealed_enemies_ar), enemy_struct;
+	
+		for(var i = 0; i < ar_len; i++){
+	
+			enemy_struct = revealed_enemies_ar[i];
+	
+			if is_struct(enemy_struct) {
+				if enemy_struct.char_sprite != -1 && enemy_struct.cur_floor_level == global.cur_floor_ind && 
+				enemy_struct.visible_boolean == true {
+					//Draw char
+					draw_sprite(enemy_struct.char_sprite,enemy_struct.sprite_image_index,
+					enemy_struct.char_room_x,enemy_struct.char_room_y);
+					//Draw debug:
+					draw_set_font(fnt_std_10);
+					scr_center_font_align();
+					draw_text_color(enemy_struct.char_room_x,enemy_struct.char_room_y,string(enemy_struct.char_grid_x)+
+					","+string(enemy_struct.char_grid_y),c_black,c_black,c_black,c_black,1);
+					scr_reset_font_align();
+					draw_set_font(global.default_fnt);
+				}
+			}
+		}
+	}
+	
+	*/
 
 	#endregion
 	

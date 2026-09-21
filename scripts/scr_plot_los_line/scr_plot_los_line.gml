@@ -53,23 +53,23 @@ function scr_plot_los_line(origin_x,origin_y,destination_x,destination_y,floor_i
 			cell will remain FOW or shroud
 			*/
 			if blocking_terrain_count > 1 {
-				//Transform to VISIBLE cell
-				tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+				//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+					//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 				//Set grid:
 				global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 				return;
 			}  
 				
 			if blocking_wall_count >= 1 {
-				//Transform to VISIBLE cell
-				tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+				//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+					//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 				//Set grid:
 				global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 				return;	
 			}
 				
-			//Transform to VISIBLE cell
-			tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+			//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+				//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 			//Set grid:
 			global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 			
@@ -112,23 +112,23 @@ function scr_plot_los_line(origin_x,origin_y,destination_x,destination_y,floor_i
 			cell will remain FOW or shroud
 			*/
 			if blocking_terrain_count > 1 {
-				//Transform to VISIBLE cell
-				tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+				//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+					//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 				//Set grid:
 				global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 				return;
 			}  
 				
 			if blocking_wall_count >= 1 {
-				//Transform to VISIBLE cell
-				tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+				//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+					//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 				//Set grid:
 				global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 				return;	
 			}
 				
-			//Transform to VISIBLE cell
-			tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
+			//Transform to VISIBLE cell - not necessary, we do this later with scr_define_tilemap_from_grid():
+				//tilemap_set(global.fow_tile_id,LOS_VISIBLE,origin_x,origin_y);
 			//Set grid:
 			global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# origin_x,origin_y] = LOS_VISIBLE;
 			

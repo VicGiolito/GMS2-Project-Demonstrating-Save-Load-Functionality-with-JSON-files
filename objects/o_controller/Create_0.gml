@@ -79,7 +79,7 @@ global.cur_save_filename_str = "T";
 
 //Is defined as a nested array in scr_setup_master_struct_ar() and in scr_load_file() -
 //Has the following structure:
-//g.master_struct_ar[dungeon_ind][floor_index][struct_type_index : includes PC, enemy, neutral, pc_building, enemy_building, neutral_building] - inside of the struct_type array: each index will be a struct of the applicable type
+//g.master_struct_ar[dungeon_ind][floor_index][struct_type_index : includes PC, enemy, neutral, pc_building, enemy_building, neutral_building, items] - inside of the struct_type array: each index will be a struct of the applicable type
 global.master_struct_ar = -1; 
 
 global.master_struct_json_str_ar = -1; //Not in use; Becomes a nested array in scr_load_file(); saves the raw json strings of structs from our external file, waiting to be instantiated.

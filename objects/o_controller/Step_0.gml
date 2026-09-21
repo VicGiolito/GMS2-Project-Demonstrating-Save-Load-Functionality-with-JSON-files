@@ -15,8 +15,6 @@ if is_array(global.prompt_stack_ar) && array_length(global.prompt_stack_ar) > 0 
 	exit;
 }
 
-
-
 #endregion
 
 #region Basic debug commands:
@@ -597,18 +595,20 @@ else if global.cur_game_state == game_state.main  {
 		
 		//Assign terrain_grid and then update tilemap:
 		global.terrain_grid = global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN];
-		scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN],global.terrain_tile_id,"Using debug keys to change level floor.");
+		scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN],global.terrain_tile_id,"o_con step event: Using debug keys to change view of dungeon floor.");
 				
 		//Update los and define fow tilemap:
-		scr_reset_building_and_loot_drop_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: + or - keypress used to iterate up/down through levels, even if they're unexplored.");
+		scr_reset_struct_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: + or - keypress used to iterate up/down through levels, even if they're unexplored.");
 		scr_reset_fow(global.cur_floor_ind,global.cur_dungeon_ind);
-		scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"using debug to change the cur floor.");
-		//scr_update_visibility(global.cur_floor_ind, "o_con create event: updating building visibility after changing the floor.");
-		scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"Using debug keys to change level floor.");
-						
+		scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"o_con step event: + or - keypress used to iterate up/down through levels, even if they're unexplored.");
+		scr_update_visibility(global.cur_dungeon_ind, global.cur_floor_ind, "o_con step event: + or - keypress used to iterate up/down through levels, even if they're unexplored.");
+		scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"o_con step event: + or - keypress used to iterate up/down through levels, even if they're unexplored.");				
 	}
 	
-	//Move g.cur_char up/down a level or up/down into different dungeon:
+	#endregion
+	
+	#region Move g.cur_char up/down a level or up/down into different dungeon:
+	
 	if global.cur_char != -1 && !is_undefined(global.cur_char) {
 		if is_struct(global.cur_char) {
 			if keyboard_lastchar == "<" || keyboard_lastchar == ">" {
@@ -732,12 +732,14 @@ else if global.cur_game_state == game_state.main  {
 						global.terrain_grid = global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN];
 						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN],global.terrain_tile_id,"Using debug keys to change level floor.");
 				
-						//Update los and define fow tilemap:
-						scr_reset_building_and_loot_drop_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: < or > keypress used to iterate up/down through levels by using a up or down stair or dungeon portal.");
+						//Update los and define fow tilemap - it frankly doesn't matter if we reset or not the visible_boolean flag
+						//of the chars on the floor we are leaving, so as long as we always reset and properly update every char on
+						//the floor we are moving to - only the structs from the current floor willl ever be drawn anyway:
+						scr_reset_struct_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: our pc has just moved to a different floor or a different dungeon.");
 						scr_reset_fow(global.cur_floor_ind,global.cur_dungeon_ind);
-						scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"using debug to change the cur floor.");
-						//scr_update_visibility(global.cur_floor_ind, "o_con create event: updating building visibility after changing the floor.");
-						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"Using debug keys to change level floor.");
+						scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"o_con step event: our pc has just moved to a different floor or a different dungeon.");
+						scr_update_visibility(global.cur_dungeon_ind, global.cur_floor_ind, "o_con step event: our pc has just moved to a different floor or a different dungeon.");
+						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"o_con step event: our pc has just moved to a different floor or a different dungeon.");
 						
 						//Now we need to off-load the entire previous dungeon:
 						if portal_used {
@@ -867,11 +869,21 @@ else if global.cur_game_state == game_state.main  {
 							
 					//Update los and enemy visibility:
 					if !global.debug_disable_los {
-						scr_reset_building_and_loot_drop_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: manually moving g.cur_char around the same floor with the numpad or arrow keys.");
+						
+						//Set visible flag of all structs excepts for pcs and pc buildings on the current dungeon and floor == false:
+						scr_reset_struct_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con step event: manually moving g.cur_char around the same floor with the numpad or arrow keys.");
+						
+						//Set all VISIBLE cells on the corresponding dungeon and floor los grid to == FOW:
 						scr_reset_fow(global.cur_floor_ind,global.cur_dungeon_ind);
+						
+						//Simply changes the los_grid cells surrounding our pcs to VISIBLE using scr_plot_los_line()
 						scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind, "pc_struct has just moved.");
-						//scr_update_visibility("pc_struct has just moved.");
-						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"A pc char just moved with the debug keyboard keys.");
+						
+						//Checks all structs on current dungeon-floor and changes their visible_boolean flag to == TRUE if they are on a VISIBLE los cell:
+						scr_update_visibility(global.cur_dungeon_ind, global.cur_floor_ind, "pc_struct has just moved.");
+						
+						//Defines the 'tile_fow' tile layer by using the corresponding grid values in the dungeon and floor los grid:
+						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id, "A pc char just moved with the debug keyboard keys.");
 					}
 				}
 			}
@@ -880,7 +892,7 @@ else if global.cur_game_state == game_state.main  {
 	
 	#endregion
 	
-	#region Change g.cur_char on lmb click, unassign with rmb click:
+	#region Change g.cur_char on lmb click with another pc ON THE MAP, unassign with rmb click:
 	
 	if mouse_check_button_released(mb_left) {
 		
@@ -923,6 +935,7 @@ else if global.cur_game_state == game_state.main  {
 	}
 	
 	#endregion
+	
 }
 
 #endregion

@@ -2,101 +2,70 @@
 
 --Should always be called after every call of scr_update_los.
 
--- Turns BUILDING visibility on or off if they're standing on a VISIBILE cell,
-same with traps if they also have the revealed_trap_boolean == true OR the trap 
-belongs to the pc team.
+-- Turns STRUCT visibility on or off if they're standing on a VISIBILE cell (excluding PCs and PC_BUILDINGS 
+(these are always visible) );
 
---Currently only used for buildings
+--Logic works a bit differently with buildings (traps specifically):
+we only reveal them if they belong to a pc or if they've been revealed already
 
 */
 
-function scr_update_visibility(floor_int, dungeon_int, called_from_str = "undefined", check_building_visibility_boolean = true){
+function scr_update_visibility(dungeon_index, floor_index, called_from_str){
 	
 	show_debug_message("Entering scr_update_visibility now, this script was called from: "+called_from_str);
-	
-	/*
-	
-	var enemy_team_ar_len = array_length(o_controller.enemy_team_ar), enemy_struct_id;
-	
-	if enemy_team_ar_len > 0 {
-		for(var i = 0; i < enemy_team_ar_len; i++) {
+
+	if dungeon_index < array_length(global.master_struct_ar) && is_array(global.master_struct_ar[dungeon_index]) {
+		
+		if floor_index < array_length(global.master_struct_ar[dungeon_index]) && is_array(global.master_struct_ar[dungeon_index][floor_index]) {
 			
-			enemy_struct_id = o_controller.enemy_team_ar[i];
-			
-			if is_struct(enemy_struct_id) {
+			//Start with AR_ENEMY go to AR_ITEMS
+			for(var team_i = AR_ENEMY; team_i <= AR_ITEMS; team_i++) {
 				
-				//We only adjust enemy visibility for enemies on the specified floor:
-				if enemy_struct_id.cur_floor_level == floor_int {
+				if team_i == AR_BUILDING_PC continue; //PC buildings are always visible if we're on the same floor.
+				
+				if is_array(global.master_struct_ar[dungeon_index][floor_index][team_i]) {
 					
-					if global.master_level_ar[floor_int][GRID_LOS][# enemy_struct_id.char_grid_x, enemy_struct_id.char_grid_y] == LOS_VISIBLE {
-						enemy_struct_id.visible_boolean = true;	
-					}
-					else {
-						enemy_struct_id.visible_boolean = false;	
-					}
-				}
-			}
-		}
-	}
-	*/
-	
-	//Enemies do not need to check for buildings or loot drops, or anything like that:
-	if check_building_visibility_boolean {
-		
-		var building_ar, ar_count = 0, repeat_count = 3, building_ar_len, building_struct_id;
-		
-		repeat(repeat_count) {
-			//Define building_ar:
-			if ar_count == 0 building_ar = global.master_struct_ar[dungeon_int][floor_int][AR_BUILDING_PC]; // o_controller.pc_building_team_ar;
-			else if ar_count == 1 building_ar = global.master_struct_ar[dungeon_int][floor_int][AR_BUILDING_ENEMY]; //o_controller.enemy_building_team_ar;
-			else if ar_count == 2 building_ar = global.master_struct_ar[dungeon_int][floor_int][AR_BUILDING_NEUTRAL]; //o_controller.neutral_building_team_ar;
-			
-			building_ar_len = array_length(building_ar);
-			
-			if building_ar_len > 0 {
-				for(var i = 0; i < building_ar_len; i++) {
-					
-					building_struct_id = building_ar[i];
-					
-					if is_struct(building_struct_id) {
+					for(var struct_i = 0; struct_i < array_length(global.master_struct_ar[dungeon_index][floor_index][team_i]); struct_i++) {
+				
+						var struct_id = global.master_struct_ar[dungeon_index][floor_index][team_i][struct_i];
 						
-						//We only adjust building visibility for buildings on the specified floor:
-						if building_struct_id.cur_floor_level == floor_int {
-						
-							var building_type_enum = building_struct_id.building_ar[building_stats.type];
-						
-							//Only reveal traps if they've already been revealed or if they're part of the pc_team:
-							if building_type_enum >= building_type.trap_pit && building_type_enum <= building_type.trap_piranha_pit {
+						if is_struct(struct_id) {
+				
+							//Special logic for trap buildings:
+							if team_i == AR_BUILDING_NEUTRAL || team_i == AR_BUILDING_ENEMY {
 							
-								//Only reveal any trap if its on a visible cell:
-								if global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# building_struct_id.building_grid_x, building_struct_id.building_grid_y ] == LOS_VISIBLE {
+								var building_type_enum = struct_id.building_ar[building_stats.type];
+						
+								//Trap specific logic: Only reveal traps if they've already been revealed or if they're part of the pc_team:
+								if building_type_enum >= building_type.trap_pit && building_type_enum <= building_type.trap_piranha_pit {
 								
-									//If it's on a visible cell, check to see if it's part of the pc team OR if it's been revealed already:
-									if building_struct_id.revealed_trap_boolean == true || building_struct_id.building_ar[building_stats.team_enum] == char_team.pc {
-										building_struct_id.visible_boolean = true;	
+									//Only reveal any trap if its on a visible cell:
+									if global.master_level_ar[dungeon_index][floor_index][GRID_LOS][# struct_id.building_grid_x, struct_id.building_grid_y ] == LOS_VISIBLE {
+								
+										//If it's on a visible cell, check to see if it's part of the pc team OR if it's been revealed already:
+										if struct_id.revealed_trap_boolean == true || struct_id.building_ar[building_stats.team_enum] == char_team.pc {
+											struct_id.visible_boolean = true;	
+										}
 									}
-									else building_struct_id.visible_boolean = false;
 								}
-								//If it's not a visible cell, make it invisible_boolean
-								else building_struct_id.visible_boolean = false;	
-							}
-							//If it's any other building, just check to see if it's on a visible cell:
-							else {
-							
-								if global.master_level_ar[dungeon_int][floor_int][GRID_LOS][# building_struct_id.building_grid_x, building_struct_id.building_grid_y ] == LOS_VISIBLE {
-									building_struct_id.visible_boolean = true;	
 								
+								//If it's any other type of building and it's on a visible cell, mark it visible:
+								else if global.master_level_ar[dungeon_index][floor_index][GRID_LOS][# struct_id.building_grid_x, struct_id.building_grid_y ] == LOS_VISIBLE {
+									struct_id.visible_boolean = true;	
 								}
-								else {
-									building_struct_id.visible_boolean = false;	
-								}	
+							}
+						
+							//If it's ANY other team (enemy or neutral char struct):
+							else {
+								//If it's on a VISIBLE cell, we flag it visible, it's that fucking simple:
+								if global.master_level_ar[dungeon_index][floor_index][GRID_LOS][# struct_id.char_grid_x, struct_id.char_grid_y ] == LOS_VISIBLE {
+									struct_id.visible_boolean = true;	
+								}
 							}
 						}
 					}
 				}
 			}
-			ar_count++;
-		} //End of repeat loop
-
-	} //End of if check_building_visibility_boolean == true
+		}
+	}
 }

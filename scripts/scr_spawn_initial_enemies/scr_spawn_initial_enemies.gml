@@ -21,7 +21,7 @@ function scr_spawn_initial_enemies(dungeon_enum_int, floor_num_int){
 				ran_enemy_class = choose(char_class.goblin_cretin,char_class.goblin_brute);
 				enemy_count++;
 				
-				new Character(ran_enemy_class,char_team.enemy,grid_x,grid_y,floor_num_int,dungeon_enum_int);
+				new Character(ran_enemy_class, char_team.enemy, grid_x, grid_y, floor_num_int, dungeon_enum_int, false);
 			}
 		}
 	

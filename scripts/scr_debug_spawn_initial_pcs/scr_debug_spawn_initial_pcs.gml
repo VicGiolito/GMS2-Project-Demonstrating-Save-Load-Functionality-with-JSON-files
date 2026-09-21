@@ -22,7 +22,7 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 		
 				pc_count++;
 				
-				new Character(pc_class,char_team.pc,grid_x,grid_y,floor_num_int,dungeon_enum_int);
+				new Character(pc_class,char_team.pc,grid_x,grid_y,floor_num_int,dungeon_enum_int, true);
 				
 				pc_class++;
 				

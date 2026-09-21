@@ -90,7 +90,7 @@ function scr_define_macros_and_enums(){
 	#macro AR_NEUTRAL 2
 	#macro AR_BUILDING_PC 3
 	#macro AR_BUILDING_ENEMY 4 
-	#macro AR_BUILDING_NEUTRAL 5 //This is where loot drop structs are stored
+	#macro AR_BUILDING_NEUTRAL 5 //This is where loot drop structs are stored, as well as up/down stairs and portals
 	#macro AR_ITEMS 6
 	#macro AR_TOTAL_ARS 7
 	

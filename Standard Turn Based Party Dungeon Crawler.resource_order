@@ -92,7 +92,7 @@
     {"name":"scr_convert_grid_to_room_coordinates","order":3,"path":"scripts/scr_convert_grid_to_room_coordinates/scr_convert_grid_to_room_coordinates.yy",},
     {"name":"spr_pc_necromancer","order":8,"path":"sprites/spr_pc_necromancer/spr_pc_necromancer.yy",},
     {"name":"scr_return_struct_team_macro","order":2,"path":"scripts/scr_return_struct_team_macro/scr_return_struct_team_macro.yy",},
-    {"name":"scr_reset_building_and_loot_drop_visibility","order":5,"path":"scripts/scr_reset_building_and_loot_drop_visibility/scr_reset_building_and_loot_drop_visibility.yy",},
+    {"name":"scr_reset_struct_visibility","order":5,"path":"scripts/scr_reset_struct_visibility/scr_reset_struct_visibility.yy",},
     {"name":"fnt_std_24","order":3,"path":"fonts/fnt_std_24/fnt_std_24.yy",},
     {"name":"spr_char_treasure_hunter","order":9,"path":"sprites/spr_char_treasure_hunter/spr_char_treasure_hunter.yy",},
     {"name":"scr_return_empty_elements","order":3,"path":"scripts/scr_return_empty_elements/scr_return_empty_elements.yy",},

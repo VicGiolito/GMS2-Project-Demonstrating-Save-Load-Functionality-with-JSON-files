@@ -10,13 +10,16 @@ the revealed_enemies_ar was added to, which will be filled with the ids of all e
 pc_buildings within the g.master_struct_ar, otherwise the iteration count on this script could get huge,
 and there's already a lot of iterating going on in this script.
 
+--Currently this script does the following:
+	--Iterates through every PC on the current DUNGEON/FLOOR.
+	--Uses scr_plot_los_line (bressenham's line equation, along with some extra logic for trees and buildings),
+	to set the corresponding los_grid cells to VISIBLE.
+
 */
 
-function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "undefined", debug_disable_enemy_reveal_boolean = false ){
+function scr_update_los(dungeon_int, floor_level_int, called_from_boolean){
 		
-		if !is_undefined(called_from_boolean) {
-			show_debug_message("Entering scr_update_los now, script was called from: "+string(called_from_boolean) );
-		}
+		show_debug_message("Entering scr_update_los now, script was called from: "+string(called_from_boolean) );
 		
 		var ar_len = array_length(global.master_struct_ar[dungeon_int][floor_level_int][AR_PC]), pc_struct, pc_grid_x, pc_grid_y, vision_range;
 		var grid_w = global.grid_w, grid_h = global.grid_h, char_struct, building_struct, loot_drop_struct;
@@ -48,9 +51,9 @@ function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "unde
 							//Even if 'blinded', pcs should always be able to see the same cell they are on;
 							//just mark it visible and continue to next iteration:
 							if xx == pc_grid_x && yy == pc_grid_y {
-								//Set tilemap:
-								tilemap_set(global.fow_tile_id,LOS_VISIBLE,xx,yy);
-								//Set grid:
+								//Set tilemap - not necessary, we do this later with scr_define_tilemap_from_grid()::
+									//tilemap_set(global.fow_tile_id,LOS_VISIBLE,xx,yy);
+								//Set grid (not strictly necessary, this will be captured by scr_define_tilemap_from_grid() ):
 								global.master_level_ar[dungeon_int][floor_level_int][GRID_LOS][# xx,yy] = LOS_VISIBLE;
 								continue;
 							}
@@ -58,7 +61,7 @@ function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "unde
 							/*Otherwise, perform los_line check; scr_plot_line will transform cells to VISIBLE if
 							applicable or, if more than 1 obstacle is encountered along its line, it will
 							prematurely break, causing that cell to reamin as FOW or shroud */
-							scr_plot_los_line(pc_grid_x,pc_grid_y,xx,yy, floor_level_int,dungeon_int);
+							scr_plot_los_line(pc_grid_x, pc_grid_y, xx, yy, floor_level_int,dungeon_int);
 						}
 					}
 				}
@@ -66,14 +69,18 @@ function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "unde
 		
 		} //End of iterating through pc_team_ar
 		
-		#region Add newly revealed enemies to our revealed_enemies_ar:
+		#region Add newly revealed enemies to our revealed_enemies_ar - this is only necessary for abruptly stopping a PC that is moving when they see a enemy for the first time:
 		
 		/* Unfortunately, it's necessary to iterate through all of our LOS_VISIBLE cells AGAIN, because of the 
 		unavoidable way that lines are plotted with scr_plot_los_line, the cell that we are checking may not be
 		turned to visible until we are checking a DIFFERENT cell; which makes revealing enemies this way inconsistent.
 		*/
 		
-		//Only do any of this if our debug_disable_enemy_reveal_boolean == false
+		//Only do any of this if our debug_disable_enemy_reveal_boolean == false;
+		//edit 9-20-26: wtf is the point of this?
+		
+		/*
+		
 		if !debug_disable_enemy_reveal_boolean {
 			for(var i = 0; i < ar_len; i++)
 			{
@@ -95,7 +102,7 @@ function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "unde
 							//then also check to see if an enemy can be revealed there:
 							if global.master_level_ar[dungeon_int][floor_level_int][GRID_LOS][# xx,yy] == LOS_VISIBLE {
 								
-								//Check for buildings to reveal:
+								//Check for buildings to reveal - edit 9-20-26: fucking why? The visible_boolean flag is being controlled in :
 								building_struct = scr_return_struct_id(xx,yy,struct_type.building,floor_level_int,dungeon_int);
 								
 								if building_struct != false {	
@@ -183,6 +190,8 @@ function scr_update_los(dungeon_int, floor_level_int,called_from_boolean = "unde
 				}
 			}
 	} //End of if !debug_disable_enemy_reveal_boolean
+	
+	*/
 	
 	#endregion
 		

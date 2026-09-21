@@ -23,9 +23,9 @@ function scr_start_game(initial_dungeon_ind,initial_floor_ind){
 
 	tilemap_clear(global.fow_tile_id,LOS_SHROUD);
 	scr_reset_fow(initial_floor_ind,initial_dungeon_ind);
-	scr_reset_building_and_loot_drop_visibility(initial_dungeon_ind,initial_floor_ind,"scr_start_game");
+	scr_reset_struct_visibility(initial_dungeon_ind, initial_floor_ind, "scr_start_game");
 	scr_update_los(initial_dungeon_ind, initial_floor_ind, "scr_start_new_game: updating los for the first time.");
-	//scr_update_visibility();
+	scr_update_visibility(initial_dungeon_ind, initial_floor_ind, "scr_start_new_game: updating los for the first time.");
 	scr_define_tilemap_from_grid(global.los_grid, global.fow_tile_id,"scr_start_new_game: defining fow tile map for the first time.");
 
 	#endregion

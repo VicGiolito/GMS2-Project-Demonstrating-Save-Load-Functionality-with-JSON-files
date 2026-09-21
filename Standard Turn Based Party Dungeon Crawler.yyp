@@ -132,7 +132,7 @@
     {"id":{"name":"o_prompt_bg","path":"objects/o_prompt_bg/o_prompt_bg.yy",},},
     {"id":{"name":"o_controller","path":"objects/o_controller/o_controller.yy",},},
     {"id":{"name":"scr_return_struct_team_macro","path":"scripts/scr_return_struct_team_macro/scr_return_struct_team_macro.yy",},},
-    {"id":{"name":"scr_reset_building_and_loot_drop_visibility","path":"scripts/scr_reset_building_and_loot_drop_visibility/scr_reset_building_and_loot_drop_visibility.yy",},},
+    {"id":{"name":"scr_reset_struct_visibility","path":"scripts/scr_reset_struct_visibility/scr_reset_struct_visibility.yy",},},
     {"id":{"name":"fnt_std_24","path":"fonts/fnt_std_24/fnt_std_24.yy",},},
     {"id":{"name":"spr_char_treasure_hunter","path":"sprites/spr_char_treasure_hunter/spr_char_treasure_hunter.yy",},},
     {"id":{"name":"scr_return_empty_elements","path":"scripts/scr_return_empty_elements/scr_return_empty_elements.yy",},},

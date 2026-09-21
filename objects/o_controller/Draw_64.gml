@@ -288,15 +288,17 @@ if global.cur_game_state == game_state.main {
 						if global.cur_char.cur_floor_level != global.cur_floor_ind {
 							//Define g.cur_floor_ind:
 							global.cur_floor_ind = global.cur_char.cur_floor_level;
-							//Assign terrain_grid and then update tilemap:
+							
+							//Assign terrain_grid and then update terrain tilemap:
 							global.terrain_grid = global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN];
 							scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN],global.terrain_tile_id,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar.");
 				
 							//Update los and define fow tilemap:
+							scr_reset_struct_visibility(global.cur_dungeon_ind,global.cur_floor_ind,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
 							scr_reset_fow(global.cur_floor_ind,global.cur_dungeon_ind);
-							scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar.");
-							//scr_update_visibility(global.cur_floor_ind, "o_con create event: updating building visibility after changing the floor.");
-							scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar.");
+							scr_update_los(global.cur_dungeon_ind, global.cur_floor_ind,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
+							scr_update_visibility(global.cur_dungeon_ind, global.cur_floor_ind, "o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
+							scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
 						}
 					}
 				}

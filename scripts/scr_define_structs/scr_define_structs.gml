@@ -5,7 +5,7 @@ function scr_define_structs(){
 	
 	#region Our character struct:
 	
-	Character = function(char_class_enum,char_team_enum,grid_spawn_x,grid_spawn_y,cur_floor_lvl_int,cur_dungeon_enum,visibility_boolean = true) constructor
+	Character = function(char_class_enum, char_team_enum, grid_spawn_x, grid_spawn_y, cur_floor_lvl_int, cur_dungeon_enum, visibility_boolean) constructor
 	{
 		struct_enum = struct_type.character; ///Used with scr_return_struct_id and other things
 		
@@ -1509,7 +1509,7 @@ function scr_define_structs(){
 		building_room_y = pos_ar[1];
 		pos_ar = -1;
 		
-		scr_add_struct_to_inst_grid(self,building_grid_x,building_grid_y,cur_floor_level,cur_dungeon_ind);
+		scr_add_struct_to_inst_grid(self, building_grid_x, building_grid_y, cur_floor_level, cur_dungeon_ind);
 		
 		//Add to g.master_struct_ar:
 		array_push(global.master_struct_ar[cur_dungeon_enum][level_int][AR_BUILDING_NEUTRAL],self);
