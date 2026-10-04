@@ -2,12 +2,13 @@
 
 function scr_define_data(){
 	
-	start_menu_str_ar = ["NEW DEBUG GAME","NEW QUICK GAME","LOAD GAME","OPTIONS","QUIT"];
+	start_menu_str_ar = ["NEW DEBUG GAME","NEW QUICK GAME","LOAD 'T' GAME", "LOAD GAME LIST", "OPTIONS","QUIT"];
 	
 	enum start_menu_options {
 		new_debug_game,
 		new_quick_game,
 		load_game,
+		load_game_list,
 		options,
 		quit
 	}

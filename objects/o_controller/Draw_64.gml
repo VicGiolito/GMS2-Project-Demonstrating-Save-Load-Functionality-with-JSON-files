@@ -190,8 +190,41 @@ else if global.cur_game_state == game_state.create_new_game {
 
 #endregion
 
+#region Load Saved Games List screen:
+
+else if global.cur_game_state == game_state.load_game_list {
+	
+	//Draw our light gray foreground box:
+	var fg_c = c_ltgrey;
+	draw_rectangle_color(load_list_fg_origin_x, load_list_fg_origin_y, load_list_fg_origin_x+load_list_fg_w,  load_list_fg_origin_y+load_list_fg_h, fg_c, fg_c, fg_c, fg_c, false);
+	
+	//Draw our g.saved_games_list array, if applicable:
+	if is_array(global.saved_games_list) && array_length(global.saved_games_list) > 0 {
+		
+		var txt_c;
+		
+		scr_center_font_align();
+		
+		for(var i = 0; i < array_length(global.saved_games_list); i++) {
+			
+			txt_c = c_black;
+			
+			if i == load_game_index txt_c = c_lime;
+			
+			//Draw text centered in the middle of the list:
+			draw_text_color(load_list_fg_origin_x+(load_list_fg_w / 2),load_list_fg_origin_y+(load_list_slot_h / 2)+(load_list_slot_h*i),global.saved_games_list[i],txt_c,txt_c,txt_c,txt_c,1);
+		}
+		
+		scr_reset_font_align();
+	}
+	
+}
+
+#endregion
+
 #region Game_state == main - Draw our g.cur_char portrait and other party members with stats on top left of screen:
 
+//Using if instead of else-if opens up possibilities of this drawn in the background if other different, separate game states are used:
 if global.cur_game_state == game_state.main {
 	
 	//Draw current char, if applicable:

@@ -15,7 +15,9 @@ function scr_define_macros_and_enums(){
 		loading_mazes_screen,
 		loading_chars_screen,
 		loading_loot_screen,
-		save_game
+		save_game,
+		loading_from_file,
+		load_game_list
 	}
 	
 	//Struct enum - used with scr_return_struct_id, also used to help identify/distinguish structs from eachother:

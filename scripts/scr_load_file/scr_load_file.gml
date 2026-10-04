@@ -1,7 +1,7 @@
 
 /*
 
-
+file_find_first
 
 
 This script also defines our g.cur_dungeon_ind
@@ -47,6 +47,7 @@ function scr_load_file(filename_str, called_from_str){
 	
 		//Define g.cur_level_ind and g.cur_dungeon_ind from meta data:
 		global.cur_dungeon_ind = meta_data_struct.cur_dungeon_ind_;
+		
 		//global.loaded_game_floor_ind = meta_data_struct.cur_floor_ind_; //Not currently in use
 		var max_floors = meta_data_struct.max_floors_in_dungeon;
 		

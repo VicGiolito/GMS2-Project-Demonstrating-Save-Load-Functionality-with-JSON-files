@@ -44,7 +44,7 @@ if global.cur_game_state == game_state.save_game {
 	//If called here from scr_start_game, global.cur_dungeon_ind should == starting_dungeon, cur_floor_ind should == 0, global.prev_game_state = game_state.main
 	scr_save_file(global.cur_save_filename_str,global.cur_dungeon_ind,global.cur_floor_ind,save_game_called_from_str);
 	
-	global.cur_game_state = global.prev_game_state;
+	global.cur_game_state = global.prev_game_state; //If called from scr_start_game then this will be game_state.main, as defined in scr_start_game
 }
 
 #endregion
@@ -274,7 +274,7 @@ else if global.cur_game_state == game_state.loading_chars_screen {
 
 #region Logic for interacting with start_menu and debug_new_game_choose_maze_type
 
-else if global.cur_game_state == game_state.start_menu || global.cur_game_state == game_state.debug_new_game_choose_maze_type {
+else if (global.cur_game_state == game_state.start_menu || global.cur_game_state == game_state.debug_new_game_choose_maze_type) && global.wait == true {
 	
 	if keyboard_check_released(vk_escape) global.cur_game_state = game_state.start_menu;
 	
@@ -320,7 +320,8 @@ else if global.cur_game_state == game_state.start_menu || global.cur_game_state 
 			
 			else if cursor_pos == start_menu_options.load_game {
 				
-				//Switch to our 'load_filename_from_list' game state:
+				//Switch to our 'load_filename_from_list' game state - we do this to simply forbid any sort of player interaction during this period (even though it should technically be impossible for the player to interact within a single frame):
+				global.cur_game_state = game_state.loading_from_file;
 				
 				//Load game data from external file - this also defines g.cur_dungeon_ind:
 				if scr_load_file(global.cur_save_filename_str,"start_menu_options.load_game") {
@@ -343,6 +344,33 @@ else if global.cur_game_state == game_state.start_menu || global.cur_game_state 
 				//return to main menu:
 				else {
 					global.cur_game_state = game_state.start_menu;
+					d("o_con step event: start menu: using 'load_game' option: scr_load_file returned false, perhaps there was no directory or file to load.");
+				}
+			}
+			
+			#endregion
+			
+			#region LOAD SAVED GAMES LIST:
+			
+			else if cursor_pos == start_menu_options.load_game {
+				
+				global.saved_games_list = -1;
+				global.saved_games_list = [];
+				
+				global.saved_games_list = scr_return_saved_games_list();
+				
+				if is_array(global.saved_games_list) && array_length(global.saved_games_list) > 0 {
+					
+					global.cur_game_state = game_state.load_game_list;
+					
+					//Reset:
+					load_game_index = -1;
+					
+					scr_reset_wait(1);
+				}
+				else {
+					//Load prompt that simply tells us there are no saved games available:
+					d("o_con step event: game_state == start_menu || debug_new_game_choose_maze_type: start menu: load saved games list selected, but no saved games available from our sandboxed directory.");
 				}
 			}
 			
@@ -383,6 +411,78 @@ else if global.cur_game_state == game_state.start_menu || global.cur_game_state 
 		}
 		
 		#endregion
+	}
+}
+
+#endregion
+
+#region Logic for our interactions in the saved games list screen:
+
+else if global.cur_game_state == game_state.load_game_list && global.wait {
+	
+	if is_array(global.saved_games_list) && array_length(global.saved_games_list) > 0 {
+	
+		//Get our mouse coordinates within the gui layer:
+		var mx = device_mouse_x_to_gui(0), my = device_mouse_y_to_gui(0);
+	
+		//If we're within foreground bounds:
+		if mx >= load_list_fg_origin_x && mx <= load_list_fg_origin_x+load_list_fg_w && my >= load_list_fg_origin_y && my <= load_list_fg_origin_y+load_list_fg_h {
+		
+			//Calculate load_game_index:
+			load_game_index = (my - load_list_fg_origin_y) div load_list_slot_h;
+		
+			//Cap:
+			if load_game_index < 0 load_game_index = 0;
+			else if load_game_index >= array_length(global.saved_games_list) load_game_index = array_length(global.saved_games_list)-1;
+		
+			if mouse_check_button_released(mb_left) && load_game_index != -1 {
+				
+				var directory_str = global.saved_games_list[load_game_index];
+				
+				if directory_exists(directory_str+"/") {
+					
+					scr_reset_wait(1);
+					
+					//Switch to our 'load_filename_from_list' game state - we do this to simply forbid any sort of player interaction during this period (even though it should technically be impossible for the player to interact within a single frame):
+					global.cur_game_state = game_state.loading_from_file;
+					
+					//Set as the directory string we selected:
+					global.cur_save_filename_str = directory_str;
+				
+					//Load game data from external file - this also defines g.cur_dungeon_ind:
+					if scr_load_file(global.cur_save_filename_str,"start_menu_options.load_game_list") {
+					
+						//g.master_level_ar and g.master_struct_ar have been loaded for the entire corresponding dungeon;
+						//g.cur_dungeon_ind has been defined in scr_load_file
+					
+						//Define our first g.cur_char as just the first pc char we find in the dungeon:
+						scr_define_cur_char_as_first_pc_in_dungeon(global.cur_dungeon_ind);
+					
+						//Define our g.cur_floor_ind as w.e floor our g.cur_char is on:
+						global.cur_floor_ind = global.cur_char.cur_floor_level;
+					
+						//Define grid dimensions:
+						global.grid_w = ds_grid_width(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]); //Hardly matters which one you choose, maps should always be == w and h
+						global.grid_h = ds_grid_height(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]);
+					
+						//Start game:
+						scr_start_game(global.cur_dungeon_ind,global.cur_floor_ind);	
+					}
+					//return to main menu:
+					else {
+						global.cur_game_state = game_state.start_menu;
+						d("o_con step event: start menu: using 'load_game' option: scr_load_file returned false, perhaps there was no directory or file to load.");
+					}
+					
+				}
+			}
+		}
+	}
+	
+	//Backup to main menu:
+	if keyboard_check_released(vk_escape) {
+		global.cur_game_state = game_state.start_menu;
+		scr_reset_wait(1);
 	}
 }
 

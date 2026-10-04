@@ -23,6 +23,8 @@ save_game_called_from_str = "Not defined"; //debug
 
 global.forbidden_save_file_name_chars = [ "\\","/",":","*","?","\"","<",">","|" ];
 
+global.saved_games_list = -1;
+
 global.cur_char = -1;
 
 global.grid_w = 0; //maximum possible grid size == 152x152 (assuming cell_size == 32, and including a buffer of 128px on both left and right sides)
@@ -170,4 +172,20 @@ var debug_experiment_grid = ds_grid_create(1,1);
 debug_ar = [];
 
 array_push(debug_ar,debug_experiment_grid);
+
+//Define vars that are dependent upon camera/display dimensions:
+
+//Foreground - where our saved games will be displayed:
+load_list_fg_origin_x = 0;
+load_list_fg_origin_y = 0;
+load_list_fg_w = 0;
+load_list_fg_h = 0;
+
+load_list_slot_h = 64;
+
+load_game_index = -1;
+
+max_displayed_saved_games = 4;
+
+alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 

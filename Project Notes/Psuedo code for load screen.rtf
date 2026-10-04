@@ -1,0 +1,85 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset2 Symbol;}{\f2\fswiss\fprq2\fcharset0 Arial;}{\f3\fswiss\fprq0\fcharset128 Arial;}{\f4\froman\fprq0\fcharset128 ;}{\f5\fnil\fprq2\fcharset0 Microsoft YaHei;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s0\snext0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033 Default;}
+{\s15\sbasedon0\snext16{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\sb240\sa120\keepn\cf0\hich\af2\langfe2052\dbch\af5\loch\f2\fs28\lang1033 Heading;}
+{\s16\sbasedon0\snext16{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\sb0\sa120\cf0\hich\af0\langfe2052\dbch\af0\loch\f0\fs24\lang1033 Text body;}
+{\s17\sbasedon16\snext17{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\sb0\sa120\cf0\hich\af3\langfe2052\dbch\af0\loch\f0\fs24\lang1033 List;}
+{\s18\sbasedon0\snext18{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\sb120\sa120\cf0\i\hich\af3\langfe2052\dbch\af0\ai\loch\f0\fs24\lang1033 Caption;}
+{\s19\sbasedon0\snext19{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\cf0\hich\af3\langfe2052\dbch\af0\loch\f0\fs24\lang1033 Index;}
+}{\info{\creatim\yr0\mo0\dy0\hr0\min0}{\revtim\yr0\mo0\dy0\hr0\min0}{\printim\yr0\mo0\dy0\hr0\min0}{\comment OpenOffice}{\vern4160}}\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709\deftab709
+
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\pgwsxn12240\pghsxn15840\marglsxn1134\margrsxn1134\margtsxn1134\margbsxn1134\pgdscnxt0 Default;}}
+\formshade{\*\pgdscno0}\paperh15840\paperw12240\margl1134\margr1134\margt1134\margb1134\sectd\sbknone\sectunlocked1\pgndec\pgwsxn12240\pghsxn15840\marglsxn1134\margrsxn1134\margtsxn1134\margbsxn1134\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pgndec\pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+When switching into this game state, we load an array of saved games by using file_find_first(), followed by a while loop that uses file_find_next(), to save all applicable directories within our sandboxed gms2 location as strings in a global array named saved_file_list.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+We change game states to game_state.load_file_list}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+In draw gui, we draw a background box; using display_get_x_y type coordinates in this screen should always give us coordinates relative to the user's display dimensions, which will be accurate regardless of whatever display size the user has.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab }
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+Using those same coordinates, we draw a lighter foreground box which will contain our list of saved games.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+Using the inner box x and y relative coordinates, we simply draw the string elements from our g.saved_file_list with a for-loop.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab Within this, if load_list_index != -1 && load_list_index == whatever element we are iterating over, then draw the string with a lighter color to indicate it is highlighted.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+We use the relative coordinates of the upper left x and y of this inner box as our coordinates to determine the index that our mouse is hovering over. Ex:}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab If mouse_display_gui_x >= this x coordinate && mouse_y >= this y coordinate and mouse_x <= this coordinate+the width of the box && mouse_y <= this y coordinate + (the array_length*the height of a list box) then :}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab load_list_index = (mouse_y-the inner box y) div the height of a list box.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab }
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab If mouse check lmb && load_list_index != -1:}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab directory_string = global.saved_file_list[load_list_index]}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab if (directory_exists(directory_string+"/") == false) then:}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab \tab change game state to an 'inert' state that does not allow player input, such as game_state.loading_from_file}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab \tab }{{\*\bkmkstart __DdeLink__4_222121540}\rtlch \ltrch\loch
+global.cur_save_filename_str}{{\*\bkmkend __DdeLink__4_222121540}\rtlch \ltrch\loch
+ =  directory_string}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab \tab call our if scr_load_file(global.cur_save_filename_str, \'93start menu->game_state.load_file_list->) == true \{}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab \tab \tab //Already established code from our current load_game code.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab \tab \}}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab else:}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+\tab \tab load_list_index = -1}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+We'll also have just two buttons: back and load game.}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+}
+\par \pard\plain \s0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\nowidctlpar\cf0\hich\af2\langfe2052\dbch\af4\afs24\lang1081\loch\f0\fs24\lang1033{\rtlch \ltrch\loch
+QoL improvements: we'll make the list iteratable, with technically no limit on how many games the player can save.}
+\par }
