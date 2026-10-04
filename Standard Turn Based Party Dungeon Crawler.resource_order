@@ -66,6 +66,7 @@
     {"name":"scr_return_struct_id","order":1,"path":"scripts/scr_return_struct_id/scr_return_struct_id.yy",},
     {"name":"scr_center_cam","order":1,"path":"scripts/scr_center_cam/scr_center_cam.yy",},
     {"name":"spr_progress_bar_frame","order":4,"path":"sprites/spr_progress_bar_frame/spr_progress_bar_frame.yy",},
+    {"name":"fnt_std_16","order":4,"path":"fonts/fnt_std_16/fnt_std_16.yy",},
     {"name":"fnt_std_14","order":2,"path":"fonts/fnt_std_14/fnt_std_14.yy",},
     {"name":"scr_remove_struct_from_global_team_ar","order":12,"path":"scripts/scr_remove_struct_from_global_team_ar/scr_remove_struct_from_global_team_ar.yy",},
     {"name":"scr_update_visibility","order":2,"path":"scripts/scr_update_visibility/scr_update_visibility.yy",},

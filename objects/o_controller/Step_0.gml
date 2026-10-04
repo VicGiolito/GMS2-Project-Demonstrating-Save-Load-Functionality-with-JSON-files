@@ -283,6 +283,7 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 		//Control cursor_pos logic:
 		if keyboard_check_released(vk_up) cursor_pos -= 1;
 		else cursor_pos += 1;
+		
 		//Cap:
 		var str_ar_len;
 		if global.cur_game_state == game_state.start_menu str_ar_len = array_length(start_menu_str_ar);
@@ -293,9 +294,13 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 	
 	if keyboard_check_released(vk_enter) {
 		
+		d($"Enter keypress detected: cursor_pos == {cursor_pos}");
+		
 		#region Start Menu
 		
 		if global.cur_game_state == game_state.start_menu {
+			
+			d($"Game state  == game_state.start_menu and cursor_pos == {cursor_pos}");
 			
 			#region New debug game: choose maze_type, w,h,and floors:
 			
@@ -316,7 +321,9 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 			
 			#endregion
 			
-			#region LOAD GAME:
+			#region LOAD GAME FIXED 'T' GAME - DEFUNCT OPTION:
+			
+			/*
 			
 			else if cursor_pos == start_menu_options.load_game {
 				
@@ -348,11 +355,15 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 				}
 			}
 			
+			*/
+			
 			#endregion
 			
 			#region LOAD SAVED GAMES LIST:
 			
-			else if cursor_pos == start_menu_options.load_game {
+			else if cursor_pos == start_menu_options.load_game_list {
+				
+				d("Entering load saved games list now...");
 				
 				global.saved_games_list = -1;
 				global.saved_games_list = [];

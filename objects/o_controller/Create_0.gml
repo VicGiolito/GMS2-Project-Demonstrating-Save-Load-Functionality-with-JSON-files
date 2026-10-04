@@ -181,7 +181,7 @@ load_list_fg_origin_y = 0;
 load_list_fg_w = 0;
 load_list_fg_h = 0;
 
-load_list_slot_h = 64;
+load_list_slot_h = 32;
 
 load_game_index = -1;
 

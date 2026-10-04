@@ -201,15 +201,25 @@ else if global.cur_game_state == game_state.load_game_list {
 	//Draw our g.saved_games_list array, if applicable:
 	if is_array(global.saved_games_list) && array_length(global.saved_games_list) > 0 {
 		
-		var txt_c;
+		var txt_c, frame_c;
 		
 		scr_center_font_align();
+		
+		//Draw our 'LOAD SAVED GAME' screen title:
+		draw_set_font(fnt_std_16);
+		draw_text_color(display_get_gui_width() / 2, load_list_fg_origin_y-96,"LOAD SAVED GAME:\nLMB click to choose file\nEscape button to return to main menu",c_white,c_white,c_white,c_white,1);
+		draw_set_font(global.default_fnt);
 		
 		for(var i = 0; i < array_length(global.saved_games_list); i++) {
 			
 			txt_c = c_black;
+			frame_c = c_white;
 			
-			if i == load_game_index txt_c = c_lime;
+			if i == load_game_index { txt_c = c_lime; frame_c = c_lime; }
+			
+			//Draw a thin white box framing every index position:
+			draw_rectangle_color(load_list_fg_origin_x, load_list_fg_origin_y+(i*load_list_slot_h), 
+			load_list_fg_origin_x+load_list_fg_w, load_list_fg_origin_y+((i*load_list_slot_h)+load_list_slot_h), frame_c,frame_c,frame_c,frame_c,true);
 			
 			//Draw text centered in the middle of the list:
 			draw_text_color(load_list_fg_origin_x+(load_list_fg_w / 2),load_list_fg_origin_y+(load_list_slot_h / 2)+(load_list_slot_h*i),global.saved_games_list[i],txt_c,txt_c,txt_c,txt_c,1);

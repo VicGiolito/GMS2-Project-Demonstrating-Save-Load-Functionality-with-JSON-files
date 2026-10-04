@@ -2,38 +2,25 @@
 
 function scr_return_saved_games_list(){
 	
+	d("Entering scr_return_saved_games_list now...");
+	
 	var temp_saved_games_ar = [];
 	
-	var first_saved_game_str = file_find_first("*",fa_directory);
+	var filename_str = file_find_first("*",fa_directory);
 	
-	if first_saved_game_str != "" {
+	while filename_str != "" {
 		
-		if directory_exists(first_saved_game_str) {
+		if (filename_str != "." && filename_str != ".." && directory_exists(filename_str)) {
 			
 			//Add our first game str to the array:
-			array_push(temp_saved_games_ar, first_saved_game_str);
-			
-			var next_saved_game_str = "";
-			
-			do {
-				 next_saved_game_str = file_find_next();
-				 
-				 if next_saved_game_str != "" {
-					array_push(temp_saved_games_ar, next_saved_game_str);
-				 }
-				 else {
-					break;	 
-				 }
-			}
-			until(next_saved_game_str == "");
-			
+			array_push(temp_saved_games_ar, filename_str);
 		}
+		
+		filename_str = file_find_next();
 	}
 	
 	//Always use this function whenever using file_find_first and file_find_next:
 	file_find_close();
 	
-	if array_length(temp_saved_games_ar) <= 0 return false;
-	
-	else return temp_saved_games_ar;
+	return temp_saved_games_ar;
 }

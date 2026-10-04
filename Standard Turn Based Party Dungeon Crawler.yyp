@@ -85,6 +85,7 @@
     {"id":{"name":"scr_return_struct_id","path":"scripts/scr_return_struct_id/scr_return_struct_id.yy",},},
     {"id":{"name":"scr_center_cam","path":"scripts/scr_center_cam/scr_center_cam.yy",},},
     {"id":{"name":"spr_progress_bar_frame","path":"sprites/spr_progress_bar_frame/spr_progress_bar_frame.yy",},},
+    {"id":{"name":"fnt_std_16","path":"fonts/fnt_std_16/fnt_std_16.yy",},},
     {"id":{"name":"scr_plot_los_line","path":"scripts/scr_plot_los_line/scr_plot_los_line.yy",},},
     {"id":{"name":"fnt_std_14","path":"fonts/fnt_std_14/fnt_std_14.yy",},},
     {"id":{"name":"scr_remove_struct_from_global_team_ar","path":"scripts/scr_remove_struct_from_global_team_ar/scr_remove_struct_from_global_team_ar.yy",},},
