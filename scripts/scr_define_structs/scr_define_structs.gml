@@ -33,8 +33,8 @@ function scr_define_structs(){
 		
 		//Default/base stats and vars:
 		char_stats_ar[char_stats.base_vision_radius] = global.default_los_radius; //Default
-		char_sprite = -1;
-		char_portrait_spr = -1;
+		char_spr_str = -1;
+		char_portrait_spr_str = -1;
 		cur_wep_skill = -1;
 		cur_wep_type = wep_type.none; //Is defined in scr_update_combat_stats_with_item 
 		shield_equipped = false;
@@ -87,8 +87,8 @@ function scr_define_structs(){
 	            array_push(victory_conv_ar,"\"WEAKLING!\" Kurgun cries. \"Show me a worthy foe!\""); 
 				array_push(victory_conv_ar,"Kurgun asks, \"Did you really think that every monster in the world would only follow Mordra?\"");
 				
-				char_sprite = spr_pc_ogre;
-				char_portrait_spr = spr_pc_ogre;
+				char_spr_str = "spr_pc_ogre";
+				char_portrait_spr_str = "spr_pc_ogre";
 				
 			break;
 			
@@ -124,8 +124,8 @@ function scr_define_structs(){
 	            array_push(idle_conv_ar,"Acheron says: \"I always was the better duelist with spells, when Mordra and I were still students, training together. I wonder who is the better duelist now?\"");
 	            array_push(idle_conv_ar,"Acheron says: \"My magic power has extended my years beyond their mortal span, yet for all of us the magic must fade away, some day. If only Mordra could have accepted this great truth as I have. Alas, he has turned instead to the unholy rites of blood sacrifice to extend his life span. Now he shall fall forever in darkness...\"");
 
-				char_sprite = spr_pc_wizard;
-				char_portrait_spr = spr_pc_wizard;
+				char_spr_str = "spr_pc_wizard";
+				char_portrait_spr_str = "spr_pc_wizard";
 			break;
 			
 			case char_class.roderick:
@@ -159,8 +159,8 @@ function scr_define_structs(){
 	            array_push(idle_conv_ar,"Roderick says: \"I shall never forget the wonders that I saw in the land of the Fae, yet even now those memories are like a dream... Only when I am dead can I hope to see that place again.\"");
 	            array_push(idle_conv_ar,"\"Stay sharp!\" Roderick tightens his scabbard. \"Enemies abound!\"");
 				
-				char_sprite = spr_pc_ranger;
-				char_portrait_spr = spr_pc_ranger;
+				char_spr_str = "spr_pc_ranger";
+				char_portrait_spr_str = "spr_pc_ranger";
 			break;
 			
 			case char_class.thade:
@@ -196,8 +196,8 @@ function scr_define_structs(){
 				
 	            array_push(idle_conv_ar,"Thade winces against the weight of the uprooted pillory around his neck. \"Get this fucking thing off me!\"");
         
-				char_sprite = spr_pc_thief;
-				char_portrait_spr = spr_pc_thief;
+				char_spr_str = "spr_pc_thief";
+				char_portrait_spr_str = "spr_pc_thief";
 			break;
 			case char_class.ulric:
 				char_stats_ar[char_stats.name] = "Ulric, the priest";
@@ -218,8 +218,8 @@ function scr_define_structs(){
 				array_push(idle_conv_ar,"Ulric shouts: \"This sinner Mordred shall be baptized by holy fire!\"");
 				array_push(idle_conv_ar,"Ulric mutters a prayer for strength.");
 				
-				char_sprite = spr_pc_priest;
-				char_portrait_spr = spr_pc_priest;
+				char_spr_str = "spr_pc_priest";
+				char_portrait_spr_str = "spr_pc_priest";
 			break;
 			case char_class.diana:
 				char_stats_ar[char_stats.name] = "Diana, the huntress";
@@ -239,8 +239,8 @@ function scr_define_structs(){
 				
 				array_push(idle_conv_ar,"I have nothing to say.");
 				
-				char_sprite = spr_pc_archer;
-				char_portrait_spr = spr_pc_archer;
+				char_spr_str = "spr_pc_archer";
+				char_portrait_spr_str = "spr_pc_archer";
 				
 				char_pronoun_str = "she";
 		
@@ -268,8 +268,8 @@ function scr_define_structs(){
 	            array_push(idle_conv_ar,"Crag scratches an elbow with a shower of flinty sparks.");
 	            array_push(idle_conv_ar,"Crag plucks an earth worm from his head. Stares at it. Smiles.");
 				
-				char_sprite = spr_pc_crag;
-				char_portrait_spr = spr_pc_crag;
+				char_spr_str = "spr_pc_crag";
+				char_portrait_spr_str = "spr_pc_crag";
 		
 			break;
 			case char_class.zool:
@@ -290,8 +290,8 @@ function scr_define_structs(){
 				
 				array_push(idle_conv_ar,"I have nothing to say.");
 				
-				char_sprite = spr_pc_necromancer;
-				char_portrait_spr = spr_pc_necromancer;
+				char_spr_str = "spr_pc_necromancer";
+				char_portrait_spr_str = "spr_pc_necromancer";
 		
 			break;
 			case char_class.neleera:
@@ -316,8 +316,8 @@ function scr_define_structs(){
 
 				array_push(idle_conv_ar,"I have nothing to say.");
 				
-				char_sprite = spr_char_treasure_hunter;
-				char_portrait_spr = spr_char_treasure_hunter;
+				char_spr_str = "spr_char_treasure_hunter";
+				char_portrait_spr_str = "spr_char_treasure_hunter";
 		
 			break;
 			case char_class.goblin_cretin:
@@ -342,8 +342,8 @@ function scr_define_structs(){
 				
 				array_push(idle_conv_ar,"Goblin Cretin says: \"I'm a loathsome little git!'\"");
 				
-				char_sprite = spr_goblin;
-				char_portrait_spr = spr_goblin;
+				char_spr_str = "spr_goblin";
+				char_portrait_spr_str = "spr_goblin";
 				
 				enemy_position_weight = 10;
 		
@@ -368,8 +368,8 @@ function scr_define_structs(){
 				
 				array_push(idle_conv_ar,"Goblin Cretin says: \"I'm an even bigger loathsome git!'\"");
 				
-				char_sprite = spr_orc;
-				char_portrait_spr = spr_orc;
+				char_spr_str = "spr_orc";
+				char_portrait_spr_str = "spr_orc";
 				
 				enemy_position_weight = 0;
 		
@@ -473,7 +473,7 @@ function scr_define_structs(){
 		//Add to appropriate inst_grid cell:
 		scr_add_struct_to_inst_grid(self,char_grid_x,char_grid_y,cur_floor_lvl_int,cur_dungeon_enum);
 		
-		sprite_image_index = 0; //Default
+		sprite_image_index = 0; //Default; not in use
 		
 		char_stats_ar[char_stats.char_team_enum] = char_team_enum;
 		
@@ -522,7 +522,7 @@ function scr_define_structs(){
 		item_name = "Not Defined By Constructor Event";
 		dura_cur = 0;
 		
-		item_sprite = spr_item_placeholder;
+		item_sprite = "spr_item_placeholder";
 		
 		description = "";
 		armor_pen = 0;
@@ -1393,7 +1393,7 @@ function scr_define_structs(){
 		visible_boolean = visibility_boolean;
 		building_type_enum = enum_building_type;
 		
-		building_sprite = spr_building_default;
+		building_spr_str = "spr_building_default";
 		sprite_image_index = 0;
 		
 		revealed_trap_boolean = false;
@@ -1421,35 +1421,35 @@ function scr_define_structs(){
 		switch(enum_building_type) {
 			
 			case building_type.chest:
-				building_sprite = spr_building_default;
+				building_spr_str = "spr_building_default";
 				building_ar[building_stats.name] = "Chest";
 			break;
 			case building_type.stake_wall:
-				building_sprite = spr_building_palisade;
+				building_spr_str = "spr_building_palisade";
 				building_ar[building_stats.name] = "Stake Wall";
 			break;
 			case building_type.stair_down:
-				building_sprite = spr_down_stair_32;
+				building_spr_str = "spr_down_stair_32";
 				building_ar[building_stats.name] = "Stair Leading Down";
 			break;
 			case building_type.stair_up:
-				building_sprite = spr_up_stair_32;
+				building_spr_str = "spr_up_stair_32";
 				building_ar[building_stats.name] = "Stair Leading Up";
 			break;
 			case building_type.portal_world_down:
-				building_sprite = spr_building_world_portal_down;
+				building_spr_str = "spr_building_world_portal_down";
 				building_ar[building_stats.name] = "World Portal Leading Down";
 			break;
 			case building_type.portal_world_up:
-				building_sprite = spr_building_world_portal_up;
+				building_spr_str = "spr_building_world_portal_up";
 				building_ar[building_stats.name] = "World Portal Leading Up";
 			break;
 			case building_type.portal_random_up:
-				building_sprite = spr_building_random_portal_up;
+				building_spr_str = "spr_building_random_portal_up";
 				building_ar[building_stats.name] = "Random Portal Leading Up";
 			break;
 			case building_type.portal_random_down:
-				building_sprite = spr_building_random_portal_down;
+				building_spr_str = "spr_building_random_portal_down";
 				building_ar[building_stats.name] = "Random Portal Leading Down";
 			break;
 			
@@ -1488,7 +1488,7 @@ function scr_define_structs(){
 		cur_dungeon_ind = cur_dungeon_enum;
 		visible_boolean = visibility_boolean;
 		
-		building_sprite = spr_building_default;
+		building_spr_str = "spr_building_default";
 		sprite_image_index = 0;
 		
 		revealed_trap_boolean = false;

@@ -28,16 +28,16 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 			
 			if is_array(team_ar) {
 			
-				var ar_len = array_length(team_ar);
+				var ar_len = array_length(team_ar), building_spr;
 	
 				for(var i = 0; i < ar_len; i++){
 					building_struct = team_ar[i];
 					if is_struct(building_struct) {
-						if building_struct.building_sprite != -1 && building_struct.cur_floor_level == global.cur_floor_ind {
+						if building_struct.building_spr_str != -1 && building_struct.cur_floor_level == global.cur_floor_ind {
 							if building_struct.visible_boolean == true {
+								building_spr = asset_get_index(building_struct.building_spr_str);
 								//Draw building sprite
-								draw_sprite(building_struct.building_sprite,building_struct.sprite_image_index,
-								building_struct.building_room_x,building_struct.building_room_y);
+								draw_sprite(building_spr,0,building_struct.building_room_x,building_struct.building_room_y);
 							}
 						}
 					}
@@ -54,7 +54,7 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 
 	if is_array(global.master_struct_ar) {
 		
-		var debug_txt_offset = 32;
+		var debug_txt_offset = 32, char_spr;
 		
 		for(var team_i = AR_PC; team_i <= AR_NEUTRAL; team_i++) {
 			
@@ -69,11 +69,13 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 					char_struct = char_ar[char_i];	
 					
 					if is_struct(char_struct) {
-						if char_struct.char_sprite != -1 && char_struct.cur_floor_level == global.cur_floor_ind {
+						if char_struct.char_spr_str != -1 && char_struct.cur_floor_level == global.cur_floor_ind {
 							if char_struct.visible_boolean == true || team_i == AR_PC {
+								
+								char_spr = asset_get_index(char_struct.char_spr_str)
+								
 								//Draw char
-								draw_sprite(char_struct.char_sprite,char_struct.sprite_image_index,
-								char_struct.char_room_x,char_struct.char_room_y);
+								draw_sprite(char_spr, 0, char_struct.char_room_x,char_struct.char_room_y);
 								//Draw debug:
 								draw_set_font(fnt_std_10);
 								scr_center_font_align();
@@ -106,10 +108,10 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 			enemy_struct = revealed_enemies_ar[i];
 	
 			if is_struct(enemy_struct) {
-				if enemy_struct.char_sprite != -1 && enemy_struct.cur_floor_level == global.cur_floor_ind && 
+				if enemy_struct.char_spr_str != -1 && enemy_struct.cur_floor_level == global.cur_floor_ind && 
 				enemy_struct.visible_boolean == true {
 					//Draw char
-					draw_sprite(enemy_struct.char_sprite,enemy_struct.sprite_image_index,
+					draw_sprite(enemy_struct.char_spr_str,enemy_struct.sprite_image_index,
 					enemy_struct.char_room_x,enemy_struct.char_room_y);
 					//Draw debug:
 					draw_set_font(fnt_std_10);
@@ -127,7 +129,7 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 
 	#endregion
 	
-	#region Draw cur_char frame:
+	#region Draw cur_char blinking green frame:
 
 	if is_struct(global.cur_char) {
 	

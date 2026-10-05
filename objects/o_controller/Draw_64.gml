@@ -12,7 +12,7 @@ if global.cur_game_state == game_state.main {
 
 	scr_center_font_align();
 	
-	draw_text(gui_display_w / 2, title_y_buff,string(level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
+	draw_text(gui_display_w / 2, title_y_buff,string($"\"{global.cur_save_filename_str}\""+level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
 
 	scr_reset_font_align();
 
@@ -240,14 +240,15 @@ if global.cur_game_state == game_state.main {
 	//Draw current char, if applicable:
 	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 	
-		var portrait_scale = 4;
-	
-		var char_spr_w = sprite_get_width(global.cur_char.char_sprite)*portrait_scale;
-		var char_spr_h = sprite_get_height(global.cur_char.char_sprite)*portrait_scale;
+		var cur_char_scale = 4;
+		var cur_char_spr = asset_get_index(global.cur_char.char_spr_str);
+		var char_spr_w = sprite_get_width(cur_char_spr)*cur_char_scale;
+		var char_spr_h = sprite_get_height(cur_char_spr)*cur_char_scale;
+		var half_char_spr_w = char_spr_w / 2, half_char_spr_h = char_spr_h / 2;
 	
 		var portrait_offset_x = 16, portrait_offset_y = 16;
 	
-		var spr_origin_x = char_spr_w / 2+portrait_offset_x, spr_origin_y = char_spr_h / 2+portrait_offset_y;
+		var spr_origin_x = half_char_spr_w+portrait_offset_x, spr_origin_y = half_char_spr_h+portrait_offset_y;
 	
 		var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
 	
@@ -258,7 +259,23 @@ if global.cur_game_state == game_state.main {
 			spr_frame = 1;
 		}
 
-		draw_sprite_ext(global.cur_char.char_sprite,spr_frame,spr_origin_x,spr_origin_y,4,4,0,c_white,1);
+		draw_sprite_ext(cur_char_spr,spr_frame,spr_origin_x,spr_origin_y,cur_char_scale,cur_char_scale,0,c_white,1);
+		
+		/*
+		scr_center_font_align();
+		
+		//Draw move point value bottom left:
+		var mp_x = spr_origin_x-half_char_spr_w, mp_y = spr_origin_y+half_char_spr_h;
+		draw_sprite_ext(spr_generic_icon, 0, mp_x, mp_y, cur_char_scale, cur_char_scale, 0, c_white, 1);
+		draw_text(mp_x, mp_y, global.cur_char.cur_move_points);
+		
+		//Draw action point value bottom right:
+		var mp_x = spr_origin_x+half_char_spr_w;
+		draw_sprite_ext(spr_generic_icon, 1, mp_x, mp_y, cur_char_scale, cur_char_scale, 0, c_white, 1);
+		draw_text(mp_x, mp_y, global.cur_char.cur_action_points);
+		
+		scr_reset_font_align();
+		*/
 	
 		//Draw stat information beneath it - hp, stam, mana, morale:
 		var stat_i = char_stats.hp_cur, stat_cur, stat_max;
@@ -348,7 +365,8 @@ if global.cur_game_state == game_state.main {
 			} 
 			
 			//Draw sprite:
-			draw_sprite_ext(char_struct.char_sprite,char_spr_frame,portrait_origin_x,portrait_origin_y,portrait_scale, portrait_scale,0,c_white,1);
+			var char_spr = asset_get_index(char_struct.char_spr_str);
+			draw_sprite_ext(char_spr,char_spr_frame,portrait_origin_x,portrait_origin_y,portrait_scale, portrait_scale,0,c_white,1);
 			
 			//Draw stat information beneath it - hp, stam, mana, morale:
 			var stat_i = char_stats.hp_cur, stat_cur, stat_max;

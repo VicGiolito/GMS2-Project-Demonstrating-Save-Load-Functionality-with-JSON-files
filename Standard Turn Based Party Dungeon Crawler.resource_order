@@ -53,6 +53,7 @@
     {"name":"Prompts","order":10,"path":"folders/Sprites/Prompts.yy",},
     {"name":"Tile Sets","order":2,"path":"folders/Tile Sets.yy",},
     {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
+    {"name":"Icons","order":11,"path":"folders/Sprites/Icons.yy",},
   ],
   "ResourceOrderSettings": [
     {"name":"spr_building_palisade","order":1,"path":"sprites/spr_building_palisade/spr_building_palisade.yy",},
@@ -74,6 +75,7 @@
     {"name":"scr_check_save_filename","order":1,"path":"scripts/scr_check_save_filename/scr_check_save_filename.yy",},
     {"name":"tile_terrain_features_32","order":1,"path":"tilesets/tile_terrain_features_32/tile_terrain_features_32.yy",},
     {"name":"spr_terrain_32","order":1,"path":"sprites/spr_terrain_32/spr_terrain_32.yy",},
+    {"name":"spr_generic_icon","order":1,"path":"sprites/spr_generic_icon/spr_generic_icon.yy",},
     {"name":"scr_load_level_grids","order":5,"path":"scripts/scr_load_level_grids/scr_load_level_grids.yy",},
     {"name":"fnt_std_10","order":1,"path":"fonts/fnt_std_10/fnt_std_10.yy",},
     {"name":"scr_debug_spawn_initial_portals","order":2,"path":"scripts/scr_debug_spawn_initial_portals/scr_debug_spawn_initial_portals.yy",},
@@ -104,6 +106,7 @@
     {"name":"scr_add_to_master_struct_ar","order":7,"path":"scripts/scr_add_to_master_struct_ar/scr_add_to_master_struct_ar.yy",},
     {"name":"spr_pc_archer","order":6,"path":"sprites/spr_pc_archer/spr_pc_archer.yy",},
     {"name":"scr_set_cam_follow","order":3,"path":"scripts/scr_set_cam_follow/scr_set_cam_follow.yy",},
+    {"name":"spr_debug_sprite","order":2,"path":"sprites/spr_debug_sprite/spr_debug_sprite.yy",},
     {"name":"spr_pc_wizard","order":1,"path":"sprites/spr_pc_wizard/spr_pc_wizard.yy",},
     {"name":"scr_remove_struct_from_inst_grid","order":2,"path":"scripts/scr_remove_struct_from_inst_grid/scr_remove_struct_from_inst_grid.yy",},
     {"name":"spr_down_stairs_ass","order":1,"path":"sprites/spr_down_stairs_ass/spr_down_stairs_ass.yy",},
