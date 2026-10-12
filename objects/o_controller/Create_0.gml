@@ -187,5 +187,16 @@ load_game_index = -1;
 
 max_displayed_saved_games = 4;
 
+//Inventory and positional vars for o_inv_slot; defined in draw_gui event:
+head_slot_x = 0;
+head_slot_y = 0;
+
+cur_char_spr_origin_x = 0; //defined in draw_gui event:
+cur_char_spr_origin_y = 0;
+
+cur_char_stat_bar_h = 16;
+
+global.max_inv_slots_per_page = 9;
+
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 

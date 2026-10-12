@@ -12,7 +12,7 @@ if global.cur_game_state == game_state.main {
 
 	scr_center_font_align();
 	
-	draw_text(gui_display_w / 2, title_y_buff,string($"\"{global.cur_save_filename_str}\""+level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
+	draw_text(gui_display_w / 2, title_y_buff,string($"\"{global.cur_save_filename_str}\" - "+level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
 
 	scr_reset_font_align();
 
@@ -235,7 +235,8 @@ else if global.cur_game_state == game_state.load_game_list {
 #region Game_state == main - Draw our g.cur_char portrait and other party members with stats on top left of screen:
 
 //Using if instead of else-if opens up possibilities of this drawn in the background if other different, separate game states are used:
-if global.cur_game_state == game_state.main {
+if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || 
+global.cur_game_state == game_state.view_bio {
 	
 	//Draw current char, if applicable:
 	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
@@ -249,7 +250,10 @@ if global.cur_game_state == game_state.main {
 		var portrait_offset_x = 16, portrait_offset_y = 16;
 	
 		var spr_origin_x = half_char_spr_w+portrait_offset_x, spr_origin_y = half_char_spr_h+portrait_offset_y;
-	
+		
+		cur_char_spr_origin_x = spr_origin_x; //used for drawing inventory bg and boxes and etc.:
+		cur_char_spr_origin_y = spr_origin_y;
+		
 		var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
 	
 		var mouse_within_portrait = false, spr_frame = 0;
@@ -261,25 +265,24 @@ if global.cur_game_state == game_state.main {
 
 		draw_sprite_ext(cur_char_spr,spr_frame,spr_origin_x,spr_origin_y,cur_char_scale,cur_char_scale,0,c_white,1);
 		
-		/*
 		scr_center_font_align();
-		
+		var stat_c = c_black, icon_w = sprite_get_width(spr_generic_icon), icon_h = sprite_get_height(spr_generic_icon);
 		//Draw move point value bottom left:
-		var mp_x = spr_origin_x-half_char_spr_w, mp_y = spr_origin_y+half_char_spr_h;
-		draw_sprite_ext(spr_generic_icon, 0, mp_x, mp_y, cur_char_scale, cur_char_scale, 0, c_white, 1);
-		draw_text(mp_x, mp_y, global.cur_char.cur_move_points);
+		var mp_x = spr_origin_x-half_char_spr_w, mp_y = spr_origin_y+half_char_spr_h-icon_h;
+		draw_sprite_ext(spr_generic_icon, 0, mp_x+icon_w, mp_y, 2, 2, 0, c_white, 1);
+		draw_text_color(mp_x+icon_w, mp_y, global.cur_char.cur_move_points, stat_c, stat_c, stat_c, stat_c,1);
 		
 		//Draw action point value bottom right:
 		var mp_x = spr_origin_x+half_char_spr_w;
-		draw_sprite_ext(spr_generic_icon, 1, mp_x, mp_y, cur_char_scale, cur_char_scale, 0, c_white, 1);
-		draw_text(mp_x, mp_y, global.cur_char.cur_action_points);
+		draw_sprite_ext(spr_generic_icon, 1, mp_x-icon_w, mp_y, 2, 2, 0, c_white, 1);
+		draw_text_color(mp_x-icon_w, mp_y, global.cur_char.cur_action_points,stat_c, stat_c, stat_c, stat_c,1);
 		
 		scr_reset_font_align();
-		*/
 	
 		//Draw stat information beneath it - hp, stam, mana, morale:
 		var stat_i = char_stats.hp_cur, stat_cur, stat_max;
-		var stat_bar_w = char_spr_w, stat_bar_h = 16;
+		var stat_bar_w = char_spr_w;
+		var stat_bar_h = cur_char_stat_bar_h;
 		var stat_bar_origin_x = portrait_offset_x, stat_bar_origin_y = char_spr_h+portrait_offset_y;
 		var stat_bar_frame_offset = stat_bar_h / 2, stat_cur_val, stat_max_val;
 	
@@ -368,38 +371,44 @@ if global.cur_game_state == game_state.main {
 			var char_spr = asset_get_index(char_struct.char_spr_str);
 			draw_sprite_ext(char_spr,char_spr_frame,portrait_origin_x,portrait_origin_y,portrait_scale, portrait_scale,0,c_white,1);
 			
-			//Draw stat information beneath it - hp, stam, mana, morale:
-			var stat_i = char_stats.hp_cur, stat_cur, stat_max;
+			//Draw stat information beneath it - hp, mana, morale:
+			var stat_i = 0, stat_cur, stat_max;
 			var stat_bar_w = char_spr_w; 
 			var stat_bar_h = 8;
 			var stat_bar_origin_x = portrait_origin_x-(stat_bar_w / 2);
 			var stat_bar_origin_y = portrait_origin_y+(char_spr_h / 2)+stat_bar_h / 2;
 			var stat_bar_offset_x = portrait_offset_x;
 			var stat_bar_offset_y = stat_bar_h / 2, stat_cur_val, stat_max_val;
+			var total_stat_bars = 3;
 			
-			repeat(4) {
+			repeat(total_stat_bars) {
 		
 				stat_cur = stat_i;
 				stat_max = stat_i+1;
 		
-				stat_cur_val = char_struct.char_stats_ar[stat_cur];
+				
 				stat_max_val = char_struct.char_stats_ar[stat_max];
 		
 				//Draw stat bar:
 				var stat_c;
-				if stat_i == char_stats.hp_cur stat_c = c_red;
-				else if stat_i == char_stats.stam_cur stat_c = c_yellow;
-				else if stat_i == char_stats.mana_cur stat_c = c_blue;
-				else stat_c = c_white;
+				//hp:
+				if stat_i == 0 { stat_c = c_red; stat_cur_val = char_struct.char_stats_ar[char_stats.hp_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.hp_max]; }
+				//Mana:
+				else if stat_i == 1 { stat_c = c_yellow; stat_cur_val = char_struct.char_stats_ar[char_stats.mana_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.mana_max]; }
+				//Morale:
+				else if stat_i == 2 { stat_c = c_white; stat_cur_val = char_struct.char_stats_ar[char_stats.morale_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.morale_max]; }
+				
+				//Draw stat bar:
 				draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+(stat_cur_val / stat_max_val)*stat_bar_w,stat_bar_origin_y+stat_bar_h,stat_c,stat_c,stat_c,stat_c,false);
 		
 				//Draw stat bar frame:
 				draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+stat_bar_w,stat_bar_origin_y+stat_bar_h,c_gray,c_gray,c_gray,c_gray,true);
 		
-				stat_i += 2; //Iterate by 2 to jump to the next "stat_cur" stat
-		
 				//Iterate our stat_bar_origin_y:
 				stat_bar_origin_y += stat_bar_h+stat_bar_offset_y;
+				
+				//Increment:
+				stat_i++;
 			}
 			
 			//Increment our main positional x vars with each iteration that is NOT of a matching g.cur_char:
@@ -407,6 +416,30 @@ if global.cur_game_state == game_state.main {
 			stat_bar_origin_x += stat_bar_offset_x;
 		}
 	}
+	
+} //End of game_state == main
+
+#endregion
+
+#region Draw inventory screen - Draws above main game state:
+
+if global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || global.cur_game_state == game_state.view_bio {
+		
+	//Draw  background:
+	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
+	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
+	var bg_c = c_gray;
+	var bg_max_w = cur_char_spr_origin_x+slot_w*4;
+	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*11)+bg_offset_y;
+	var bg_max_h = bg_y+(slot_h*7);
+		
+	draw_rectangle_color(bg_offset_x, bg_y, bg_max_w, bg_y+bg_max_h, bg_c, bg_c ,bg_c, bg_c, false);
+		
+	draw_rectangle_color(bg_offset_x+inner_frame_offset, bg_y+inner_frame_offset, bg_max_w-inner_frame_offset, bg_y+bg_max_h-inner_frame_offset, c_white, c_white ,c_white, c_white, true);
+		
+	//Define vars:
+	head_slot_x = bg_offset_x+(bg_max_w / 2);
+	head_slot_y = bg_y+inner_frame_offset+slot_h/2;
 }
 
 #endregion

@@ -17,7 +17,10 @@ function scr_define_macros_and_enums(){
 		loading_loot_screen,
 		save_game,
 		loading_from_file,
-		load_game_list
+		load_game_list,
+		access_inv,
+		view_stats,
+		view_bio
 	}
 	
 	//Struct enum - used with scr_return_struct_id, also used to help identify/distinguish structs from eachother:
@@ -71,6 +74,25 @@ function scr_define_macros_and_enums(){
 		dread_peaks, //mountain dungeon; //24
 		
 		total_dungeon_types
+	}
+	
+	//Enums for o_inv_slots - used for logic and such:
+	enum inv_slot {
+		head,
+		body,
+		rh, //if an inventory item has this, it can be equipped in either hand; all weapons and shields will have this
+		lh,
+		accessory,
+		feet, 
+		hands,
+		backpack
+	}
+	
+	enum scroll_dir {
+		left,
+		right,
+		up,
+		down
 	}
 	
 	//Inst grid macros:
@@ -128,7 +150,7 @@ function scr_define_macros_and_enums(){
 		total_terrain_features
 	}
 	
-	//Enum for weapon skills - wep_skills_ar:
+	//Enum for weapon skills - wep_skills_ar; is used for determining buffs/skills etc.
 	enum wep_type {
 		none, //unequippable items
 		misc, //items that equip to the 'misc' slot.
@@ -277,19 +299,6 @@ function scr_define_macros_and_enums(){
 	
 	#endregion
 	
-	//Enum for equip slots - used for chars equip_slot_ar:
-	enum equip_slot {
-		none, //these are all items that can't be equipped; they are stored in the backpack only.
-		misc,
-		head,
-		body,
-		hands,
-		feet,
-		rh,
-		lh,
-		total_equip_slots
-	}
-	
 	//Enum for pc char classes:
 	enum char_class {
 		roderick, //ranger
@@ -391,19 +400,6 @@ function scr_define_macros_and_enums(){
 		misc_gold_necklance,
 		
 		total_items
-	}
-	
-	//Enum for item types - used with equip logic when determining if an can be equipped:
-	enum item_equip_type {
-		none, //these are all items that can't be equipped; they are stored in the backpack only.
-		misc,
-		head,
-		body,
-		hands,
-		feet,
-		two_hand,
-		one_hand,
-		total_item_equip_types
 	}
 	
 	//BUILDING stats enum - used with building_ar array associated with the building struct:

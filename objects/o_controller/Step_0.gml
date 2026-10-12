@@ -566,6 +566,28 @@ if debug_key_pressed {
 
 else if global.cur_game_state == game_state.main  {
 	
+	#region Toggle inventory screen:
+	
+	if keyboard_check_released(ord("I")) && global.wait {
+	
+		if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
+		
+			//Switching out of inv screen:
+			if global.cur_game_state == game_state.access_inv {
+				global.cur_game_state = game_state.main;
+				instance_destroy(o_inv_slot);
+			} 
+			//switching into inv screen:
+			else if global.cur_game_state != game_state.access_inv {
+				global.cur_game_state = game_state.access_inv;
+				alarm[2] = 2; //calls scr_setup_inv_slots
+			}
+			scr_reset_wait(1);
+		}
+	}
+	
+	#endregion
+	
 	#region Debug placeholder: save game:
 	
 	if keyboard_check(vk_lcontrol) && keyboard_check_released(ord("S")) {

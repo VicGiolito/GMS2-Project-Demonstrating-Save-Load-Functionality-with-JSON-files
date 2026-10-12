@@ -24,10 +24,12 @@ function scr_define_structs(){
 		inv_ar = -1; //Is used as an array
 		equip_slot_ar = -1;
 		
+		//Define char team:
+		char_stats_ar[char_stats.char_team_enum] = char_team_enum;
+		
 		//Define for pcs only:
 		if char_team_enum == char_team.pc {
-			inv_ar = []; //The 'backpack' for the character.
-			array_push(inv_ar,-1); //The inv_ar should always have at least 1 additional slot beyond the number of items it is creating.
+			inv_ar = array_create(9, -1); //The 'backpack' for the character, starts at 9 but can be infinite value, is limited only by that char's carrying capacity.
 			equip_slot_ar = array_create(equip_slot.total_equip_slots,-1); //Misc, head, body, hands, feet, lh, rh
 		}
 		
@@ -44,6 +46,10 @@ function scr_define_structs(){
 		char_pronoun_str = "he";
 		
 		char_stats_ar[char_stats.char_class_enum] = char_class_enum;
+		
+		exp_level = 1;
+		cur_exp = 0;
+		exp_for_next_lvl = 100*exp_level;
 		
 		#region Character stats:
 		
@@ -475,8 +481,6 @@ function scr_define_structs(){
 		
 		sprite_image_index = 0; //Default; not in use
 		
-		char_stats_ar[char_stats.char_team_enum] = char_team_enum;
-		
 		//Add to appropriate array:
 		if char_team_enum == char_team.pc { 
 			array_push(global.master_struct_ar[cur_dungeon_enum][cur_floor_lvl_int][AR_PC],self);
@@ -522,14 +526,12 @@ function scr_define_structs(){
 		item_name = "Not Defined By Constructor Event";
 		dura_cur = 0;
 		
-		item_sprite = "spr_item_placeholder";
+		item_spr_str = "spr_item_placeholder";
 		
 		description = "";
 		armor_pen = 0;
 		magic_pen = 0;
-		is_equipped = false; //I don't foresee a scenario where this will necessary.
-		is_ranged_weapon = false; //I don't foresee a scenario where this will necessary
-		is_weapon = false;
+		
 		value = 0;
 		melee_evasion_mod = 0;
 		ranged_evasion_mod = 0;
@@ -537,19 +539,27 @@ function scr_define_structs(){
 		physical_resist = 0;
 		magical_resist = 0;
 		stam_debuff = 0;
+		
 		melee_min_dmg = 0;
 		melee_max_dmg = 0;
 		ranged_min_dmg = 0;
 		ranged_max_dmg = 0;
 		melee_to_hit_mod = 0;
 		ranged_to_hit_mod = 0;
-		is_armor = false;
+	
 		is_cursed = false;
 		weight_val = 0; //In pounds
+		
 		contains_meat = false;
 		satiation_val = 0; //Consider that most pcs consume 1 food unit at the end of each turn.
 		causes_food_poisoning = false; //If true, the char will need to pass a constitution test or get sick.
+		
 		item_range = 0; //0: melee; 1: polearm; 2: ranged.
+		
+		//defaults:
+		is_shield = false;
+		is_two_hand = false;
+		is_armor = false;
 		
 		//Start defining stats for each weapon:
 		switch(item_class) {
@@ -560,8 +570,8 @@ function scr_define_structs(){
 				melee_min_dmg = 2;
 				melee_max_dmg = 6;
 				armor_pen = 125;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 5;
 				block_mod = 7;
 				stam_debuff = 1;
@@ -569,6 +579,9 @@ function scr_define_structs(){
 				description = "This basic version of a big woodcutter's axe is battered and blunted.";
 				value = 10;
 				weight_val = 25;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_axe_woodcut_rusty";
+				
 			break;
 			
 			case item_enum.wep_axe_one_hand_rusty:
@@ -577,8 +590,8 @@ function scr_define_structs(){
 				melee_min_dmg = 1;
 				melee_max_dmg = 3;
 				armor_pen = 125;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+			
 				melee_to_hit_mod = 5;
 				block_mod = 3;
 				stam_debuff = 0;
@@ -586,6 +599,7 @@ function scr_define_structs(){
 				description = "This basic version of a woodcutter's hatchet is battered and blunted.";
 				value = 5;
 				weight_val = 8;
+				item_spr_str = "spr_wep_axe_hatchet_rusty";
 			break;
 			
 			case item_enum.wep_sword_one_hand_rusty:
@@ -594,8 +608,8 @@ function scr_define_structs(){
 				melee_min_dmg = 2;
 				melee_max_dmg = 4;
 				armor_pen = 85;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 4;
 				block_mod = 5;
 				stam_debuff = 0;
@@ -603,6 +617,7 @@ function scr_define_structs(){
 				description = "Rusty iron short sword.";
 				value = 10;
 				weight_val = 12;
+				item_spr_str = "spr_wep_sword_onehand_rusty";
 			break;
 			
 			case item_enum.wep_sword_two_hand_rusty:
@@ -611,8 +626,8 @@ function scr_define_structs(){
 				melee_min_dmg = 3;
 				melee_max_dmg = 8;
 				armor_pen = 75;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 10;
 				block_mod = 7;
 				stam_debuff = 1;
@@ -620,6 +635,8 @@ function scr_define_structs(){
 				description = "This may have been a noble great sword a century ago; now it's barely passable as a weapon.";
 				value = 10;
 				weight_val = 25;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_sword_twohand_rusty";
 			break;
 			
 			case item_enum.wep_polearm_pike_rusty:
@@ -628,8 +645,8 @@ function scr_define_structs(){
 				melee_min_dmg = 3;
 				melee_max_dmg = 6;
 				armor_pen = 75;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 10;
 				block_mod = 7;
 				stam_debuff = 1;
@@ -638,6 +655,8 @@ function scr_define_structs(){
 				value = 10;
 				weight_val = 25;
 				item_range = 1;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_pike_rusty";
 			break;
 			
 			case item_enum.wep_polearm_halberd_rusty:
@@ -646,8 +665,8 @@ function scr_define_structs(){
 				melee_min_dmg = 4;
 				melee_max_dmg = 8;
 				armor_pen = 110;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 5;
 				block_mod = 7;
 				stam_debuff = 1;
@@ -656,6 +675,8 @@ function scr_define_structs(){
 				value = 10;
 				weight_val = 25;
 				item_range = 1;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_halberd_rusty";
 			break;
 			
 			case item_enum.wep_mace_one_hand_rusty:
@@ -664,8 +685,8 @@ function scr_define_structs(){
 				melee_min_dmg = 1;
 				melee_max_dmg = 3;
 				armor_pen = 150;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 2;
 				block_mod = 3;
 				stam_debuff = 0;
@@ -673,6 +694,8 @@ function scr_define_structs(){
 				description = "This is just a stick with an iron head; looks like it could break at any moment.";
 				value = 5;
 				weight_val = 15;
+				item_spr_str = "spr_wep_mace_rusty";
+				
 			break;
 			
 			case item_enum.wep_mace_one_hand_average:
@@ -681,8 +704,8 @@ function scr_define_structs(){
 				melee_min_dmg = 2;
 				melee_max_dmg = 5;
 				armor_pen = 150;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 5;
 				block_mod = 6;
 				stam_debuff = 0;
@@ -690,6 +713,7 @@ function scr_define_structs(){
 				description = "Likely forged by a castle smithy, this sturdy mace with a flanged iron head could deal some decent blunt damage.";
 				value = 5;
 				weight_val = 18;
+				item_spr_str = "spr_wep_mace_average";
 			break;
 			
 			case item_enum.wep_hammer_one_hand_rusty:
@@ -698,8 +722,8 @@ function scr_define_structs(){
 				melee_min_dmg = 1;
 				melee_max_dmg = 2;
 				armor_pen = 200;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 1;
 				block_mod = 1;
 				stam_debuff = 0;
@@ -707,6 +731,7 @@ function scr_define_structs(){
 				description = "This fragile looking hammer looks like it could have been made for a carpenter. Still, it could puncture armor a bit.";
 				value = 3;
 				weight_val = 13;
+				item_spr_str = "spr_wep_hammer_rusty";
 			break;
 			
 			case item_enum.wep_dagger_one_hand_rusty:
@@ -715,8 +740,8 @@ function scr_define_structs(){
 				melee_min_dmg = 1;
 				melee_max_dmg = 2;
 				armor_pen = 75;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 1;
 				block_mod = 1;
 				stam_debuff = 0;
@@ -724,6 +749,7 @@ function scr_define_structs(){
 				description = "This might have been a kitchen knife in a previous life; better than nothing, at any rate.";
 				value = 2;
 				weight_val = 2;
+				item_spr_str = "spr_wep_dagger_rusty";
 			break;
 			
 			case item_enum.wep_spear_one_hand_rusty:
@@ -732,8 +758,8 @@ function scr_define_structs(){
 				melee_min_dmg = 2;
 				melee_max_dmg = 4;
 				armor_pen = 85;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 5;
 				block_mod = 1;
 				stam_debuff = 0;
@@ -741,6 +767,7 @@ function scr_define_structs(){
 				description = "This is just a sturdy stick with a sharpened point.";
 				value = 5;
 				weight_val = 8;
+				item_spr_str = "spr_wep_spear_rusty";
 			break;
 			
 			case item_enum.wep_torch_crude:
@@ -749,8 +776,8 @@ function scr_define_structs(){
 				melee_min_dmg = 0; //Be sure to keep this 0 as it's the only wep in the game that can be 'dual wielded'
 				melee_max_dmg = 0;
 				armor_pen = 0;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -758,6 +785,7 @@ function scr_define_structs(){
 				description = "An invaluable tool for any spelunking adventurer. Its fragile flames can reveal treasures from your wildest dreams--or monsters from your darkest nightmares.";
 				value = 15;
 				weight_val = 2;
+				item_spr_str = "spr_wep_torch_crude";
 			break;
 			
 			case item_enum.misc_gold_necklance:
@@ -766,8 +794,8 @@ function scr_define_structs(){
 				melee_min_dmg = 0;
 				melee_max_dmg = 0;
 				armor_pen = 0;
-				item_equip_type_enum = item_equip_type.misc;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.accessory;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -775,6 +803,7 @@ function scr_define_structs(){
 				description = "A kind-hearted merchant might accept this shiny bauble for a coin or two.";
 				value = 50;
 				weight_val = 1;
+				item_spr_str = "spr_misc_necklace_crude";
 			break;
 			
 			case item_enum.item_tools_and_supplies:
@@ -783,8 +812,8 @@ function scr_define_structs(){
 				melee_min_dmg = 0;
 				melee_max_dmg = 0;
 				armor_pen = 0;
-				item_equip_type_enum = item_equip_type.none;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.backpack;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -797,7 +826,7 @@ function scr_define_structs(){
 			case item_enum.food_ration_iron:
 				item_name = "Iron Rations";
 				dura_cur = 30;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Expertly sealed and salted meats and bread which will last a long time. Very satiating.";
 				value = 75;
@@ -810,7 +839,7 @@ function scr_define_structs(){
 			case item_enum.food_ration:
 				item_name = "Rations";
 				dura_cur = 20;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Carefully packed meats and bread which will last a while. Moderately satiating.";
 				value = 50;
@@ -823,7 +852,7 @@ function scr_define_structs(){
 			case item_enum.food_ration_meager:
 				item_name = "Rations";
 				dura_cur = 10;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Some unsalted slices of mysterious meat and crackers. This won't last long.";
 				value = 50;
@@ -836,7 +865,7 @@ function scr_define_structs(){
 			case item_enum.food_mutton_raw:
 				item_name = "Raw Mutton";
 				dura_cur = 8;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Only a barbarian or some kind of animal would appreciate eating raw meat.";
 				value = 10;
@@ -850,7 +879,7 @@ function scr_define_structs(){
 			case item_enum.food_mutton_cooked:
 				item_name = "Cooked Mutton";
 				dura_cur = 15;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Cooked hunk of animal meat, somewhat satiating.";
 				value = 30;
@@ -863,7 +892,7 @@ function scr_define_structs(){
 			case item_enum.food_carrots_raw:
 				item_name = "Raw Carrots";
 				dura_cur = 30;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Raw carrots, not very satiating.";
 				value = 10;
@@ -876,7 +905,7 @@ function scr_define_structs(){
 			case item_enum.food_carrots_cooked:
 				item_name = "Cooked Carrots";
 				dura_cur = 10;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Cooked carrots, more satiating but won't last very long.";
 				value = 30;
@@ -889,7 +918,7 @@ function scr_define_structs(){
 			case item_enum.food_bread:
 				item_name = "Roll Of Bread";
 				dura_cur = 10;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "A roll of bread, not cooked to last.";
 				value = 15;
@@ -902,7 +931,7 @@ function scr_define_structs(){
 			case item_enum.item_rock:
 				item_name = "A Rock";
 				dura_cur = 25;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "A flinty piece of stone.";
 				value = 1;
@@ -913,7 +942,7 @@ function scr_define_structs(){
 			case item_enum.item_boulder_giant:
 				item_name = "A Giant Boulder";
 				dura_cur = 75;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "It would take an immensely strong person to lug this giant boulder around.";
 				value = 1;
@@ -924,7 +953,7 @@ function scr_define_structs(){
 			case item_enum.item_boulder_average:
 				item_name = "An Average Boulder";
 				dura_cur = 75;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "It would take a strong person to lug this boulder around.";
 				value = 1;
@@ -935,7 +964,7 @@ function scr_define_structs(){
 			case item_enum.item_boulder_small:
 				item_name = "A Small Boulder";
 				dura_cur = 75;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "Who could find a use for this small boulder?";
 				value = 1;
@@ -946,7 +975,7 @@ function scr_define_structs(){
 			case item_enum.food_corpse_humanoid_raw:
 				item_name = "Raw Humanoid Corpse";
 				dura_cur = 8;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "The unfortunate corpse of some humanoid creature.";
 				value = 5;
@@ -960,7 +989,7 @@ function scr_define_structs(){
 			case item_enum.food_corpse_humanoid_cooked:
 				item_name = "Cooked Humanoid Corpse";
 				dura_cur = 15;
-				item_equip_type_enum = item_equip_type.none;
+				item_equip_type_enum = inv_slot.backpack;
 				item_weapon_type_enum = wep_type.none;
 				description = "The cooked corpse of some unfortunate humanoid creature.";
 				value = 15;
@@ -976,8 +1005,8 @@ function scr_define_structs(){
 				melee_min_dmg = 2;
 				melee_max_dmg = 4;
 				armor_pen = 60;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 4;
 				block_mod = 6;
 				stam_debuff = 0;
@@ -985,6 +1014,8 @@ function scr_define_structs(){
 				description = "This giant staff looks like it may serve better as a walking stick.";
 				value = 8;
 				weight_val = 12;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_staff_rusty";
 			break;
 			
 			case item_enum.wep_staff_two_hand_acheron: //Unique weapon, only acheron can wield it.
@@ -994,8 +1025,8 @@ function scr_define_structs(){
 				melee_max_dmg = 10;
 				armor_pen = 115;
 				magic_pen = 25;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 35;
 				block_mod = 10;
 				stam_debuff = 0;
@@ -1003,6 +1034,8 @@ function scr_define_structs(){
 				description = "This gnarled iron-wood staff with a griffin feather core has served for centuries as Acheron's steadfast companion through countless wars and adventures.";
 				value = 500;
 				weight_val = 15;
+				is_two_hand = true;
+				item_spr_str = "spr_wep_staff_acheron";
 			break;
 			
 			case item_enum.wep_shield_buckler_leather:
@@ -1012,8 +1045,8 @@ function scr_define_structs(){
 				melee_max_dmg = 0;
 				armor_pen = 0;
 				magic_pen = 0;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = false;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 10;
 				stam_debuff = 0;
@@ -1024,6 +1057,8 @@ function scr_define_structs(){
 				description = "This leather buckler doesn't offer much protection.";
 				value = 15;
 				weight_val = 15;
+				is_shield = true;
+				item_spr_str = "spr_shield_buckler_rusty";
 			break;
 			
 			case item_enum.wep_shield_medium_leather:
@@ -1033,8 +1068,8 @@ function scr_define_structs(){
 				melee_max_dmg = 0;
 				armor_pen = 0;
 				magic_pen = 0;
-				item_equip_type_enum = item_equip_type.one_hand;
-				is_weapon = false;
+				item_equip_type_enum = inv_slot.rh;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 15;
 				stam_debuff = 1;
@@ -1045,6 +1080,8 @@ function scr_define_structs(){
 				description = "This leather shield has seen better days.";
 				value = 50;
 				weight_val = 30;
+				is_shield = true;
+				item_spr_str = "spr_shield_infantry_rusty";
 			break;
 			
 			case item_enum.wep_bow_short_crude:
@@ -1055,8 +1092,8 @@ function scr_define_structs(){
 				armor_pen = 80;
 				magic_pen = 0;
 				item_range = 2;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				ranged_to_hit_mod = 2;
 				block_mod = 3;
 				stam_debuff = 0;
@@ -1066,6 +1103,7 @@ function scr_define_structs(){
 				description = "Crudely made long ago, it still serves its purpose.";
 				value = 15;
 				weight_val = 7;
+				item_spr_str = "spr_wep_shortbow_rusty";
 			break;
 			
 			case item_enum.wep_bow_short_average:
@@ -1076,8 +1114,8 @@ function scr_define_structs(){
 				armor_pen = 85;
 				magic_pen = 0;
 				item_range = 2;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				ranged_to_hit_mod = 4;
 				block_mod = 4;
 				stam_debuff = 0;
@@ -1087,6 +1125,7 @@ function scr_define_structs(){
 				description = "Competently constructed wooden short bow.";
 				value = 20;
 				weight_val = 8;
+				item_spr_str = "spr_wep_shortbow_average";
 			break;
 			
 			case item_enum.wep_crossbow_crude:
@@ -1097,8 +1136,8 @@ function scr_define_structs(){
 				armor_pen = 125;
 				magic_pen = 0;
 				item_range = 2;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				ranged_to_hit_mod = 5;
 				block_mod = 6;
 				stam_debuff = 0;
@@ -1108,6 +1147,7 @@ function scr_define_structs(){
 				description = "This crude crossbow has seen better days.";
 				value = 20;
 				weight_val = 13;
+				item_spr_str = "spr_wep_crossbow_rusty";
 			break;
 			
 			case item_enum.wep_crossbow_average:
@@ -1118,8 +1158,8 @@ function scr_define_structs(){
 				armor_pen = 125;
 				magic_pen = 0;
 				item_range = 2;
-				item_equip_type_enum = item_equip_type.two_hand;
-				is_weapon = true;
+				item_equip_type_enum = inv_slot.rh;
+				
 				ranged_to_hit_mod = 8;
 				block_mod = 7;
 				stam_debuff = 0;
@@ -1129,12 +1169,13 @@ function scr_define_structs(){
 				description = "This iron crossbow looks relatively new and in good condition.";
 				value = 45;
 				weight_val = 15;
+				item_spr_str = "spr_wep_crossbow_average";
 			break;
 			
 			case item_enum.armor_body_leather_vest:
 				item_name = "Crude Leather Vest";
 				dura_cur = 4;
-				item_equip_type_enum = item_equip_type.body;
+				item_equip_type_enum = inv_slot.body;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1147,12 +1188,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 35;
 				weight_val = 2;
+				item_spr_str = "spr_body_vest_leather_crude";
 			break;
 			
 			case item_enum.armor_head_feather_hat:
 				item_name = "Hunter's Feathered Hat";
 				dura_cur = 2;
-				item_equip_type_enum = item_equip_type.head;
+				item_equip_type_enum = inv_slot.head;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1162,12 +1204,13 @@ function scr_define_structs(){
 				description = "A green hunter's hat adorned with the bright yellow feather of a falcon.";
 				value = 5;
 				weight_val = 1;
+				item_spr_str = "spr_head_featherhat";
 			break;
 			
 			case item_enum.armor_head_padded_cap:
 				item_name = "Padded Cap";
 				dura_cur = 4;
-				item_equip_type_enum = item_equip_type.head;
+				item_equip_type_enum = inv_slot.head;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1179,12 +1222,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 45;
 				weight_val = 2;
+				item_spr_str = "spr_head_cap_padded_crude";
 			break;
 			
 			case item_enum.armor_head_chainmail_coif_crude:
 				item_name = "Rusty Chainmail Coif";
 				dura_cur = 8;
-				item_equip_type_enum = item_equip_type.head;
+				item_equip_type_enum = inv_slot.head;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1196,12 +1240,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 150;
 				weight_val = 5;
+				item_spr_str = "spr_head_coif_chainmail_crude";
 			break;
 			
 			case item_enum.armor_feet_leather_crude:
 				item_name = "Battered Leather Boots";
 				dura_cur = 2;
-				item_equip_type_enum = item_equip_type.feet;
+				item_equip_type_enum = inv_slot.feet;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1213,12 +1258,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 25;
 				weight_val = 1;
+				item_spr_str = "spr_feet_boots_leather_crude";
 			break;
 			
 			case item_enum.armor_feet_iron_crude:
 				item_name = "Battered Iron Boots";
 				dura_cur = 5;
-				item_equip_type_enum = item_equip_type.feet;
+				item_equip_type_enum = inv_slot.feet;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1230,12 +1276,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 115;
 				weight_val = 5;
+				item_spr_str = "spr_feet_boots_iron_crude";
 			break;
 			
 			case item_enum.armor_hands_leather_crude:
 				item_name = "Crude Leather Gloves";
 				dura_cur = 3;
-				item_equip_type_enum = item_equip_type.hands;
+				item_equip_type_enum = inv_slot.hands;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1245,12 +1292,13 @@ function scr_define_structs(){
 				description = "Falling apart, but they will serve.";
 				value = 35;
 				weight_val = 2;
+				item_spr_str = "spr_hands_gloves_leather_crude";
 			break;
 			
 			case item_enum.armor_hands_leather_wraps:
 				item_name = "Crude Leather Wraps";
 				dura_cur = 2;
-				item_equip_type_enum = item_equip_type.hands;
+				item_equip_type_enum = inv_slot.hands;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1260,12 +1308,13 @@ function scr_define_structs(){
 				description = "Just stripes of cured animal hide to be tied around the wrists and forearms.";
 				value = 15;
 				weight_val = 2;
+				item_spr_str = "spr_hands_wraps_leather_crude";
 			break;
 			
 			case item_enum.armor_hands_iron_gauntlets_crude:
 				item_name = "Rusty Iron Gauntlets";
 				dura_cur = 8;
-				item_equip_type_enum = item_equip_type.hands;
+				item_equip_type_enum = inv_slot.hands;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 1;
@@ -1277,12 +1326,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 205;
 				weight_val = 5;
+				item_spr_str = "spr_hands_gauntlets_iron_crude";
 			break;
 			
 			case item_enum.armor_body_furs_crude:
 				item_name = "Tattered Furs";
 				dura_cur = 8;
-				item_equip_type_enum = item_equip_type.body;
+				item_equip_type_enum = inv_slot.body;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1294,12 +1344,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 75;
 				weight_val = 8;
+				item_spr_str = "spr_body_furs_crude";
 			break;
 			
 			case item_enum.armor_body_robes_crude:
 				item_name = "Tattered Magician's Robe";
 				dura_cur = 2;
-				item_equip_type_enum = item_equip_type.body;
+				item_equip_type_enum = inv_slot.body;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1311,12 +1362,13 @@ function scr_define_structs(){
 				magical_resist = 3;
 				value = 55;
 				weight_val = 2;
+				item_spr_str = "spr_body_robes_crude";
 			break;
 			
 			case item_enum.armor_body_rags_crude:
 				item_name = "Tattered Roughspun Rags";
 				dura_cur = 1;
-				item_equip_type_enum = item_equip_type.body;
+				item_equip_type_enum = inv_slot.body;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1328,12 +1380,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 3;
 				weight_val = 1;
+				item_spr_str = "spr_body_rags";
 			break;
 			
 			case item_enum.armor_body_chainmail_crude:
 				item_name = "Rusty Iron Chainmail";
 				dura_cur = 20;
-				item_equip_type_enum = item_equip_type.body;
+				item_equip_type_enum = inv_slot.body;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
@@ -1345,12 +1398,13 @@ function scr_define_structs(){
 				magical_resist = 0;
 				value = 550;
 				weight_val = 45;
+				item_spr_str = "spr_body_chainmail_crude";
 			break;
 			
 			case item_enum.armor_head_pillory:
 				item_name = "Uprooted Pillory";
 				dura_cur = 20;
-				item_equip_type_enum = item_equip_type.head;
+				item_equip_type_enum = inv_slot.head;
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
