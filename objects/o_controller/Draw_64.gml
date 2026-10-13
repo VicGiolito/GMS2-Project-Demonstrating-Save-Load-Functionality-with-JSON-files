@@ -431,7 +431,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var bg_c = c_gray;
 	var bg_max_w = cur_char_spr_origin_x+slot_w*4;
 	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*11)+bg_offset_y;
-	var bg_max_h = bg_y+(slot_h*7);
+	var bg_max_h = bg_y+(slot_h*8);
 		
 	draw_rectangle_color(bg_offset_x, bg_y, bg_max_w, bg_y+bg_max_h, bg_c, bg_c ,bg_c, bg_c, false);
 		

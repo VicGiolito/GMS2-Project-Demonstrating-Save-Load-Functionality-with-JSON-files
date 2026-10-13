@@ -9,6 +9,8 @@ randomize();
 global.prompt_stack_ar = -1; //Is used as an array containing different game states. 
 global.prompt_stack_cur_ind = 0;
 
+global.ds_map_revealed_items_on_grid = -1; //Is used as a ds_map in scr_update_visiblity and our o_con draw event
+
 global.cur_game_state = game_state.start_menu;
 
 global.default_fnt = fnt_std_12;
@@ -27,6 +29,7 @@ global.saved_games_list = -1;
 
 global.cur_char = -1;
 
+//Where are these vars being defined?: Currently under o_con step event: global.cur_game_state == game_state.create_new_game: enter key press; defined as '25'
 global.grid_w = 0; //maximum possible grid size == 152x152 (assuming cell_size == 32, and including a buffer of 128px on both left and right sides)
 global.grid_h = 0;
 
@@ -112,13 +115,13 @@ global.loot_drop_ar = [];
 
 global.master_item_ar = [];
 
+//global.items_on_floor_ar = [];
+
 revealed_enemies_ar = [];
 
 cursor_pos = 0;
 
 scr_define_data();
-
-scr_define_structs();
 
 #region Prompt box vars
 

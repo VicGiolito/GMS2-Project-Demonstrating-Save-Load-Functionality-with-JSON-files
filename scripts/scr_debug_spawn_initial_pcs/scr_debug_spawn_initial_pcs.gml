@@ -24,6 +24,46 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 				
 				new Character(pc_class,char_team.pc,grid_x,grid_y,floor_num_int,dungeon_enum_int, true);
 				
+				//Add corresponding starting equipment for the most recently created pc; we definitely need to script this process:
+				var pc_struct_id = global.pc_team_ar[array_length(global.pc_team_ar)-1];
+				
+				if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.roderick {
+					var item_struct = new Item(item_enum.armor_head_feather_hat, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.head] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.kurgun {
+					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.acheron {
+					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.thade {
+					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int); 
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.ulric {
+					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.neleera {
+					var item_struct = new Item(item_enum.armor_body_leather_vest, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.zool {
+					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int);
+					item_struct.is_in_inv = true;
+					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
+				}
+				
+				//Increment class:
 				pc_class++;
 				
 				//Choose new random floor:

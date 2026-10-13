@@ -15,8 +15,9 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 	
 	#region Go through our building team arrays and display buildings AND loot drops that are on the current floor:
 	
-	//We want our building sprites to be drawn underneath our char sprites, which is why we're drawing them above our
-	//char sprites:
+	//BUILDING SPRITES: We want our building sprites to be drawn underneath everything else our char sprites and above our item sprites, 
+	//which is why we're drawing them here:
+	
 	if is_array(global.master_struct_ar) {
 
 		var building_struct, team_i = 0, team_ar;
@@ -50,7 +51,42 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 
 	#endregion
 	
-	#region Go through our pc_team_ar, neutral_team_ar, and enemy_team_ar, and draw characters ONLY on this floor and dungeon:
+	#region Items - we want our items drawn below chars but above buildings - that's why they're drawn here:
+	
+	if ds_exists(global.ds_map_revealed_items_on_grid, ds_type_map) && ds_map_size(global.ds_map_revealed_items_on_grid) > 0 {
+		
+		//Define first key:
+		var key = ds_map_find_first(global.ds_map_revealed_items_on_grid), ar_at_coord, ar_len, item_struct_id;
+		
+		while (!is_undefined(key)) {
+			
+			ar_at_coord = global.ds_map_revealed_items_on_grid[? key];
+			
+			
+			if is_array(ar_at_coord) {
+				ar_len = array_length(ar_at_coord);
+				if ar_len > 0 {
+					//If this array has a length of 1, draw the corresponding item struct sprite:
+					if ar_len == 1 {
+						item_struct_id = ar_at_coord[0];
+						draw_sprite(asset_get_index(item_struct_id.item_spr_str), 0, item_struct_id.item_room_x, item_struct_id.item_room_y);
+					}
+					//Just draw our generic 'multiple items' sprite:
+					else {
+						draw_sprite(spr_item_loot, 0, item_struct_id.item_room_x, item_struct_id.item_room_y);	
+					}
+				}	
+			}
+			
+			//Define next key:
+			key = ds_map_find_next(global.ds_map_revealed_items_on_grid, key);
+		}
+	}
+	
+	#endregion
+	
+	#region CHARACTERS - We draw these last as they be drawn on top of everything else - Go through our pc_team_ar, neutral_team_ar, 
+	//and enemy_team_ar, and draw characters ONLY on this floor and dungeon:
 
 	if is_array(global.master_struct_ar) {
 		
@@ -91,42 +127,6 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 		}
 	}
 	
-	#endregion
-
-	#region DEFUNCT - Go through our revealed_enemies_ar and display enemies that are on the current floor (this will also display revealed neutral chars):
-	
-	//Edit 9-20-26: Why is a revealed_enemies_ar even necessary?
-	
-	/*
-	
-	if is_array(revealed_enemies_ar) {
-
-		var ar_len = array_length(revealed_enemies_ar), enemy_struct;
-	
-		for(var i = 0; i < ar_len; i++){
-	
-			enemy_struct = revealed_enemies_ar[i];
-	
-			if is_struct(enemy_struct) {
-				if enemy_struct.char_spr_str != -1 && enemy_struct.cur_floor_level == global.cur_floor_ind && 
-				enemy_struct.visible_boolean == true {
-					//Draw char
-					draw_sprite(enemy_struct.char_spr_str,enemy_struct.sprite_image_index,
-					enemy_struct.char_room_x,enemy_struct.char_room_y);
-					//Draw debug:
-					draw_set_font(fnt_std_10);
-					scr_center_font_align();
-					draw_text_color(enemy_struct.char_room_x,enemy_struct.char_room_y,string(enemy_struct.char_grid_x)+
-					","+string(enemy_struct.char_grid_y),c_black,c_black,c_black,c_black,1);
-					scr_reset_font_align();
-					draw_set_font(global.default_fnt);
-				}
-			}
-		}
-	}
-	
-	*/
-
 	#endregion
 	
 	#region Draw cur_char blinking green frame:

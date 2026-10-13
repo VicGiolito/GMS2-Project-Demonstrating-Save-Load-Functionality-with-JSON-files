@@ -85,7 +85,8 @@ function scr_define_macros_and_enums(){
 		accessory,
 		feet, 
 		hands,
-		backpack
+		backpack,
+		total_inv_slots
 	}
 	
 	enum scroll_dir {
@@ -308,7 +309,7 @@ function scr_define_macros_and_enums(){
 		ulric, //priest
 		crag, //stone golem
 		neleera, //female treasure hunter/thief
-		zool, //necromancer
+		zool, //necromancer 
 		frizela, //witch/sorceress
 		tom, //hobo
 		ashra, //animist

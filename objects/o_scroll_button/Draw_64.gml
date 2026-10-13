@@ -5,7 +5,6 @@ if sprite_index != -1 {
 	
 	if collision_point(display_mouse_get_x(),display_mouse_get_y(),o_inv_slot,false,false) == id {
 		image_index = 1;
-		d("MOUSE HOVERING OVER O_INV_SLOT!");
 	}
 	else { 
 		image_index = 0;	

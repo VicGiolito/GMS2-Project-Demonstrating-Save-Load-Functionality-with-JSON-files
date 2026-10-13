@@ -1,11 +1,15 @@
 
+//According to AI, using function scr_define_structs(){ ... } then requires that this script be called in order to access the
+//information therein (the structs); if you remove this wrapper, the constructors within then become global in scope and are read
+//into memory before the first room even loads.
 
-
-function scr_define_structs(){
+//function scr_define_structs(){
 	
 	#region Our character struct:
 	
-	Character = function(char_class_enum, char_team_enum, grid_spawn_x, grid_spawn_y, cur_floor_lvl_int, cur_dungeon_enum, visibility_boolean) constructor
+	//Important note: starting equipment for chars is not created here, it's created in ... 
+	
+	function Character(char_class_enum, char_team_enum, grid_spawn_x, grid_spawn_y, cur_floor_lvl_int, cur_dungeon_enum, visibility_boolean) constructor
 	{
 		struct_enum = struct_type.character; ///Used with scr_return_struct_id and other things
 		
@@ -30,7 +34,7 @@ function scr_define_structs(){
 		//Define for pcs only:
 		if char_team_enum == char_team.pc {
 			inv_ar = array_create(9, -1); //The 'backpack' for the character, starts at 9 but can be infinite value, is limited only by that char's carrying capacity.
-			equip_slot_ar = array_create(equip_slot.total_equip_slots,-1); //Misc, head, body, hands, feet, lh, rh
+			equip_slot_ar = array_create(inv_slot.total_inv_slots,-1); //Misc, head, body, hands, feet, lh, rh
 		}
 		
 		//Default/base stats and vars:
@@ -50,6 +54,8 @@ function scr_define_structs(){
 		exp_level = 1;
 		cur_exp = 0;
 		exp_for_next_lvl = 100*exp_level;
+		
+		char_stats_ar[char_stats.name] = "undefined";
 		
 		#region Character stats:
 		
@@ -468,7 +474,7 @@ function scr_define_structs(){
 		char_grid_x = grid_spawn_x;
 		char_grid_y = grid_spawn_y;
 		
-		//Make sure we snap our coordinates to the nearest grid cell when this is created:
+		//Convert grid to room coordinates:
 		var pos_ar = [];
 		pos_ar = scr_convert_grid_to_room_coordinates(pos_ar,char_grid_x,char_grid_y);
 		
@@ -484,17 +490,17 @@ function scr_define_structs(){
 		//Add to appropriate array:
 		if char_team_enum == char_team.pc { 
 			array_push(global.master_struct_ar[cur_dungeon_enum][cur_floor_lvl_int][AR_PC],self);
-			array_push(global.pc_team_ar,self); //These *_team arrays are NOT used for drawing sprites, checking LOS, etc.; they're only used for easy reference-type purposes.
+			array_push(global.pc_team_ar, self);
 		}
 		
 		else if char_team_enum == char_team.enemy { 
 			array_push(global.master_struct_ar[cur_dungeon_enum][cur_floor_lvl_int][AR_ENEMY],self); 
-			array_push(global.enemy_team_ar,self);
+			array_push(global.enemy_team_ar, self);
 		}
 		
 		else {
 			array_push(global.master_struct_ar[cur_dungeon_enum][cur_floor_lvl_int][AR_NEUTRAL],self);
-			array_push(global.neutral_team_ar,self);	
+			array_push(global.neutral_team_ar, self);	
 		}
 		
 		//show_debug_message("Character struct constructor: Character struct with id: "+string(self)+", gridX: "+
@@ -511,7 +517,8 @@ function scr_define_structs(){
 	
 	#region Our item struct:
 	
-	Item = function(item_class_enum, floor_int,cur_dungeon_enum) constructor
+	//grid_x and grid_y can be -1 if item is being spawned inside of a char's inventory:
+	function Item(item_class_enum, floor_int,cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean) constructor
 	{
 		cur_floor_level = floor_int;
 		
@@ -522,7 +529,6 @@ function scr_define_structs(){
 		//Default vars:
 		item_class = item_class_enum;
 		item_weapon_type_enum = wep_type.none; //Used for determining the corresponding wep_skill buffs that the char will benefit from when this item is equipped.
-		item_equip_type_enum = item_equip_type.none; //Used for logic within scr_equip_unequip_item
 		item_name = "Not Defined By Constructor Event";
 		dura_cur = 0;
 		
@@ -549,7 +555,11 @@ function scr_define_structs(){
 	
 		is_cursed = false;
 		weight_val = 0; //In pounds
+		is_in_inv = is_in_inv_boolean; //We use this when determining what items should be drawn on the world map or not; those in inv are not
+		//drawn in our o_con draw event; rather they have their sprite assigned to their corresponding o_inv_slot in scr_setup_inv_slots && scr_setup_equip_slots scripts
 		
+		is_food = false;
+		is_rock = false;
 		contains_meat = false;
 		satiation_val = 0; //Consider that most pcs consume 1 food unit at the end of each turn.
 		causes_food_poisoning = false; //If true, the char will need to pass a constitution test or get sick.
@@ -560,6 +570,17 @@ function scr_define_structs(){
 		is_shield = false;
 		is_two_hand = false;
 		is_armor = false;
+		
+		item_grid_x = grid_x;
+		item_grid_y = grid_y;
+		
+		//Make sure we snap our coordinates to the nearest grid cell when this is created:
+		var pos_ar = [];
+		pos_ar = scr_convert_grid_to_room_coordinates(pos_ar,item_grid_x,item_grid_y);
+		
+		item_room_x =  pos_ar[0];
+		item_room_y =  pos_ar[1];
+		pos_ar = -1;
 		
 		//Start defining stats for each weapon:
 		switch(item_class) {
@@ -1437,7 +1458,7 @@ function scr_define_structs(){
 	
 	#region Building (interactive object)
 	
-	Building = function(enum_building_type, spawn_grid_x, spawn_grid_y, building_team_enum, level_int, visibility_boolean, cur_dungeon_enum) constructor {
+	function Building(enum_building_type, spawn_grid_x, spawn_grid_y, building_team_enum, level_int, visibility_boolean, cur_dungeon_enum) constructor {
 		
 		struct_enum = struct_type.building; ///Used with scr_return_struct_id and other things	
 		
@@ -1533,7 +1554,7 @@ function scr_define_structs(){
 	
 	#region Loot drop (container for items in the world)
 	
-	LootDrop = function(spawn_grid_x, spawn_grid_y, level_int, cur_dungeon_enum, visibility_boolean) constructor {
+	function LootDrop(spawn_grid_x, spawn_grid_y, level_int, cur_dungeon_enum, visibility_boolean) constructor {
 		
 		struct_enum = struct_type.loot_drop; ///Used with scr_return_struct_id and other things	
 		
@@ -1574,4 +1595,3 @@ function scr_define_structs(){
 	
 	#endregion
 	
-}
