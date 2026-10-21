@@ -23,7 +23,7 @@ function scr_save_file(save_game_name_str,dungeon_ind,floor_ind, called_from_str
 	
 	#region Save metadata struct:
 	
-	var dungeon_floor_len = array_length(global.master_level_ar[dungeon_ind])
+	var dungeon_floor_len = array_length(global.master_level_ar[dungeon_ind]);
 	
 	var save_metadata_struct = {
 		unique_save_name_str: string(save_game_name_str),
