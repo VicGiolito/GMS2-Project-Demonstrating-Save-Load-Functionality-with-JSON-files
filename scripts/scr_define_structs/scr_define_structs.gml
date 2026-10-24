@@ -518,7 +518,7 @@
 	#region Our item struct:
 	
 	//grid_x and grid_y can be -1 if item is being spawned inside of a char's inventory:
-	function Item(item_class_enum, floor_int,cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean) constructor
+	function Item(item_class_enum, floor_int, cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean) constructor
 	{
 		cur_floor_level = floor_int;
 		
@@ -1337,13 +1337,16 @@
 		array_push(global.master_struct_ar[cur_dungeon_enum][floor_int][AR_ITEMS],self);
 		array_push(global.master_item_ar,self);
 		
-		//Add to the appropriate grid location:
-		if is_array(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y]) {
-			array_push(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y], self);
+		//Add to the appropriate grid location - but only if this item is currently unequipped:
+		if is_in_inv_boolean == false {
+			if is_array(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y]) {
+				array_push(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y], self);
+			}
+			else {
+				global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y] = array_create(1, self);	
+			}
 		}
-		else {
-			global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y] = array_create(1, self);	
-		}
+		
 		
 		show_debug_message("Constructor event for Item struct: Item struct instanitated with item_name: "+string(self.item_name) );
 	}

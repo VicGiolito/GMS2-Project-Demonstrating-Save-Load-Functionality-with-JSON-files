@@ -20,11 +20,13 @@ function scr_generate_loot(dungeon_index,floor_index){
 		if global.master_level_ar[dungeon_index][floor_index][GRID_TERRAIN][# grid_x,grid_y] < terrain_type.wall_dungeon {
 			
 			//Make sure there's not already another struct here:
-			if scr_return_struct_id(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), grid_x,grid_y,struct_type.any,floor_index,dungeon_index) == false {
+			var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace);
+			
+			if scr_return_struct_id(grid_x, grid_y, struct_type.any, floor_index, dungeon_index) == false {
 			
 				loot_count++;
 				
-				new Item(grid_x,grid_y,floor_index,dungeon_index,false);
+				new Item(ran_item_enum, floor_index, dungeon_index, grid_x, grid_y, false);
 			}
 		}
 	
