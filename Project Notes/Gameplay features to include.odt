@@ -1,0 +1,61 @@
+
+Title: “The Only Way Out Is Through.” “Keep Moving.” “The Way Out Is Forward.” “Only One Way Out.” “The Only Way Out...” “The Trial of the Three.” Something like that.
+
+Main premise is this: this is a top-down, pixel art, RPG dungeon crawling/strategy game. 	
+The player chooses 3 characters to control from a huge roster of playable characters, most of which will have alignment restrictions (maybe), possibly just to avoid over powered character combinations, or just to provide some thematic restrictions; I'm toying with the idea of the player being able to choose new PCs at the start of each dungeon, as they return to some sort of preparation village, because most dungeons will be so wildly different from one another that the player may be forced to use different PCs just to complete it; but I also like the idea of choosing your first 3 PCs VERY carefully, and working within their limitations as well; in any case, the starter dungeon, and any potential shops/upgrades it may contain, should only be considered last, a late development feature, only after the core of “combat-solve quest-collect loot-level up and advance” loop is solid and enjoyable.
+	
+In general, the player should choose a scout, a wizard, and a fighter—but many characters will fulfill many different roles, so experimentation will be most of the fun.
+	
+The player starts in the starter dungeon (maybe just a relatively easy goblin cave or generic bandit dungeon?). Each dungeon has a set of different floors (to to 100, maybe?) and a specific quest or series of quests that are necessary to complete in order to advance to the dungeon. Only upon completing this quest(s) does the portal appear that leads to the next dungeon; this portal may or may not appear in a random location, vexing our adventurers even further.
+	
+Each dungeon also has its own loosely enforced time limit: a Minotaur is eventually released from the labyrinth; savage beastmen appear is greater numbers in the forest world; medusa, giant spiders or slimes, destructive golem, other sort of boss monsters similar to the Minotaur will be unleashed; the walls (outer boundaries of the map) start closing in on the treasure dungeon; the dungeon starts flooding from the bottom floor: in this dungeon, some mechanic forces each PC to the bottom floor (simultaneous lever switches perhaps), which then opens the portal on the top floor, and starts flooding the bottom, thereby forcing the PCs to the top floor again; etc.
+	
+There is usually a merchant or even a town in each dungeon, where the PCs can buy new equipment and gear and sell their loot. 
+	
+When advancing to a new dungeon, the player may or may not get a chance to choose their next dungeon from a semi-randomized list. 
+	Possibly: each PC must be adjacent to the portal before advancing to the next dungeon; or they enter the portal separately, but a count-down begins after the first PC uses the portal, forcing the others to hurry before it expires; in no case will the player be able to move control between PCS in different dungeons, they all must exist in the same dungeon at the same time.
+
+Some characters will be better suited for some dungeons than others, ie: the priest and paladin excel in the crypt, where they can use their abilities to dispel undead; the elf and the ranger excel in the forest worlds, where they can move faster and see farther in the forest than most other classes; the dwarves and other subterranean races excel in the cave dungeons, where they are not affected by the stress that is inherent in those levels, and can dig through wall tiles; thieves excel in the treasure dungeon, where traps and locked chests abound; most mages excel in the puzzle dungeons, where the player may be required to utilize abilities and mechanics in ingenious ways (spanning chasms, pushing stone blocks into a pattern to unlock a door, teleporting to multiple levels quickly, etc. etc.); and some dungeons simply contain many powerful and tough monster, where warrior PCs would excel; and etc.
+
+Dungeons typically have a theme and will test the extremes of each character class in ways that I've largely just described above. Some levels, for instance, will simply have so many goddamned durable and powerful monsters that you will need a tank fighter simply to get through, like warriors that can deal heavy crushing damage to magical resistant golems; whereas others will require solving puzzles that the spells and abilities of wizard classes can help you with, or will be inhabited by slimes that can only be harmed by magic or fire; others still are so full of traps that it is nearly impossible to get through them without a thief or without items that can fulfill that role; and etc.
+
+Experience will almost certainly be shared, so that everyone levels up at the same time. Probably: level ups increase stats, as well as always provide a new passive or triggered spell or ability. Spells and abilities may or may not be locked behind others in a kind of “tech tree.”
+
+There will almost certainly be food: another loosely enforced time limit for the player, forcing them to continue scrounging, continue exploring.
+
+The merchants and/or towns usually have racist or alignment restrictions, and many require the completion of different quests before the player can use their services. 
+
+The monster classes: just a few characters here, very powerful but each has a huge drawback:
+	The ogre or half-ogre barbarian: a man without a tribe, torn between the barbarous and civilized world; very tough and powerful warrior, goes berserk if in combat for too long and will turn on companions. Only receives half benefits from armor.
+	The stone golem: a slave without a master, eager to please; powerful AOE attacks, resistant skin, must eat rocks, metal, or rubble for food, and must also be sustained by magic; can be restored from his single heart stone when killed, at the cost of extreme amounts of mana, but will be slightly diminished afterwards. Starts to fall apart if starving, so very costly to maintain. Can't equip items or equipment. Has some natural resistance to most forms of damage, except for crushing, which he is actually susceptible to.
+	The troll: forsaken by his people, he seeks revenge against them and begrudgingly accepts humanity to this end; very powerful, regenerates quickly, can only be killed by fire or starvation (will slowly regrow limbs and body parts, even if decapitated), but consumes an enormous amount of food, can die of starvation, and turns on companions when hungry, attempting to eat them. Only receives half benefits from armor, has powerful unarmed attacks.
+	The goblin-queen: a giant spider-thing with the face of a hag that gestates playable goblin PCs on her back. Doesn't play well with others: she starts the adventure alone, and must rely on her goblin children to accomplish tasks that require multiple PCs. She is very powerful: can climb walls, spin webs, attack with powerful poison or physical melee damage, but can't equip items or equipment. Her children can, however.
+
+Spit-balling character stats and their effects; it is presumed that each stat is also a factor in skill tests, with higher stat points more reliably resulting in better outcomes in skill tests; the range of stat points will be relatively small (1-20 or 1-25, something like that):
+	Strength: increases carrying capacity and melee damage, as well as natural hit point regeneration.
+	Dexterity: increases ranged damage, dodge chance, and critical hit chance.
+	Constitution: increases maximum stamina and hit points, as well as natural stamina regeneration.
+	Wisdom: affects maximum skill points, mana points, as well as mana regeneration; every 2-4 points increases a .
+	Intelligence: increases damage and hit chance of magic abilities, and the regeneration rate of skill points.
+	
+	Weapon and misc. skills; their effects only apply when the corresponding weapon type is equipped; these ranges will be higher (1-100): 
+	Clubs & Maces: Increases hit chance and every 2 points increases stun chance by 1%.
+	Swords: Increases hit and every 2 points increases riposte chance by 1%.
+	Shields: increases dodge chance, and every 2 points increases all physical resistances by 1%.
+	Staffs: increases hit chance and and every 2 points increases mana regeneration by 1%.
+	Dagger: increases hit chance and every 2 points increases critical strike chance by 1%.
+	Axe: increases hit chance and every 1 point increases shield damage by 1 point.
+	Hammers: increases hit chance and every 1 point increases effectiveness of 'armor rend' skill by 1 (armor rend reduces the target's physical resistances by 1).
+	Traps: increases trap detection and disarmament chance.
+
+	Dodge chance and crit chance: both self explanatory.
+
+I foresee the following damage types (no considerations will be made as to whether a damage type is 'physical' or 'magical'--only the damage type itself matters):
+	Physical: Crushing; slashing; piercing.
+	Magical: ice, fire, poison, arcane (your general 'magic' damage).
+
+	Characters have resistances that match these, either positive (resistant) or negative (vulnerable).
+
+	
+
+In general, I still want every dungeon to have a 

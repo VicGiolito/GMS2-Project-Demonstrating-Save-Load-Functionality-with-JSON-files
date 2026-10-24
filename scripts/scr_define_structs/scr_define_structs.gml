@@ -582,7 +582,11 @@
 		item_room_y =  pos_ar[1];
 		pos_ar = -1;
 		
-		//Start defining stats for each weapon:
+		//Default 'missing sprite' sprite:
+		item_spr_str = "spr_unassigned";
+		
+		#region The actual stats for each weapon:
+		
 		switch(item_class) {
 			
 			case item_enum.wep_axe_two_hand_rusty:
@@ -790,6 +794,8 @@
 				weight_val = 8;
 				item_spr_str = "spr_wep_spear_rusty";
 			break;
+
+			//ITEMS:
 			
 			case item_enum.wep_torch_crude:
 				item_name = "Crude Torch";
@@ -809,7 +815,7 @@
 				item_spr_str = "spr_wep_torch_crude";
 			break;
 			
-			case item_enum.misc_gold_necklance:
+			case item_enum.misc_gold_necklace:
 				item_name = "Crude Golden Necklace";
 				dura_cur = 1;
 				melee_min_dmg = 0;
@@ -825,128 +831,6 @@
 				value = 50;
 				weight_val = 1;
 				item_spr_str = "spr_misc_necklace_crude";
-			break;
-			
-			case item_enum.item_tools_and_supplies:
-				item_name = "Bundle of Tools and Supplies";
-				dura_cur = 1;
-				melee_min_dmg = 0;
-				melee_max_dmg = 0;
-				armor_pen = 0;
-				item_equip_type_enum = inv_slot.backpack;
-				
-				melee_to_hit_mod = 0;
-				block_mod = 0;
-				stam_debuff = 0;
-				item_weapon_type_enum = wep_type.none;
-				description = "Assorted tools and supplies; everything an adventurer might need to survive in the Wilds or the darkest dungeons.";
-				value = 75;
-				weight_val = 25;
-			break;
-			
-			case item_enum.food_ration_iron:
-				item_name = "Iron Rations";
-				dura_cur = 30;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Expertly sealed and salted meats and bread which will last a long time. Very satiating.";
-				value = 75;
-				weight_val = 3;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 15;
-			break;
-			
-			case item_enum.food_ration:
-				item_name = "Rations";
-				dura_cur = 20;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Carefully packed meats and bread which will last a while. Moderately satiating.";
-				value = 50;
-				weight_val = 2;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 10;
-			break;
-			
-			case item_enum.food_ration_meager:
-				item_name = "Rations";
-				dura_cur = 10;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Some unsalted slices of mysterious meat and crackers. This won't last long.";
-				value = 50;
-				weight_val = 2;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 5;
-			break;
-			
-			case item_enum.food_mutton_raw:
-				item_name = "Raw Mutton";
-				dura_cur = 8;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Only a barbarian or some kind of animal would appreciate eating raw meat.";
-				value = 10;
-				weight_val = 1;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 3;
-				causes_food_poisoning = true;
-			break;
-			
-			case item_enum.food_mutton_cooked:
-				item_name = "Cooked Mutton";
-				dura_cur = 15;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Cooked hunk of animal meat, somewhat satiating.";
-				value = 30;
-				weight_val = 1;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 6;
-			break;
-			
-			case item_enum.food_carrots_raw:
-				item_name = "Raw Carrots";
-				dura_cur = 30;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Raw carrots, not very satiating.";
-				value = 10;
-				weight_val = 1;
-				is_food = true;
-				contains_meat = false;
-				satiation_val = 3;
-			break;
-			
-			case item_enum.food_carrots_cooked:
-				item_name = "Cooked Carrots";
-				dura_cur = 10;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "Cooked carrots, more satiating but won't last very long.";
-				value = 30;
-				weight_val = 1;
-				is_food = true;
-				contains_meat = false;
-				satiation_val = 6;
-			break;
-			
-			case item_enum.food_bread:
-				item_name = "Roll Of Bread";
-				dura_cur = 10;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "A roll of bread, not cooked to last.";
-				value = 15;
-				weight_val = 1;
-				is_food = true;
-				contains_meat = false;
-				satiation_val = 4;
 			break;
 			
 			case item_enum.item_rock:
@@ -1444,12 +1328,22 @@
 			break;
 		}
 		
+		#endregion
+		
 		//Default values:
 		dura_max = dura_cur;
 		
 		//Add to appropriate arrays:
 		array_push(global.master_struct_ar[cur_dungeon_enum][floor_int][AR_ITEMS],self);
 		array_push(global.master_item_ar,self);
+		
+		//Add to the appropriate grid location:
+		if is_array(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y]) {
+			array_push(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y], self);
+		}
+		else {
+			global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y] = array_create(1, self);	
+		}
 		
 		show_debug_message("Constructor event for Item struct: Item struct instanitated with item_name: "+string(self.item_name) );
 	}
@@ -1552,7 +1446,9 @@
 	
 	#endregion
 	
-	#region Loot drop (container for items in the world)
+	#region DEFUNCT - Loot drop (container for items in the world) - items simply belong to an array in the grid cell instead - or they exist in player inventory - only in those 2 places.
+	
+	/*
 	
 	function LootDrop(spawn_grid_x, spawn_grid_y, level_int, cur_dungeon_enum, visibility_boolean) constructor {
 		
@@ -1592,6 +1488,8 @@
 		
 		show_debug_message($"Constructor event for LootDrop struct: loot_drop struct instanitated, it contained the following items: {loot_ar}" );
 	}
+	
+	*/
 	
 	#endregion
 	

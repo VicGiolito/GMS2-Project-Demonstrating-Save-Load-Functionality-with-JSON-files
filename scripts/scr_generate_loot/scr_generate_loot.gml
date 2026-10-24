@@ -1,4 +1,10 @@
 
+/* Currently spawns totally random items in totally random locations
+
+The code with the struct constructor itself assigns the struct id to the appropriate grid cell coordinate,
+as well as the global.master_item_ar.
+
+*/
 
 function scr_generate_loot(dungeon_index,floor_index){
 	
@@ -14,11 +20,11 @@ function scr_generate_loot(dungeon_index,floor_index){
 		if global.master_level_ar[dungeon_index][floor_index][GRID_TERRAIN][# grid_x,grid_y] < terrain_type.wall_dungeon {
 			
 			//Make sure there's not already another struct here:
-			if scr_return_struct_id(grid_x,grid_y,struct_type.any,floor_index,dungeon_index) == false {
+			if scr_return_struct_id(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), grid_x,grid_y,struct_type.any,floor_index,dungeon_index) == false {
 			
 				loot_count++;
 				
-				new LootDrop(grid_x,grid_y,floor_index,dungeon_index,false);
+				new Item(grid_x,grid_y,floor_index,dungeon_index,false);
 			}
 		}
 	

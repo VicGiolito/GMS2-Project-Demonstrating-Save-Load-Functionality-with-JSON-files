@@ -1,0 +1,33 @@
+	Weaknesses and Skill strengths: Most character should have at least one of each; stronger characters should generally have more weaknesses to compensate.
+	
+	Acheron's Alzheimer's:
+	At the end of each turn, Acheron has a 1-5% chance of performing one of the following: losing 1 spell point, 'forgetting' an item or multiple items in his inventory, 'forgetting' 1 or more enemies, or having his vision reduced to 0 for 1 or more turns, even with items like a torch.
+	He also collapses into a 'rest' state (inert, small hp and stamina gains at start of turn) whenever his mana points are reduced to 0.
+
+	Tiny: 
+	His relationships naturally improve with magic users and naturally degrade with everyone else.
+
+	When killed (hp falls into the negative < than 20% of his health) Tiny's magic 'becomes unstable' and he blows apart, dealing damage to friend and foe alike. 8-10 'magic stones' are generated in any of the adjacent rooms and now represent his corpse. If any of the rooms have a pit in it, then the stones have a 50% chance of falling into the pit.
+	If a pc with intelligence greater than 16 and/or available mana points can channel a certain amount of mana into each of the stones (hundreds of points, let's say), and can collect every stone into their inventory, then tiny can be reborn as a slightly weaker version of himself, let's say with -2 stats all around.
+
+Goblin spider queen: can only play the game by herself, gestates eggs on her back to spawn minions that can fill specific roles, can climbs walls, spawn webs and spray acid, very powerful.
+		Half-ogre barbarian: strong and slow neutral-aligned strength character.
+		Mountain giant/earth golem: strong and slow good-aligned strength character, consumes rocks to regain hp and stamina, powerful but slow aoe abilities.
+		Ancient troll: strong and slow evil-aligned strength character, naturally high hp regen, weak against fire.
+		Hedge knight: neutral character, most versatile of the three knight characters, starts with level one of most weapon skills, decent stats.
+		Crusader knight: good character, most tanky of the three knight characters, with morale boosting skills.
+		Fallen knight: evil character, most dps of the three knight characters, with some small necromantic abilities and inflicts morale damage.
+		Paladin: good, the anti-necromancer.
+		Necromancer: evil, self explanatory.
+		Ancient wizard: good, your quintessential wizard character.
+		Priest: good, your quintessential priest character.
+		Eleven archer: good, your quintessential archer character, some minor thief skills.
+		Treasure hunter: neutral, your quintessential thief character, good at detecting and disarming traps, also increases the amount of loot that can be found on a level.
+		Enchantress: Neutral or evil, medium level wizard character, specializes in buffs, debuffs, and summons.
+		Big game hunter: neutral, ranged dps and disable.
+		Assassin: neutral or evil, melee dps, disable, and stealth.
+		Druid/shaman: neutral or good, all-around medium level wizard/support character, with healing abilities and some summons.
+		Gnome artificer: neutral or good, specializes in golem summons.
+		Mercenary/rogue mage: neutral or evil, a hybrid between a fighter and a mage.
+		Sorcerer: evil mage, most dps and offensive spells of all the spell caster characters.
+		Human ranger: neutral, hybrid archer/fighter, some thief skills.

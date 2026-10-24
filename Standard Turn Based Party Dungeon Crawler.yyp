@@ -169,6 +169,7 @@
     {"id":{"name":"spr_char_treasure_hunter","path":"sprites/spr_char_treasure_hunter/spr_char_treasure_hunter.yy",},},
     {"id":{"name":"spr_wep_sword_twohand_rusty","path":"sprites/spr_wep_sword_twohand_rusty/spr_wep_sword_twohand_rusty.yy",},},
     {"id":{"name":"spr_feet_boots_iron_crude","path":"sprites/spr_feet_boots_iron_crude/spr_feet_boots_iron_crude.yy",},},
+    {"id":{"name":"spr_unassigned","path":"sprites/spr_unassigned/spr_unassigned.yy",},},
     {"id":{"name":"spr_head_coif_chainmail_crude","path":"sprites/spr_head_coif_chainmail_crude/spr_head_coif_chainmail_crude.yy",},},
     {"id":{"name":"spr_shield_infantry_rusty","path":"sprites/spr_shield_infantry_rusty/spr_shield_infantry_rusty.yy",},},
     {"id":{"name":"scr_return_empty_elements","path":"scripts/scr_return_empty_elements/scr_return_empty_elements.yy",},},

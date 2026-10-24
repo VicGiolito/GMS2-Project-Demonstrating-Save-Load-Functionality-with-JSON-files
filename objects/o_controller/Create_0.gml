@@ -72,7 +72,7 @@ global.base_terrain_type = terrain_type.unexplored; //Is assigned deliberately i
 
 global.master_level_ar = -1;
 
-global.master_level_ar = []; //Has the following structure g.master_level_ar[cur_dungeon_ind][cur_floor_ind][GRID_X - (3 grids total: terrain, LOS, and instance grid)][# cell_x,cell_y (the x and y coordinates of the corresponding grid)];
+global.master_level_ar = []; //Has the following structure g.master_level_ar[cur_dungeon_ind][cur_floor_ind][GRID_X - (3 grids total: terrain, LOS, and instance grid)][cell_x][cell_y] (the x and y coordinates of the corresponding grid)];
 
 for(var i = 0; i < dungeon_type.total_dungeon_types; i++) {
 	global.master_level_ar[i] = [];

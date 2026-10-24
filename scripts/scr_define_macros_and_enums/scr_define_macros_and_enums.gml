@@ -343,6 +343,7 @@ function scr_define_macros_and_enums(){
 	
 	//Enum for all items in the game:
 	enum item_enum {
+		
 		none,
 		
 		wep_axe_two_hand_rusty,
@@ -381,24 +382,12 @@ function scr_define_macros_and_enums(){
 		armor_hands_leather_wraps,
 		armor_hands_iron_gauntlets_crude,
 		
-		item_tools_and_supplies,
+		misc_gold_necklace,
+		
 		item_rock,
 		item_boulder_average,
 		item_boulder_small,
 		item_boulder_giant,
-		
-		food_ration_meager,
-		food_ration,
-		food_ration_iron,
-		food_mutton_raw,
-		food_mutton_cooked,
-		food_corpse_humanoid_raw,
-		food_corpse_humanoid_cooked,
-		food_bread,
-		food_carrots_raw,
-		food_carrots_cooked,
-		
-		misc_gold_necklance,
 		
 		total_items
 	}

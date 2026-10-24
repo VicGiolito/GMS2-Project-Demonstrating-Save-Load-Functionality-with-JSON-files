@@ -1,4 +1,9 @@
 
+/*
+Simply uses the .struct_enum property of the struct_id struct and returns to appropriate global array id.
+
+
+*/
 
 
 function scr_return_struct_global_team_ar(struct_id){

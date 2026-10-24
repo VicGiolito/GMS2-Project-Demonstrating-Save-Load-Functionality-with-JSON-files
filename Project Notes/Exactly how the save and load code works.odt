@@ -1,0 +1,65 @@
+
+First of all, we need to go over the structure of the two main master arrays, which is where all of the data for the game is contained, it looks like this:
+
+	g.master_level_ar: [dungeon_index][floor_index][grid_type_index (will be either TERRAIN_grid (simple integers representing terrain values), LOS_grid (simple integers representing unexplored, explored, FOW, etc), or INST_grid (struct ids)][grid_x][grid_y] : integer value, or array (up to a length of 3) containing struct ids
+
+	g.master_struct_ar: [dungeon_index][floor_index][struct_type_index : includes PC, enemy, neutral, pc_building, enemy_building, neutral_building (this is where loot_drops (chests) and up/down stairs are stored), item_structs] [array contain struct ids of the specified type]
+
+	So understanding that, this is how these file structures are created and changed:
+	When we create a new game, we create these file structures for the first time, and from scratch create all of the data within them.
+	When we save a game, we save a series of json files (text files) to the GMS2 sand-boxed directory, and we use a unique directory system that looks like this: 
+	(Sandboxed, unchangable directory: C:/USERS/{user_name “gioli”, in my case}/AppData/Local)/{GMS2 game name (Standard Party Based Dungeon crawler, in this case)}/{Unique, user created save game name (default is “T” for now) }/{dungeon_index (0-max dungeons)}/{floor_index} – THIS IS ALSO WHERE THE GRID_DATA.JSON FILE IS STORED, which contains the encoded json string of every grid cell coordinate and its data within the 3 grids of this floor: terrain grid, los grid, inst_grid /{index of struct type, either: 0: pcs; 1: enemies; 2: neutrals; 3: pc buildings; 4: enemy buildings; 5: neutral buildings}/struct_data.json file, which contains the encoded json string of every corresponding struct type on that floor.
+
+
+Player selects 'Load game' from main menu - > scr_load_file() is called ->
+
+scr_load_file: we check to see if the directory (g.cur_save_filename_str (“T”)) exists; this is just a manual, placeholder string I'm using for the saved game name for now; we return false from this script prematurely if this save file directory does not exist. 
+
+We then check to see if that directory name + “/meta_data” exists; the meta_data file is just a short json file that I write in scr_save_file() later; the string in this file just helps the loading process by storing key information like how many floors in the dungeon of the current save, what the current dungeon and floor of the current pc is, etc.
+
+We store the data in the json string (the meta_game.file) as a local string variable, then we convert that string into a struct, which (naturally) stores our data attributes for that struct. We use that meta_game struct to define the global.cur_dungeon_ind global var (currently we're only loading the dungeon that currently selected character was in when the player saved the game; as a design feature, all PCS will only occupy one dungeon at a time, so we'll only ever have only dungeon in memory (loaded in the g.master_struct_ar) at any one time), we also use the max_floors var from the meta_data to load every floor in that dungeon with scr_load_level_grids() and scr_load_level_structs(). 
+
+scr_load_level_grids: we check the file directory structure to make sure it exists -> we check to see if the 'grid_data.json' file is at that location ->
+	If it is not, we exit FALSE out of the script;
+	If it is, we create a local grid var (either terrain_grid, los_grid, or inst_grid), use ds_grid_read to resize and define it, and store it under the appropriate index macro of the corresponding g.master_level_ar structure, which would be g.master_level_ar[dungeon_ind][floor_index][grid_type_index]; at this point the grid id handle is stored as a global var.
+	That's it for scr_load_level_grids.
+
+We're also iterating through scr_load_level_structs(). It is as follows:
+	We check the user-defined save game name file (again)->
+	We iterate through every struct type macro (AR_TOTAL_ARS == 7) ->
+	We check to see if that directory exists: {save game name}+"/"+string(world_index)+"/"+string(floor_index)+"/"+string(i: struct type macro)+"/"; ->
+	If it does not, we simply create an empty array at the corresponding location;
+	If it does, we check to see if the “struct_data.json” is at that location->
+	If it does not, we simply create an empty array at the corresponding location;
+	If it does, we convert that file into a json string using file_text_read_string() and file_text_readln() ->
+	We convert that json string into an array of structs using json_parse ->
+	We iterate through that array, using json_parse on every index in the array, which instantiates and stores the struct as a local var ->
+	We add that instantiated local struct handle to a local temporary array, called character_struct_array ->
+	We provide a debug message for the instantiated struct, which tells us what kind of struct was created by looking at some of the unique attributes of that struct ->
+	We use scr_return_struct_global_team_ar() to return the global handle of the appropriate global team array; scr_return_struct_global_team_ar() itself uses the .struct_enum attribute of the struct to determine which corresponding global team array it belongs to, either g.pc_team_ar, g.enemy_team_ar, g.neutral_team_ar, g.pc_building_team_ar, g.enemy_building_team_ar, or g.neutral_building_team_ar, global.master_item_ar ->
+
+	We add that struct id to the corresponding global team array, which stores it in memory as a global var ->
+	Finally, after iterating through every struct within our struct array that we created using json_parse on the json string from the corresponding struct_data.json file--
+	-- After iterating through that, we then add the character_struct_array that was created during the iteration process to the corresponding file_structure location in g.master_struct_ar, creating that directory if it does not exist.
+
+We then define the cur_char as the first pc in the dungeon (we don't keep track of who was the current pc when we last saved the game).
+
+We define our global.grid_w and global.grid_h using the corresponding “cur_floor_level” instance variable from our g.cur_char to use the corresponding terrain_grid in our already defined g.master_level_ar.
+
+We then call scr_start_game().
+
+
+
+scr_save_file():
+	
+	--Save all of the relevant meta game data for this game as a struct.
+
+	-- We go through the file structure of the currently saved game name on hard disk, and completely wipe everything in it, deleting files but leaving the directory intact.
+
+	--We then iterate through our g.master_struct_ar, saving all of the structs therein as json_strings with: file_text_write_string(file, json_stringify(team_json_ar)); as we iterate along, we are also creating new directories which represent the dungeon_integer, floor_integer, and team_integer within the file structure, respectively.
+
+	--We then iterate through our g.global.master_level_ar (again creating directories for the appropriate dungeon and floor where appropraite), and for each floor we create a level_data struct, which is a struct that has two properties, each an instance scope variable containing a grid id, terrain_grid and los_grid, and we write this struct as a json string into a grid_data json file with:  file_text_write_string(file, json_stringify(level_data_struct));
+		Note that we don't bother saving the instance grid as a json string during this process, because we instantiate and recreate the global.inst_grid with scr_load_file anyway, and if we were to save it here, we would actually end up with two identical sets of every instance. 
+
+	
+	
