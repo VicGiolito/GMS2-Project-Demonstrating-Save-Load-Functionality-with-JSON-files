@@ -429,16 +429,20 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
 	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
 	var bg_c = c_gray;
-	var bg_max_w = cur_char_spr_origin_x+slot_w*4;
+	var bg_max_w = cur_char_spr_origin_x+slot_w*9;
 	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*11)+bg_offset_y;
-	var bg_max_h = bg_y+(slot_h*8);
+	var bg_max_h = bg_y+(slot_h*6);
+	
+	draw_set_alpha(.7);
 		
 	draw_rectangle_color(bg_offset_x, bg_y, bg_max_w, bg_y+bg_max_h, bg_c, bg_c ,bg_c, bg_c, false);
 		
 	draw_rectangle_color(bg_offset_x+inner_frame_offset, bg_y+inner_frame_offset, bg_max_w-inner_frame_offset, bg_y+bg_max_h-inner_frame_offset, c_white, c_white ,c_white, c_white, true);
-		
-	//Define vars:
-	head_slot_x = bg_offset_x+(bg_max_w / 2);
+	
+	draw_set_alpha(1);
+	
+	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
+	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
 	head_slot_y = bg_y+inner_frame_offset+slot_h/2;
 }
 

@@ -16,37 +16,18 @@ function scr_return_struct_id(grid_x,grid_y,struct_type_enum,floor_int,dungeon_i
 	//If there's no array here at all, then there's no struct ids here, return false:
 	if is_array(struct_ar) == false return false;
 	
-	var struct_id, item_struct_id;
+	var struct_id;
 	
 	for(var i = 0; i < array_length(struct_ar); i++) {
 		
 		struct_id = struct_ar[i];
 		
-		//Only items will be stored in a nested array here.
-		if is_array(struct_id) {
-			for(var yy = 0; yy < array_length(struct_id); yy++) {
-				
-				item_struct_id = struct_id[yy];
-				
-				if struct_type_enum == struct_type.any {
-					return item_struct_id;	
-				}
-		
-				else if item_struct_id.struct_enum == struct_type_enum {
-					return item_struct_id
-				}
-			}
+		if struct_type_enum == struct_type.any {
+			return struct_id;	
 		}
 		
-		//This is not an array:
-		else {
-			if struct_type_enum == struct_type.any {
-				return struct_id;	
-			}
-		
-			else if struct_id.struct_enum == struct_type_enum {
-				return struct_id;
-			}
+		else if struct_id.struct_enum == struct_type_enum {
+			return struct_id;
 		}
 	}
 	

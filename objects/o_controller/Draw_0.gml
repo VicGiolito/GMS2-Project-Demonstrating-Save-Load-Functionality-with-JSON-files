@@ -11,7 +11,8 @@
 //Remember: those structs with their draw_sprite() function executed lowest in this event
 //will be drawn over those structs that are higher in this event
 
-if global.cur_game_state == game_state.main || global.cur_game_state == game_state.pc_plotting_path {
+if global.cur_game_state == game_state.main || global.cur_game_state == game_state.pc_plotting_path || 
+global.cur_game_state == game_state.access_inv {
 	
 	#region Go through our building team arrays and display buildings AND loot drops that are on the current floor:
 	
@@ -53,6 +54,8 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 	
 	#region Items - we want our items drawn below chars but above buildings - that's why they're drawn here:
 	
+	//Note: items are drawn at half scale
+	
 	if ds_exists(global.ds_map_revealed_items_on_grid, ds_type_map) && ds_map_size(global.ds_map_revealed_items_on_grid) > 0 {
 		
 		//Define first key:
@@ -62,18 +65,17 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 			
 			ar_at_coord = global.ds_map_revealed_items_on_grid[? key];
 			
-			
 			if is_array(ar_at_coord) {
 				ar_len = array_length(ar_at_coord);
+				item_struct_id = ar_at_coord[0];
 				if ar_len > 0 {
 					//If this array has a length of 1, draw the corresponding item struct sprite:
 					if ar_len == 1 {
-						item_struct_id = ar_at_coord[0];
-						draw_sprite(asset_get_index(item_struct_id.item_spr_str), 0, item_struct_id.item_room_x, item_struct_id.item_room_y);
+						draw_sprite_ext(asset_get_index(item_struct_id.item_spr_str), 0, item_struct_id.item_room_x, item_struct_id.item_room_y, .5, .5, 0, c_white, 1);
 					}
 					//Just draw our generic 'multiple items' sprite:
 					else {
-						draw_sprite(spr_item_loot, 0, item_struct_id.item_room_x, item_struct_id.item_room_y);	
+						draw_sprite_ext(spr_item_loot, 0, item_struct_id.item_room_x, item_struct_id.item_room_y, .5, .5, 0, c_white, 1);	
 					}
 				}	
 			}

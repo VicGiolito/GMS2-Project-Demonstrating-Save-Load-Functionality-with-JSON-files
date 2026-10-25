@@ -14,6 +14,7 @@
   "For3D": false,
   "frames": [
     {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"81a93937-9f60-42fe-9e7b-795fc3488ef3",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"f072f82f-d21b-4af4-b266-31666064034c",},
   ],
   "gridX": 0,
   "gridY": 0,
@@ -23,7 +24,7 @@
     {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"379c57fc-c0a4-492c-8624-5781c0660835","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
-  "origin": 0,
+  "origin": 4,
   "parent": {
     "name": "Armor",
     "path": "folders/Sprites/Inventory/Armor.yy",
@@ -43,7 +44,7 @@
     "events": {"resourceType":"KeyframeStore<MessageEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "eventStubScript": null,
     "eventToFunction": {},
-    "length": 1.0,
+    "length": 2.0,
     "lockOrigin": false,
     "moments": {"resourceType":"KeyframeStore<MomentsEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "playback": 1,
@@ -55,12 +56,13 @@
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
             {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"81a93937-9f60-42fe-9e7b-795fc3488ef3","path":"sprites/spr_head_featherhat/spr_head_featherhat.yy",},},},"Disabled":false,"id":"f9166fb0-7913-4f71-9967-fd6d30af2321","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"f072f82f-d21b-4af4-b266-31666064034c","path":"sprites/spr_head_featherhat/spr_head_featherhat.yy",},},},"Disabled":false,"id":"e944f2f7-f0b6-4844-81df-ecf51e2151e0","IsCreationKey":false,"Key":1.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 0,
-    "yorigin": 0,
+    "xorigin": 32,
+    "yorigin": 32,
   },
   "swatchColours": null,
   "swfPrecision": 2.525,

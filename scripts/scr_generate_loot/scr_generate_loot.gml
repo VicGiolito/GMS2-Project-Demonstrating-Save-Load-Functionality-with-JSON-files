@@ -8,9 +8,9 @@ as well as the global.master_item_ar.
 
 function scr_generate_loot(dungeon_index,floor_index){
 	
-	#region Place enemy chars:
+	#region Place items:
 	
-	var failsafe_val = 0, failsafe_max = 10000, loot_count = 0, max_loot = irandom_range(4,8);
+	var failsafe_val = 0, failsafe_max = 10000, loot_count = 0, max_loot = irandom_range(12, 16);
 
 	do {
 		var grid_x = irandom_range(0,global.grid_w-1);
@@ -19,14 +19,33 @@ function scr_generate_loot(dungeon_index,floor_index){
 		//Make sure terrain is not a wall:
 		if global.master_level_ar[dungeon_index][floor_index][GRID_TERRAIN][# grid_x,grid_y] < terrain_type.wall_dungeon {
 			
-			//Make sure there's not already another struct here:
-			var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace);
+			//Make sure we're not placing items on top of buildings for now:
+			var struct_type_ar = [];
+			struct_type_ar = scr_return_struct_type_at_cell(grid_x, grid_y, floor_index, dungeon_index);
 			
-			if scr_return_struct_id(grid_x, grid_y, struct_type.any, floor_index, dungeon_index) == false {
+			var valid_add = true;
 			
-				loot_count++;
+			//Iterate through, look for struct type enums of the builing struct type:
+			if array_length(struct_type_ar) > 0 {
+				for(var ii = 0; ii < array_length(struct_type_ar); ii++) {
+					if struct_type_ar[ii] == struct_type.building {
+						valid_add = false;
+						break;
+					}
+				}
+			}
+			
+			struct_type_ar = -1; //Good practice, though unnecessary
+			
+			if valid_add {
 				
-				new Item(ran_item_enum, floor_index, dungeon_index, grid_x, grid_y, false);
+				var ran_stack_quantity = choose(1,5);
+				
+				repeat(ran_stack_quantity) {
+					loot_count++;
+					var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace);
+					new Item(ran_item_enum, floor_index, dungeon_index, grid_x, grid_y, false);
+				}
 			}
 		}
 	

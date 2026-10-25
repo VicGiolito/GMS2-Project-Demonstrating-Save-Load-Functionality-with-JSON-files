@@ -28,7 +28,10 @@
   "physicsStartAwake": true,
   "properties": [],
   "solid": false,
-  "spriteId": null,
+  "spriteId": {
+    "name": "spr_drop_item_frame",
+    "path": "sprites/spr_drop_item_frame/spr_drop_item_frame.yy",
+  },
   "spriteMaskId": null,
   "visible": true,
 }

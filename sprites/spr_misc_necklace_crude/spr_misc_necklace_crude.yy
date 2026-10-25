@@ -14,6 +14,7 @@
   "For3D": false,
   "frames": [
     {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"81a93937-9f60-42fe-9e7b-795fc3488ef3",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"02bf71d7-55f9-4830-8e97-f317dc2f0b98",},
   ],
   "gridX": 0,
   "gridY": 0,
@@ -23,7 +24,7 @@
     {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"379c57fc-c0a4-492c-8624-5781c0660835","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
-  "origin": 0,
+  "origin": 4,
   "parent": {
     "name": "Misc",
     "path": "folders/Sprites/Inventory/Misc.yy",
@@ -43,7 +44,7 @@
     "events": {"resourceType":"KeyframeStore<MessageEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "eventStubScript": null,
     "eventToFunction": {},
-    "length": 1.0,
+    "length": 2.0,
     "lockOrigin": false,
     "moments": {"resourceType":"KeyframeStore<MomentsEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "playback": 1,
@@ -55,12 +56,13 @@
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
             {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"81a93937-9f60-42fe-9e7b-795fc3488ef3","path":"sprites/spr_misc_necklace_crude/spr_misc_necklace_crude.yy",},},},"Disabled":false,"id":"35ca5045-8910-494a-8f33-d687c31004a0","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"02bf71d7-55f9-4830-8e97-f317dc2f0b98","path":"sprites/spr_misc_necklace_crude/spr_misc_necklace_crude.yy",},},},"Disabled":false,"id":"1910b66a-3e1d-427f-9c5f-d55968e3ee76","IsCreationKey":false,"Key":1.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 0,
-    "yorigin": 0,
+    "xorigin": 32,
+    "yorigin": 32,
   },
   "swatchColours": null,
   "swfPrecision": 2.525,

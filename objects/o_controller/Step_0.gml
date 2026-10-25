@@ -562,6 +562,24 @@ if debug_key_pressed {
 
 #endregion
 
+#region Game_state == access inv:
+
+else if global.cur_game_state == game_state.access_inv {
+	
+	if keyboard_check_released(ord("I")) && global.wait {
+		
+		//Compensate for every use case with the mouse item:
+		global.mouse_struct_item = -1;
+		
+		global.cur_game_state = game_state.main;
+		instance_destroy(o_inv_slot);
+		
+		scr_reset_wait(1);
+	}
+}
+
+#endregion
+
 #region Game state == main:
 
 else if global.cur_game_state == game_state.main  {
@@ -572,16 +590,9 @@ else if global.cur_game_state == game_state.main  {
 	
 		if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 		
-			//Switching out of inv screen:
-			if global.cur_game_state == game_state.access_inv {
-				global.cur_game_state = game_state.main;
-				instance_destroy(o_inv_slot);
-			} 
-			//switching into inv screen:
-			else if global.cur_game_state != game_state.access_inv {
-				global.cur_game_state = game_state.access_inv;
-				alarm[2] = 2; //calls scr_setup_inv_slots
-			}
+			global.cur_game_state = game_state.access_inv;
+			alarm[2] = 2; //calls scr_setup_inv_slots
+			
 			scr_reset_wait(1);
 		}
 	}

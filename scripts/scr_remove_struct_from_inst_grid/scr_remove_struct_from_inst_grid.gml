@@ -1,5 +1,7 @@
 
-/* Returns true if successful
+/* 
+
+Returns true if successful
 
 returns false if the struct_id_to_remove could not be found, or if there was no array at the specified
 coordinates.

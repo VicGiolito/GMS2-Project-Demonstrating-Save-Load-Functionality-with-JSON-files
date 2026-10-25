@@ -35,9 +35,9 @@ function scr_setup_equip_slots(char_id){
 		contents_id = char_id.equip_slot_ar[slot_ind];
 	}
 	
-	//RH slot:
+	//LH slot:
 	with(instance_create_layer(head_slot_x+slot_w,head_slot_y+slot_h,"layer_inv",o_inv_slot)) {
-		inv_slot_type = inv_slot.rh;
+		inv_slot_type = inv_slot.lh;
 		slot_ind = inv_slot_type;
 		
 		contents_id = char_id.equip_slot_ar[slot_ind];

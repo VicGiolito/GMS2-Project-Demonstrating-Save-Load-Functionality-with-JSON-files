@@ -27,38 +27,40 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 				//Add corresponding starting equipment for the most recently created pc; we definitely need to script this process:
 				var pc_struct_id = global.pc_team_ar[array_length(global.pc_team_ar)-1];
 				
+				var pc_grid_x = pc_struct_id.char_grid_x, pc_grid_y = pc_struct_id.char_grid_y;
+				
 				if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.roderick {
-					var item_struct = new Item(item_enum.armor_head_feather_hat, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_head_feather_hat, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.head] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.kurgun {
-					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.acheron {
-					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.thade {
-					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int); 
+					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true); 
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.ulric {
-					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.neleera {
-					var item_struct = new Item(item_enum.armor_body_leather_vest, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_body_leather_vest, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.zool {
-					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int);
+					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 				}

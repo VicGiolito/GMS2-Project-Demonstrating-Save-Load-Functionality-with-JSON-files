@@ -14,6 +14,7 @@
   "For3D": false,
   "frames": [
     {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"81a93937-9f60-42fe-9e7b-795fc3488ef3",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"cd022cad-472f-421e-9b01-6ace5528d854",},
   ],
   "gridX": 0,
   "gridY": 0,
@@ -23,7 +24,7 @@
     {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"379c57fc-c0a4-492c-8624-5781c0660835","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
-  "origin": 0,
+  "origin": 4,
   "parent": {
     "name": "Armor",
     "path": "folders/Sprites/Inventory/Armor.yy",
@@ -43,7 +44,7 @@
     "events": {"resourceType":"KeyframeStore<MessageEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "eventStubScript": null,
     "eventToFunction": {},
-    "length": 1.0,
+    "length": 2.0,
     "lockOrigin": false,
     "moments": {"resourceType":"KeyframeStore<MomentsEventKeyframe>","resourceVersion":"1.0","Keyframes":[],},
     "playback": 1,
@@ -55,12 +56,13 @@
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
             {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"81a93937-9f60-42fe-9e7b-795fc3488ef3","path":"sprites/spr_body_furs_crude/spr_body_furs_crude.yy",},},},"Disabled":false,"id":"459fac4d-f536-4967-b4c7-32a8bdc83050","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"cd022cad-472f-421e-9b01-6ace5528d854","path":"sprites/spr_body_furs_crude/spr_body_furs_crude.yy",},},},"Disabled":false,"id":"2e878fd4-d2b2-4620-acc2-bf78f9fa586b","IsCreationKey":false,"Key":1.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 0,
-    "yorigin": 0,
+    "xorigin": 32,
+    "yorigin": 32,
   },
   "swatchColours": null,
   "swfPrecision": 2.525,

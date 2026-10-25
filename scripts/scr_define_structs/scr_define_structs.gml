@@ -503,8 +503,7 @@
 			array_push(global.neutral_team_ar, self);	
 		}
 		
-		//show_debug_message("Character struct constructor: Character struct with id: "+string(self)+", gridX: "+
-		//string(char_grid_x)+", gridY: "+string(char_grid_y) );
+		d($"Character struct constructor: Spawned character struct with name: {char_stats_ar[char_stats.name]} at gridX: {char_grid_x}, gridY: {char_grid_y}." );
 		
 		show_revealed_spr_boolean = false; //This will indicate whether or not we draw the exclamation point over newly revealed enemies
 		
@@ -875,33 +874,6 @@
 				value = 1;
 				weight_val = 125;
 				is_rock = true;
-			break;
-			
-			case item_enum.food_corpse_humanoid_raw:
-				item_name = "Raw Humanoid Corpse";
-				dura_cur = 8;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "The unfortunate corpse of some humanoid creature.";
-				value = 5;
-				weight_val = 150;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 3;
-				causes_food_poisoning = true;
-			break;
-			
-			case item_enum.food_corpse_humanoid_cooked:
-				item_name = "Cooked Humanoid Corpse";
-				dura_cur = 15;
-				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
-				description = "The cooked corpse of some unfortunate humanoid creature.";
-				value = 15;
-				weight_val = 125;
-				is_food = true;
-				contains_meat = true;
-				satiation_val = 6;
 			break;
 			
 			case item_enum.wep_staff_two_hand_rusty:
@@ -1339,14 +1311,13 @@
 		
 		//Add to the appropriate grid location - but only if this item is currently unequipped:
 		if is_in_inv_boolean == false {
-			if is_array(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y]) {
-				array_push(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y], self);
+			if is_array(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][# item_grid_x, item_grid_y]) {
+				array_push(global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][# item_grid_x, item_grid_y], self);
 			}
 			else {
-				global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][item_grid_x][item_grid_y] = array_create(1, self);	
+				global.master_level_ar[cur_dungeon_enum][floor_int][GRID_INST][# item_grid_x, item_grid_y] = array_create(1, self);	
 			}
 		}
-		
 		
 		show_debug_message("Constructor event for Item struct: Item struct instanitated with item_name: "+string(self.item_name) );
 	}
@@ -1379,16 +1350,6 @@
 		
 		building_grid_x = spawn_grid_x;
 		building_grid_y = spawn_grid_y;
-		
-		//Make sure we snap our coordinates to the nearest grid cell when this is created:
-		var pos_ar = [];
-		pos_ar = scr_convert_grid_to_room_coordinates(pos_ar,building_grid_x,building_grid_y);
-		
-		building_room_x = pos_ar[0];
-		building_room_y = pos_ar[1];
-		pos_ar = -1;
-		
-		scr_add_struct_to_inst_grid(self,building_grid_x,building_grid_y,cur_floor_level,cur_dungeon_ind);
 		
 		switch(enum_building_type) {
 			
@@ -1429,6 +1390,16 @@
 				show_debug_message("New Building constructor: enum_building_type: "+string(enum_building_type)+" was not captured by our switch-case.");
 			break;
 		}
+		
+		//Make sure we snap our coordinates to the nearest grid cell when this is created:
+		var pos_ar = [];
+		pos_ar = scr_convert_grid_to_room_coordinates(pos_ar,building_grid_x,building_grid_y);
+		
+		building_room_x = pos_ar[0];
+		building_room_y = pos_ar[1];
+		pos_ar = -1;
+		
+		scr_add_struct_to_inst_grid(self, building_grid_x, building_grid_y, cur_floor_level, cur_dungeon_ind);
 		
 		//Add to g.master_struct_ar:
 		if building_team_enum == char_team.pc {

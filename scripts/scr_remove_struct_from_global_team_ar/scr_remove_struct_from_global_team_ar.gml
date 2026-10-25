@@ -1,4 +1,10 @@
 
+/*
+
+Works for items and buildings too.
+
+
+*/
 
 function scr_remove_struct_from_global_team_ar(struct_id){
 	

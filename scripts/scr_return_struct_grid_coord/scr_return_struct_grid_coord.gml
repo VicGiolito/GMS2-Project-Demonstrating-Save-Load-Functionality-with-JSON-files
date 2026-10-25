@@ -1,14 +1,13 @@
 /*
-	Returns false if the struct is an item, which don't have grid coordinates, unless they're currently a loot_drop BUILDING
-
-
+	
 
 */
 
 function scr_return_struct_grid_coord(struct_id, grid_coord_ar){
 	
 	if struct_id.struct_enum == struct_type.item {
-		return false; //Items don't have a grid_x and y coordinate (unless they are currently existing as a loot_drop building).	
+		array_push(grid_coord_ar, struct_id.item_grid_x, struct_id.item_grid_y);
+		return grid_coord_ar;
 	}
 	
 	else if struct_id.struct_enum == struct_type.character {

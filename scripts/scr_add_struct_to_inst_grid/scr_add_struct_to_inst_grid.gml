@@ -1,6 +1,16 @@
 
+/* 
 
-function scr_add_struct_to_inst_grid(struct_id_to_add,grid_x,grid_y,floor_ind_to_add_to,dungeon_int){
+When ADDING to an already existing array at that grid coordinate, we make sure that there are no additional
+structs of the same type in the array first, to avoid adding multiple buildings or characters to the same
+cell; if it's an item, we just add it, we don't need to worry about that.
+
+
+
+*/
+
+
+function scr_add_struct_to_inst_grid(struct_id_to_add, grid_x, grid_y, floor_ind_to_add_to, dungeon_int){
 	
 	var ar_at_grid = global.master_level_ar[dungeon_int][floor_ind_to_add_to][GRID_INST][# grid_x,grid_y];
 	
@@ -12,15 +22,20 @@ function scr_add_struct_to_inst_grid(struct_id_to_add,grid_x,grid_y,floor_ind_to
 	", grid_y == "+string(grid_y) );
 	
 	if is_array(ar_at_grid) {
+		
 		var ar_len = array_length(ar_at_grid), struct_id, invalid_add = false;
-		for(var i = 0; i < ar_len; i++) {
-			struct_id = ar_at_grid[i];
-			if adding_struct_type == struct_id.struct_enum {
-				invalid_add = true;
-				show_debug_message($"scr_add_struct_to_inst_grid: there was already another struct at this location with the struct_enum of: {struct_id.struct_enum}; it is the same type as our adding_struct_type struct_enum: {adding_struct_type}; failed to add and returned false.");
-				return false;
+		
+		if adding_struct_type != struct_type.item { //We only bother checking this if this is NOT an item.
+			for(var i = 0; i < ar_len; i++) {
+				struct_id = ar_at_grid[i];
+				if adding_struct_type == struct_id.struct_enum {
+					invalid_add = true;
+					show_debug_message($"scr_add_struct_to_inst_grid: there was already another struct at this location with the struct_enum of: {struct_id.struct_enum}; it is the same type as our adding_struct_type struct_enum: {adding_struct_type}; failed to add and returned false.");
+					return false;
+				}
 			}
 		}
+		
 		//We're good to add:
 		if !invalid_add {
 			array_push(global.master_level_ar[dungeon_int][floor_ind_to_add_to][GRID_INST][# grid_x,grid_y],struct_id_to_add);

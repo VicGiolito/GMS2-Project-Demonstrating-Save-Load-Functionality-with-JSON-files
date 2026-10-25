@@ -29,9 +29,12 @@ function scr_destroy_struct(struct_id){
 	
 	scr_remove_struct_from_global_team_ar(struct_id);
 	
+	//Defunct - not using this array anymore:
+	/*
 	if struct_id.struct_enum == struct_type.character {
-		scr_delete_val_from_ar(o_controller.revealed_enemies_ar,struct_id,"scr_destroy_struct for struct with name of: "+string(struct_name) );
+		scr_delete_val_from_ar(o_controller.revealed_enemies_ar, struct_id,"scr_destroy_struct for struct with name of: "+string(struct_name) );
 	}
+	*/
 	
 	delete struct_id;
 }
