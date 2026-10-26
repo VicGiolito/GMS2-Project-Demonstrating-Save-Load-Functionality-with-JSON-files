@@ -35,11 +35,26 @@ Spit-balling character stats and their effects; it is presumed that each stat is
 	Strength: increases carrying capacity and melee damage, as well as natural hit point regeneration.
 	Dexterity: increases ranged damage, dodge chance, and critical hit chance.
 	Constitution: increases maximum stamina and hit points, as well as natural stamina regeneration.
-	Wisdom: affects maximum skill points, mana points, as well as mana regeneration; every 2-4 points increases a .
+	Wisdom: affects maximum skill points, mana points, as well as mana regeneration; every 2-4 points increases the maximum number of charges for an ability (this may vary per ability).
 	Intelligence: increases damage and hit chance of magic abilities, and the regeneration rate of skill points.
 	
+	Dodge chance and crit chance: both self explanatory.
+
+I foresee the following damage types (no considerations will be made as to whether a damage type is 'physical' or 'magical'--only the damage type itself matters):
+	Physical: Crushing; slashing; piercing.
+	Magical: ice, fire, poison, dark magic, light magic, arcane (your general 'magic' damage).
+
+	Characters have resistances that match these, either positive (resistant) or negative (vulnerable).
+	I don't really want to fuck with 'penetration' values at all—that just introduces too much complexity for too little reward.
+	Instead, certain weapon attacks will simply ignore protection values (dagger attacks, for instance), or will apply a debuff that reduces the target's resistances, potentially making them 'vulnerable' if these resistances go below 0%, adding extra damage.
+	
+	Currently leaning toward removing armor “durability” values completely – armor will provide flat damage reduction values (PV, protective value) from now on, specific to the body part they cover; and, in more powerful examples, they also provide resistances–the reason for this choice being, the entire game is all about forward momentum and moving quickly from one dungeon to the next—having armor that constantly needs to be replaced or repaired works against this theme and is also just tedious and annoying. 
+	This also means that we will need to utilize much larger health pools and damage values in order to fully maximize the benefits of resistances and penetration values—your average character should have 100 hp, for instance—and let's say that your average attack does about 20-30 damage not withstanding resistances—so each exchange with an enemy should only be about 4-5 hits back and forth, on average.
+
 	Weapon and misc. skills; their effects only apply when the corresponding weapon type is equipped; these ranges will be higher (1-100): 
-	Clubs & Maces: Increases hit chance and every 2 points increases stun chance by 1%.
+	Clubs & Maces: Increases hit chance and every 2 points increases stun chance by 1%. Basic skills:
+		Bludgeon: No CD, basic attack, small stun chance that increases with skill level.
+		
 	Swords: Increases hit and every 2 points increases riposte chance by 1%.
 	Shields: increases dodge chance, and every 2 points increases all physical resistances by 1%.
 	Staffs: increases hit chance and and every 2 points increases mana regeneration by 1%.
@@ -48,14 +63,9 @@ Spit-balling character stats and their effects; it is presumed that each stat is
 	Hammers: increases hit chance and every 1 point increases effectiveness of 'armor rend' skill by 1 (armor rend reduces the target's physical resistances by 1).
 	Traps: increases trap detection and disarmament chance.
 
-	Dodge chance and crit chance: both self explanatory.
+	Just like Battle brothers, each weapon type provides a few weapon attacks associated with that weapon (ex: most daggers provide a “armor gap” skill that bypasses armor protective value, etc.).
+	Each weapon type 
 
-I foresee the following damage types (no considerations will be made as to whether a damage type is 'physical' or 'magical'--only the damage type itself matters):
-	Physical: Crushing; slashing; piercing.
-	Magical: ice, fire, poison, arcane (your general 'magic' damage).
 
-	Characters have resistances that match these, either positive (resistant) or negative (vulnerable).
-
-	
 
 In general, I still want every dungeon to have a 

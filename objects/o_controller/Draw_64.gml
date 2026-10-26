@@ -441,6 +441,46 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	draw_set_alpha(1);
 	
+	//Start drawing our stats for the cur_char:
+	if global.cur_char != -1 && is_struct(global.cur_char) {
+		
+		var txt_origin_x = bg_offset_x*2, txt_origin_y = bg_y+bg_offset_y, txt_c = c_white;
+		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
+		
+		//Name, HP, Mana, Morale:
+		draw_text_color(txt_origin_x, txt_origin_y,$"\"{global.cur_char.char_stats_ar[char_stats.name]}\"",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"H.P.: {global.cur_char.char_stats_ar[char_stats.hp_cur]}/{global.cur_char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {global.cur_char.char_stats_ar[char_stats.mana_cur]}/{global.cur_char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {global.cur_char.char_stats_ar[char_stats.morale_cur]}/{global.cur_char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		//Combat related stats: 
+		
+		//Armor values:
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {armor_cur_head} / {armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {armor_cur_head} / {armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {armor_cur_hands} / {armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {armor_cur_feet} / {armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		
+		//melee and ranged to_hit, melee and ranged dmg, 
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {base_melee_min_dmg} - {base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {base_ranged_min_dmg} - {base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+	
+		//Resistences and penetrations:
+		
+	}
+	
 	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
 	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
 	head_slot_y = bg_y+inner_frame_offset+slot_h/2;

@@ -57,6 +57,10 @@
 		
 		char_stats_ar[char_stats.name] = "undefined";
 		
+		//Define resistences/penetrations:
+		res_crushing = 0;
+		
+		
 		#region Character stats:
 		
 		switch(char_class_enum) {
@@ -437,7 +441,10 @@
 			base_melee_tohit_mod = (char_stats_ar[char_stats.cur_agil]*4)+73;
 		}
 		
-		//Define our 'total' stats:
+		//Define our 'total' stats - Question: why does this category of stats even exist? 
+		//Answer: I suppose so we can stack different status effects.
+		//But really, it's probably easier and more intuitive just to use different variables for each status effect - easier to track that way
+		/*
 		total_armor_pen = base_armor_pen; //This value subtracts from the target's 'physical_resist' value; the target's physical resist cannot go below zero in this way.
         total_magic_pen = base_magic_pen; //This value subtracts from the target's 'magical_resist' value; the target's magic resist cannot go below zero in this way.
         total_physical_resist = base_physical_resist;
@@ -451,6 +458,7 @@
         total_ranged_max_dmg = base_ranged_max_dmg;
         total_melee_tohit = base_melee_tohit_mod;
 		total_ranged_tohit = base_ranged_tohit_mod;
+		*/
 		
 		//Define armor variables:
 		armor_cur_head = 0;
