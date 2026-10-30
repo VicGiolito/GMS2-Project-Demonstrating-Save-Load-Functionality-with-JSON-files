@@ -203,5 +203,16 @@ global.mouse_struct_item = -1;
 
 global.max_inv_slots_per_page = 9;
 
+items_on_ground_box_x = 0;
+items_on_ground_box_y = 0;
+
+items_on_ground_box_w = 0;
+items_on_ground_box_h = 0;
+
+items_on_ground_ar = -1;
+
+
+draw_inv_for_load_once = true; //Also calls scr_setup_items_on_ground_boxes() when it's var is switched at the end of the draw_gui event
+
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 

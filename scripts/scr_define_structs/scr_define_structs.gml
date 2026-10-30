@@ -433,6 +433,9 @@
 		max_action_points = cur_action_points;
 		max_move_points = cur_move_points;
 		
+		base_crit_chance = 0;
+		cur_crit_chance = 0;
+		
 		//Adjust baseToHitMod for classes with very low agil, and other class-specific stats:
 		if(char_class_enum == char_class.kurgun) {
 			base_melee_tohit_mod = (char_stats_ar[char_stats.cur_agil]*4)+43;
@@ -522,7 +525,7 @@
 	
 	#endregion
 	
-	#region Our item struct:
+	#region Our item struct: NOTE: STRUCTS DO NOT CALL THEIR CONSTRUCTOR EVENT WHEN INSTANTIATED WITH JSON_PARSE
 	
 	//grid_x and grid_y can be -1 if item is being spawned inside of a char's inventory:
 	function Item(item_class_enum, floor_int, cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean) constructor

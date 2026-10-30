@@ -33,6 +33,12 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					var item_struct = new Item(item_enum.armor_head_feather_hat, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.head] = item_struct;
+					
+					//Just as a debug feature, add a few items to this starting position, just to test our items_on_ground_ar:
+					var ran_quant = irandom_range(3, 27);
+					repeat(ran_quant) {
+						new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, false);	
+					}
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.kurgun {
 					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);

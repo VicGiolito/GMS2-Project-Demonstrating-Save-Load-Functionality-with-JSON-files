@@ -18,7 +18,7 @@ function scr_add_struct_to_inst_grid(struct_id_to_add, grid_x, grid_y, floor_ind
 	
 	var struct_name = scr_return_struct_name(struct_id_to_add);
 	
-	show_debug_message($"Entering scr_add_struct_to_inst_grid now for struct with name of: {struct_name}, its adding_struct_type (struct_enum) == "+string(adding_struct_type)+", grid_x = "+string(grid_x)+
+	d($"Entering scr_add_struct_to_inst_grid now for struct with name of: {struct_name}, its adding_struct_type (struct_enum) == "+string(adding_struct_type)+", grid_x = "+string(grid_x)+
 	", grid_y == "+string(grid_y) );
 	
 	if is_array(ar_at_grid) {

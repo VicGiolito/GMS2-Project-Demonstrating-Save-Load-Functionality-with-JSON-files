@@ -10,7 +10,11 @@ coordinates.
 
 function scr_remove_struct_from_inst_grid(struct_id_to_remove,grid_x,grid_y,floor_ind_to_remove_from,dungeon_int, called_from_str = "Called from string not defined"){
 	
-	var ar_to_check = global.master_level_ar[dungeon_int][floor_ind_to_remove_from][GRID_INST][# grid_x,grid_y];
+	d($"Entering scr_remove_struct_from_inst_grid: it was called from: {called_from_str}, for struct_id_to_remove: {struct_id_to_remove}, at grid_x: {grid_x}, {grid_y}.");
+	
+	var inst_grid = global.master_level_ar[dungeon_int][floor_ind_to_remove_from][GRID_INST];
+	
+	var ar_to_check = inst_grid[# grid_x,grid_y];
 	
 	if is_array(ar_to_check) {
 	
@@ -21,7 +25,16 @@ function scr_remove_struct_from_inst_grid(struct_id_to_remove,grid_x,grid_y,floo
 			struct_id = ar_to_check[i];
 			
 			if struct_id == struct_id_to_remove {
-				array_delete(global.master_level_ar[dungeon_int][floor_ind_to_remove_from][GRID_INST][# grid_x,grid_y],i,1);
+				array_delete(ar_to_check,i,1);
+				
+				//If, after deleting this index, the array is empty, then delete it:
+				if array_length(ar_to_check) == 0 {
+					ar_to_check = 0;	
+				}
+				
+				inst_grid[# grid_x, grid_y] = ar_to_check; //ar_to_check has been modified, we need to update the 
+				
+				
 				return true;
 			}
 		}

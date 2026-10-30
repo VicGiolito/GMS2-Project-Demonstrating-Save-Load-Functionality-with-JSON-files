@@ -40,11 +40,18 @@ if global.cur_game_state == game_state.main {
 
 #region Logic for game_state == save_game:
 
-if global.cur_game_state == game_state.save_game {
+//Currently only brought here automatically from scr_start_game
+if global.cur_game_state == game_state.save_game { 
 	//If called here from scr_start_game, global.cur_dungeon_ind should == starting_dungeon, cur_floor_ind should == 0, global.prev_game_state = game_state.main
-	scr_save_file(global.cur_save_filename_str,global.cur_dungeon_ind,global.cur_floor_ind,save_game_called_from_str);
+	scr_save_file(global.cur_save_filename_str, global.cur_dungeon_ind, global.cur_floor_ind, save_game_called_from_str);
 	
-	global.cur_game_state = global.prev_game_state; //If called from scr_start_game then this will be game_state.main, as defined in scr_start_game
+	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character 
+	&& draw_inv_for_load_once == true {
+		global.cur_game_state = game_state.access_inv;	
+	}
+	else {
+		global.cur_game_state = global.prev_game_state; //If called from scr_start_game then this will be game_state.main, as defined in scr_start_game
+	}
 }
 
 #endregion
@@ -572,7 +579,9 @@ else if global.cur_game_state == game_state.access_inv {
 		global.mouse_struct_item = -1;
 		
 		global.cur_game_state = game_state.main;
-		instance_destroy(o_inv_slot);
+		if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
+		if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
+		if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
 		
 		scr_reset_wait(1);
 	}
@@ -586,12 +595,14 @@ else if global.cur_game_state == game_state.main  {
 	
 	#region Toggle inventory screen:
 	
-	if keyboard_check_released(ord("I")) && global.wait {
+	if keyboard_check_released(ord("I")) && global.wait && draw_inv_for_load_once == false {
 	
 		if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 		
 			global.cur_game_state = game_state.access_inv;
-			alarm[2] = 2; //calls scr_setup_inv_slots
+			
+			scr_setup_equip_slots(global.cur_char);
+			scr_setup_backpack_slots(global.cur_char);	
 			
 			scr_reset_wait(1);
 		}
@@ -803,6 +814,8 @@ else if global.cur_game_state == game_state.main  {
 						portal_used = true;
 					}
 					
+					#region Manually moving char between floors:
+					
 					if valid_key_press {
 						
 						//Remove from previous instance grid and struct_ar, add to new one:
@@ -894,6 +907,8 @@ else if global.cur_game_state == game_state.main  {
 							global.master_level_ar[global.prev_dungeon_ind] = 0;
 						}
 					}
+						
+					#endregion
 				}
 			}
 		}
@@ -955,9 +970,12 @@ else if global.cur_game_state == game_state.main  {
 						}
 					}
 				}
-						
+				
+				//We didn't bump into a wall or an enemy char:
 				if valid_move {
-							
+					
+					if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box); //reset
+					
 					if !swap_pos_boolean {
 						//show_debug_message("Moving and NOT swapping positions!");
 								
@@ -1010,7 +1028,15 @@ else if global.cur_game_state == game_state.main  {
 						scr_add_struct_to_inst_grid(char_struct_at_dest,char_struct_at_dest.char_grid_x,
 						char_struct_at_dest.char_grid_y,global.cur_floor_ind,global.cur_dungeon_ind);
 					}
-							
+					
+					//Movement has been performed, check for and build items_on_ground_ar:
+					items_on_ground_ar = -1; //Reset
+					items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+					
+					if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+						scr_setup_items_on_ground_boxes();
+					}
+					
 					//Update los and enemy visibility:
 					if !global.debug_disable_los {
 						

@@ -427,6 +427,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		
 	//Draw  background:
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
+	var half_slot_h = slot_h / 2, half_slot_w = slot_w / 2;
 	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
 	var bg_c = c_gray;
 	var bg_max_w = cur_char_spr_origin_x+slot_w*9;
@@ -434,9 +435,10 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var bg_max_h = bg_y+(slot_h*6);
 	
 	draw_set_alpha(.7);
-		
+	
+	//Draw bg:
 	draw_rectangle_color(bg_offset_x, bg_y, bg_max_w, bg_y+bg_max_h, bg_c, bg_c ,bg_c, bg_c, false);
-		
+	//Draw white inner frame:
 	draw_rectangle_color(bg_offset_x+inner_frame_offset, bg_y+inner_frame_offset, bg_max_w-inner_frame_offset, bg_y+bg_max_h-inner_frame_offset, c_white, c_white ,c_white, c_white, true);
 	
 	draw_set_alpha(1);
@@ -446,44 +448,84 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		
 		var txt_origin_x = bg_offset_x*2, txt_origin_y = bg_y+bg_offset_y, txt_c = c_white;
 		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
+		var char = global.cur_char;
 		
 		//Name, HP, Mana, Morale:
-		draw_text_color(txt_origin_x, txt_origin_y,$"\"{global.cur_char.char_stats_ar[char_stats.name]}\"",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y,$"\"{char.char_stats_ar[char_stats.name]}\"",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"H.P.: {global.cur_char.char_stats_ar[char_stats.hp_cur]}/{global.cur_char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"H.P.: {char.char_stats_ar[char_stats.hp_cur]}/{char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {global.cur_char.char_stats_ar[char_stats.mana_cur]}/{global.cur_char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {char.char_stats_ar[char_stats.mana_cur]}/{char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {global.cur_char.char_stats_ar[char_stats.morale_cur]}/{global.cur_char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {char.char_stats_ar[char_stats.morale_cur]}/{char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		//Combat related stats: 
 		
 		//Armor values:
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {armor_cur_head} / {armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {armor_cur_head} / {armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {armor_cur_hands} / {armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {armor_cur_feet} / {armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		
 		//melee and ranged to_hit, melee and ranged dmg, 
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {base_melee_min_dmg} - {base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {char.base_melee_min_dmg} - {char.base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {base_ranged_min_dmg} - {base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
-	
-		//Resistences and penetrations:
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		//Dodge, Crit Chance:
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_melee_evasion}%",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
 		
 	}
 	
 	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
 	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
 	head_slot_y = bg_y+inner_frame_offset+slot_h/2;
+	
+	items_on_ground_inner_frame_offset = inner_frame_offset;
+	
+	//This is the ORIGIN X AND Y for the BACKGROUND of the items on ground box... It is NOT the origin of the o_items_on_ground_boxes
+	//themselves; THAT is defined in scr_setup_items_on_ground_boxes
+	items_on_ground_box_y = bg_y+bg_max_h;
+	items_on_ground_box_x = bg_offset_x;
+	
+	//These are used to draw the BACKGROUND of the items on ground box
+	items_on_ground_box_w = (inner_frame_offset*2)+slot_w*9;
+	items_on_ground_box_h = (inner_frame_offset*2)+slot_h*3;
+}
+
+#endregion
+
+#region Draw our items on ground box frame:
+
+if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || 
+global.cur_game_state == game_state.view_bio {
+	
+	if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+		var bg_c = c_gray, inner_frame = c_white, inner_frame_offset = 8;
+		draw_set_alpha(.7);
+		
+		//Draw bg:
+		draw_rectangle_color(items_on_ground_box_x, items_on_ground_box_y, items_on_ground_box_x+items_on_ground_box_w, 
+		items_on_ground_box_y+items_on_ground_box_h, bg_c, bg_c ,bg_c, bg_c, false);
+		
+		//Draw white inner frame
+		draw_rectangle_color(items_on_ground_box_x+inner_frame_offset, items_on_ground_box_y+inner_frame_offset, 
+		items_on_ground_box_x+items_on_ground_box_w-inner_frame_offset, 
+		items_on_ground_box_y+items_on_ground_box_h-inner_frame_offset, inner_frame, inner_frame ,inner_frame, inner_frame, true);
+		draw_set_alpha(1);
+	}
+	
 }
 
 #endregion
@@ -507,7 +549,21 @@ if global.cur_game_state == game_state.save_game {
 var c = c_lime;
 draw_text_color(win_w-128,8,"FPS: "+string(fps_real),c,c,c,c,1);
 
+#region Setup items on ground boxes for first time, if applicable:
 
+if global.cur_game_state == game_state.access_inv && draw_inv_for_load_once {
+	draw_inv_for_load_once = false;
+	global.cur_game_state = game_state.main;
+	items_on_ground_ar = -1;
+	if is_struct(global.cur_char) {
+		items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+		if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+			scr_setup_items_on_ground_boxes();
+		}
+	}
+}
+
+#endregion
 
 
 

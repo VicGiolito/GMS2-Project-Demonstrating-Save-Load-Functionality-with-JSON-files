@@ -1,5 +1,4 @@
-/// @description Insert description here
-// You can write your code in this editor
+/// @description draw gui - o_item_on_ground_box
 
 if sprite_index != -1 {
 	draw_self();

@@ -6,6 +6,8 @@ this to work correctly
 	This defines g.*_grid global grid variables, setup terrain and LOS tilemaps, update LOS, center cam, change game_state:
 	
 	Important!: g.cur_dungeon_ind and g.cur_floor_ind must be properly defined for this script to work as intended.
+	
+	The global.cur_char is defined in: scr_define_cur_char_as_first_pc_in_dungeon(), in o_con step event, just before this script is called.
 */
 
 function scr_start_game(initial_dungeon_ind,initial_floor_ind){

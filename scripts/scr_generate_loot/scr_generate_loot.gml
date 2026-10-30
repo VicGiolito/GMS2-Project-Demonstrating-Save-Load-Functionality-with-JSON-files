@@ -10,7 +10,7 @@ function scr_generate_loot(dungeon_index,floor_index){
 	
 	#region Place items:
 	
-	var failsafe_val = 0, failsafe_max = 10000, loot_count = 0, max_loot = irandom_range(12, 16);
+	var failsafe_val = 0, failsafe_max = 10000, loot_count = 0, max_loot = irandom_range(16, 24);
 
 	do {
 		var grid_x = irandom_range(0,global.grid_w-1);
@@ -39,13 +39,14 @@ function scr_generate_loot(dungeon_index,floor_index){
 			
 			if valid_add {
 				
-				var ran_stack_quantity = choose(1,5);
+				var ran_stack_quantity = choose(1,5,10,27,35);
 				
 				repeat(ran_stack_quantity) {
-					loot_count++;
 					var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace);
 					new Item(ran_item_enum, floor_index, dungeon_index, grid_x, grid_y, false);
 				}
+				
+				loot_count++;
 			}
 		}
 	

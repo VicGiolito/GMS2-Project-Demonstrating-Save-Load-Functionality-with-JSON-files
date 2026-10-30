@@ -70,7 +70,7 @@ function scr_save_file(save_game_name_str,dungeon_ind,floor_ind, called_from_str
 					}
 				}
 				else {
-					show_debug_message($"scr_save_file: the following file_path_str doesn't exist: {file_path_str}, so we were unable to delete the associated struct_data file; this is likely just because there were no structs at the corresponding grid coordinates.");	
+					//show_debug_message($"scr_save_file: the following file_path_str doesn't exist: {file_path_str}, so we were unable to delete the associated struct_data file; this is likely just because there were no structs at the corresponding grid coordinates.");	
 				}
 			}
 		}

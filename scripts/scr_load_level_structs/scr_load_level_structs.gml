@@ -48,7 +48,9 @@ function scr_load_level_structs(filename_str,world_index, floor_index, called_fr
 			        
 					var char_json_str = json_struct_string_array[c_i];
         
-			        // Parse the individual character struct - this instantiates the struct
+			        // Parse the individual character struct - this instantiates the struct;
+					//it does NOT call the struct's CONSTRUCTOR event however! which is why we add them with
+					//scr_add_references_to_inst_grid
 			        var struct = json_parse(char_json_str);
         
 			        // Add to our array
@@ -60,9 +62,6 @@ function scr_load_level_structs(filename_str,world_index, floor_index, called_fr
 						show_debug_message($"Loaded Building struct with building_type_enum: {struct.building_ar[building_stats.type]}");
 					} else if struct.struct_enum == struct_type.item {
 						show_debug_message($"Loaded Item struct with item_name: {struct.item_name}");	
-					}
-					else if struct.struct_enum == struct_type.loot_drop {
-						show_debug_message($"Loaded loot_drop struct with loot_ar: {struct.loot_ar}");	
 					}
 					
 					//Add this struct to our corresponding global team array:

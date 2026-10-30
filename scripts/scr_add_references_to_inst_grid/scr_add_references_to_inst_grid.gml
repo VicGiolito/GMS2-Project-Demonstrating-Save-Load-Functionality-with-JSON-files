@@ -44,9 +44,9 @@ function scr_add_references_to_inst_grid(dungeon_ind,floor_ind, called_from_str)
 							grid_x = struct_id.building_grid_x;	
 							grid_y = struct_id.building_grid_y;
 						} 
-						else if struct_id.struct_enum == struct_type.loot_drop {
-							grid_x = struct_id.building_grid_x;	
-							grid_y = struct_id.building_grid_y;
+						else if struct_id.struct_enum == struct_type.item {
+							grid_x = struct_id.item_grid_x;	
+							grid_y = struct_id.item_grid_y;
 						} 
 						//It's not necessary to add items here (or any other structs thus far),
 						//as items are always represented on the map as a loot_drop struct, which is considered a building

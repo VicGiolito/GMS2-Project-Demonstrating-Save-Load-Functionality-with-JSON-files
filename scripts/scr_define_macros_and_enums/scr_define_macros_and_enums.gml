@@ -87,6 +87,7 @@ function scr_define_macros_and_enums(){
 		feet, 
 		hands,
 		backpack,
+		item_on_ground,
 		total_inv_slots
 	}
 	
@@ -373,7 +374,6 @@ function scr_define_macros_and_enums(){
 		armor_body_robes_crude,
 		armor_body_rags_crude,
 		armor_body_chainmail_crude,
-		armor_head_pillory,
 		armor_head_feather_hat,
 		armor_head_padded_cap,
 		armor_head_chainmail_coif_crude,
@@ -389,6 +389,8 @@ function scr_define_macros_and_enums(){
 		item_boulder_average,
 		item_boulder_small,
 		item_boulder_giant,
+		
+		armor_head_pillory, //experimental item, 'punishment' item that thief starts with
 		
 		total_items
 	}
