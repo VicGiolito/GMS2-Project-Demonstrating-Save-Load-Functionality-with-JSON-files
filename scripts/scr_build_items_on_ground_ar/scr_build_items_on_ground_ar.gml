@@ -3,6 +3,8 @@
 
 global.cur_dungeon_ind and global.cur_floor_ind must be properly defined.
 
+should be called from scope of o_con
+
 */
 
 function scr_build_items_on_ground_ar(char_struct_id){
@@ -34,6 +36,16 @@ function scr_build_items_on_ground_ar(char_struct_id){
 				}
 			}
 		}
+	}
+	
+	//Define our initial min-max range instance vars:
+	var ar_len = array_length(ar_to_return);
+	items_on_ground_min_range = 0;
+	if ar_len <= global.max_items_on_ground_in_box {
+		items_on_ground_max_range = ar_len;	
+	}
+	else if ar_len > global.max_items_on_ground_in_box {
+		items_on_ground_max_range = global.max_items_on_ground_in_box;	
 	}
 	
 	return ar_to_return;

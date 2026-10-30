@@ -4,7 +4,6 @@ var spr_frame = 0;
 	
 if collision_point(window_mouse_get_x(), window_mouse_get_y(), self, false, false) == id {
 	spr_frame = 1;
-	d($"mouse COLLISION DETECTED WITH INV_BOX with slot_ind: {slot_ind}");
 }
 	
 //If applicable, draw the item's sprite:

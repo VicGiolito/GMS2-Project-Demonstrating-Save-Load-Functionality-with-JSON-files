@@ -502,6 +502,10 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	//These are used to draw the BACKGROUND of the items on ground box
 	items_on_ground_box_w = (inner_frame_offset*2)+slot_w*9;
 	items_on_ground_box_h = (inner_frame_offset*2)+slot_h*3;
+	
+	//Instance position vars for our o_items_on_ground_scroll_button:
+	items_on_ground_scroll_button_x = items_on_ground_box_x+items_on_ground_box_w;
+	items_on_ground_scroll_button_y = items_on_ground_box_y;
 }
 
 #endregion

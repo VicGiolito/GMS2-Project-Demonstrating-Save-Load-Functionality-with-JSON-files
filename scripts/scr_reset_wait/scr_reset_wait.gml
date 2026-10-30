@@ -1,5 +1,4 @@
 
-//Currently not in use
 
 function scr_reset_wait(wait_int){
 	

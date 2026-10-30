@@ -211,6 +211,13 @@ items_on_ground_box_h = 0;
 
 items_on_ground_ar = -1;
 
+global.max_items_on_ground_in_box = 27;
+items_on_ground_scroll_button_x = 0;
+items_on_ground_scroll_button_y = 0;
+
+items_on_ground_min_range = 0;
+items_on_ground_max_range = global.max_items_on_ground_in_box-1; //subtract 1 b.c array index starts at 0
+
 
 draw_inv_for_load_once = true; //Also calls scr_setup_items_on_ground_boxes() when it's var is switched at the end of the draw_gui event
 

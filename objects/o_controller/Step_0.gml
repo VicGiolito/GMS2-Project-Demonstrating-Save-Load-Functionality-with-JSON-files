@@ -394,10 +394,10 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 			
 			#endregion
 			
-			#region options screen:
+			#region options screen - Adjust sound volume and game play settings.
 			
 			if cursor_pos == start_menu_options.options {
-				global.cur_game_state = game_state.options_menu;
+				//global.cur_game_state = game_state.options_menu;
 			}
 			
 			#endregion
@@ -975,6 +975,7 @@ else if global.cur_game_state == game_state.main  {
 				if valid_move {
 					
 					if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box); //reset
+					if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button); //reset
 					
 					if !swap_pos_boolean {
 						//show_debug_message("Moving and NOT swapping positions!");

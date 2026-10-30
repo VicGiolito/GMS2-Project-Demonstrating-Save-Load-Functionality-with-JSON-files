@@ -4,7 +4,6 @@ var spr_frame = 0;
 	
 if collision_point(window_mouse_get_x(), window_mouse_get_y(), self, false, false) == id {
 	spr_frame = 1;
-	d($"MOUSE COLLISION DETECTED WITH INV_BOX with slot_ind: {slot_ind}");
 }
 	
 //Define the text for the corresponding equip slot:

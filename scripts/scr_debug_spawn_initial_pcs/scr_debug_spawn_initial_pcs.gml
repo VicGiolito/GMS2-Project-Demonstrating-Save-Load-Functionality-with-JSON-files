@@ -35,7 +35,7 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					pc_struct_id.equip_slot_ar[inv_slot.head] = item_struct;
 					
 					//Just as a debug feature, add a few items to this starting position, just to test our items_on_ground_ar:
-					var ran_quant = irandom_range(3, 27);
+					var ran_quant = choose(35,46);
 					repeat(ran_quant) {
 						new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, false);	
 					}
