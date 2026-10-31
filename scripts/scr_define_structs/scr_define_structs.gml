@@ -262,7 +262,7 @@
 		
 			break;
 			case char_class.crag: //Alternative names (can't use Tiny, Dota copyright): slag, slab, crag (like this), pebbles.
-				char_stats_ar[char_stats.name] = "Ghal, the Golem";
+				char_stats_ar[char_stats.name] = "Ghal, the Stone Golem";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 30;
 				char_stats_ar[char_stats.base_agil] = 1;
@@ -275,14 +275,14 @@
 				char_stats_ar[char_stats.base_vision_radius] = 5;
 				//Wep skills:
 				
-				array_push(idle_conv_ar,"Dust explodes and pebbles tumble; Crag smiles his inscrutable smile.");
-	            array_push(idle_conv_ar,"Crag furrows his craggy brow.");
-	            array_push(idle_conv_ar,"Crag scratches his head.");
-	            array_push(idle_conv_ar,"Crag sighs with the sound of a bellowing furnace.");
-	            array_push(idle_conv_ar,"Crag grumbles like a land slide.");
-	            array_push(idle_conv_ar,"Crag says: \"Hmph!\"");
-	            array_push(idle_conv_ar,"Crag scratches an elbow with a shower of flinty sparks.");
-	            array_push(idle_conv_ar,"Crag plucks an earth worm from his head. Stares at it. Smiles.");
+				array_push(idle_conv_ar,"Dust explodes and pebbles tumble; Ghal smiles his inscrutable smile.");
+	            array_push(idle_conv_ar,"Ghal furrows his craggy brow.");
+	            array_push(idle_conv_ar,"Ghal scratches his head.");
+	            array_push(idle_conv_ar,"Ghal sighs with the sound of a bellowing furnace.");
+	            array_push(idle_conv_ar,"Ghal grumbles like a land slide.");
+	            array_push(idle_conv_ar,"Ghal says: \"Hmph!\"");
+	            array_push(idle_conv_ar,"Ghal scratches an elbow with a shower of flinty sparks.");
+	            array_push(idle_conv_ar,"Ghal plucks an earth worm from his head. Stares at it. Smiles.");
 				
 				char_spr_str = "spr_pc_crag";
 				char_portrait_spr_str = "spr_pc_crag";

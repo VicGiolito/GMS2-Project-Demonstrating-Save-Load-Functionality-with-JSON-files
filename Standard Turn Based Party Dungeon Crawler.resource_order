@@ -95,6 +95,7 @@
     {"name":"spr_shield_buckler_rusty","order":15,"path":"sprites/spr_shield_buckler_rusty/spr_shield_buckler_rusty.yy",},
     {"name":"spr_building_random_portal_down","order":3,"path":"sprites/spr_building_random_portal_down/spr_building_random_portal_down.yy",},
     {"name":"scr_return_struct_type_at_cell","order":15,"path":"scripts/scr_return_struct_type_at_cell/scr_return_struct_type_at_cell.yy",},
+    {"name":"scr_equip_or_unequip_item","order":4,"path":"scripts/scr_equip_or_unequip_item/scr_equip_or_unequip_item.yy",},
     {"name":"spr_wep_mace_average","order":7,"path":"sprites/spr_wep_mace_average/spr_wep_mace_average.yy",},
     {"name":"scr_destroy_master_level_ar_grids","order":5,"path":"scripts/scr_destroy_master_level_ar_grids/scr_destroy_master_level_ar_grids.yy",},
     {"name":"scr_spawn_initial_enemies","order":1,"path":"scripts/scr_spawn_initial_enemies/scr_spawn_initial_enemies.yy",},

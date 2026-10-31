@@ -127,6 +127,7 @@
     {"id":{"name":"scr_parse_str","path":"scripts/scr_parse_str/scr_parse_str.yy",},},
     {"id":{"name":"spr_misc_necklace_crude","path":"sprites/spr_misc_necklace_crude/spr_misc_necklace_crude.yy",},},
     {"id":{"name":"scr_return_struct_type_at_cell","path":"scripts/scr_return_struct_type_at_cell/scr_return_struct_type_at_cell.yy",},},
+    {"id":{"name":"scr_equip_or_unequip_item","path":"scripts/scr_equip_or_unequip_item/scr_equip_or_unequip_item.yy",},},
     {"id":{"name":"spr_wep_mace_average","path":"sprites/spr_wep_mace_average/spr_wep_mace_average.yy",},},
     {"id":{"name":"scr_destroy_master_level_ar_grids","path":"scripts/scr_destroy_master_level_ar_grids/scr_destroy_master_level_ar_grids.yy",},},
     {"id":{"name":"scr_spawn_initial_enemies","path":"scripts/scr_spawn_initial_enemies/scr_spawn_initial_enemies.yy",},},

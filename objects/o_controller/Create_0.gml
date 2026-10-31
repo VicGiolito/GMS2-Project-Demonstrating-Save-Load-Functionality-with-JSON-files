@@ -227,7 +227,7 @@ items_on_ground_max_range = global.max_items_on_ground_in_box-1; //subtract 1 b.
 //Vars for keeping track of where our global.mouse_struct_item came from while changing focus between characters:
 mouse_item_original_index = 0;
 mouse_item_original_inv_type = -1; //will be one of the inv_slot enums: head, body, rh, lh, accessory, feet, hands, backpack, item_on_ground.
-mouse_item_original_item_on_ground_ar = -1; //will contain the array from the g.master_level_ar[dungeon_index][floor_index][GRID_INST][# gridx, gridy] where the mouse item originally picked up the item from.
+mouse_item_original_ar = -1; //an array reference to any of the following: items on ground: g.master_level_ar[dungeon_index][floor_index][GRID_INST][# gridx, gridy] where the mouse item originally picked up the item from; equipment slots: global.cur_char.equip_slot_ar; backpack slots: global.cur_char.inv_ar.
 mouse_item_original_char = -1; //will contain the struct_id of the character the item originally belonged to when we lifted it into our g.mouse_struct_item.
 
 draw_inv_for_load_once = true; //Also calls scr_setup_items_on_ground_boxes() when it's var is switched at the end of the draw_gui event

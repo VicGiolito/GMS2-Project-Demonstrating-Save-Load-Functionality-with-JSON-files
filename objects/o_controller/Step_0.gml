@@ -569,9 +569,9 @@ else if global.cur_game_state == game_state.access_inv {
 			
 			#endregion
 			
-			#region Iterate through our items_on_ground_ar (Items on ground):
+			#region Iterate through our items_on_ground_ar (Items on ground) - THIS CODE IS DUPLICATED PRECISELY IN MAIN GAME STATE:
 			
-			if inv_slot_inst.object_index == o_items_on_ground_scroll_button {
+			else if inv_slot_inst.object_index == o_items_on_ground_scroll_button {
 				
 				d($"LMB CLICK DETECTED FOR o_items_on_ground_scroll_button!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
 				
@@ -605,6 +605,52 @@ else if global.cur_game_state == game_state.access_inv {
 		
 				//Rebuild o_items_on_ground slot instances:
 				if valid_scroll scr_setup_items_on_ground_boxes();
+			}
+			
+			#endregion
+			
+			#region o_inv_slot (EQUIP SLOT) interactions:
+			
+			else if inv_slot_inst.object_index == o_inv_slot {
+				
+				#region Pickup item from equip slot:
+				
+				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
+					
+					global.mouse_struct_item = inv_slot_inst.contents_id;
+					
+					inv_slot_inst.contents_id = -1;
+					
+					mouse_item_original_char = global.cur_char;
+					mouse_item_original_index = inv_slot_inst.slot_ind;
+					mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
+					mouse_item_original_ar = global.cur_char.equip_slot_ar;
+					
+					global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = -1;
+					scr_equip_or_unequip_item(global.cur_char, global.mouse_struct_item, false);
+					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
+					
+					/*
+					mouse_item = o_inv_slot.contents_id; 
+					o_inv_slot.contents_id = -1; 
+					mouse_item_original_index = o_inv_slot.slot_ind;
+					mouse_item_original_inv_type = o_inv_slot.inv_slot_type;
+					mouse_item_original_char = global.cur_char;
+		
+					
+						scr_equip_or_unequip_item(unequip);
+						scr_adjust_char_carrying_capacity(global.cur_char);
+						g.cur_char.equip_slot_ar[o_inv_slot.slot_ind] = -1;
+						mouse_item_original_item_on_ground_ar =  g.cur_char.equip_slot_ar;
+					
+					
+					
+					*/
+					
+				}	
+				
+				#endregion
+			
 			}
 			
 			#endregion
