@@ -68,6 +68,6 @@ function scr_setup_cam_views(init_boolean,full_screen_boolean,win_w,win_h,view_x
 	//show_debug_message("scr_setup_cam_views: defining our g.combat_room_cam variables now: ");
 	
 	//We want our GUI to match window and cam size:
-	display_set_gui_size(win_w,win_h)
+	display_set_gui_size(win_w,win_h);
 	
 } //Closed bracket for end of script

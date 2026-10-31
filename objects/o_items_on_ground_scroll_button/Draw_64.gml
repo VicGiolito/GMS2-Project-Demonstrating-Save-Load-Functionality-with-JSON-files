@@ -1,4 +1,4 @@
-/// @description draw sprite in draw gui event
+/// @description o_items_on_ground_scroll_button - draw sprite, handle click logic:
 
 if sprite_index != -1 {
 	

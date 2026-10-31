@@ -28,8 +28,8 @@ else {
 	draw_sprite(sprite_index, spr_frame, x, y);
 }
 	
-//Draw text in the inv frame (head, body, etc.):
-if inv_slot_type != inv_slot.backpack {
+//Draw text in the inv frame (head, body, etc.) when there's nothing there:
+if inv_slot_type != inv_slot.backpack && contents_id == -1 {
 	scr_center_font_align();
 	draw_text_color(x,y,equip_slot_str,c_white,c_white,c_white,c_white,.5);
 	scr_reset_font_align();

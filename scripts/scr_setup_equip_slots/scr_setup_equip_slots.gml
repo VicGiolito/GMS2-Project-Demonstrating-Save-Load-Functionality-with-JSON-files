@@ -1,5 +1,12 @@
 
+//Should be called before scr_setup_backpack_slots.
+
 function scr_setup_equip_slots(char_id){
+	
+	//Reset inv instances:
+	if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
+	if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
+	if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
 	
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
 	

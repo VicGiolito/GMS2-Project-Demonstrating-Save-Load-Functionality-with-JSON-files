@@ -66,7 +66,7 @@
 		switch(char_class_enum) {
 			
 			case char_class.kurgun:
-				char_stats_ar[char_stats.name] = "Kurgun, the barbarian";
+				char_stats_ar[char_stats.name] = "Kurgun, the Barbarian";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 22;
 				char_stats_ar[char_stats.base_agil] = 4;
@@ -109,7 +109,7 @@
 			break;
 			
 			case char_class.acheron:
-				char_stats_ar[char_stats.name] = "Acheron, the magician"
+				char_stats_ar[char_stats.name] = "Acheron, the Magician"
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 4;
 				char_stats_ar[char_stats.base_agil] = 6;
@@ -145,7 +145,7 @@
 			break;
 			
 			case char_class.roderick:
-				char_stats_ar[char_stats.name] = "Roderick, the ranger";
+				char_stats_ar[char_stats.name] = "Roderick, the Ranger";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 13;
 				char_stats_ar[char_stats.base_agil] = 16;
@@ -180,7 +180,7 @@
 			break;
 			
 			case char_class.thade:
-				char_stats_ar[char_stats.name] = "Thade, the criminal";
+				char_stats_ar[char_stats.name] = "Thade, the Criminal";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 12;
 				char_stats_ar[char_stats.base_agil] = 14;
@@ -216,7 +216,7 @@
 				char_portrait_spr_str = "spr_pc_thief";
 			break;
 			case char_class.ulric:
-				char_stats_ar[char_stats.name] = "Ulric, the priest";
+				char_stats_ar[char_stats.name] = "Ulric, the Priest";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 11;
 				char_stats_ar[char_stats.base_agil] = 10;
@@ -262,7 +262,7 @@
 		
 			break;
 			case char_class.crag: //Alternative names (can't use Tiny, Dota copyright): slag, slab, crag (like this), pebbles.
-				char_stats_ar[char_stats.name] = "Crag, the golem";
+				char_stats_ar[char_stats.name] = "Ghal, the Golem";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 30;
 				char_stats_ar[char_stats.base_agil] = 1;
@@ -311,7 +311,7 @@
 		
 			break;
 			case char_class.neleera:
-				char_stats_ar[char_stats.name] = "Neleera, the relic hunter";
+				char_stats_ar[char_stats.name] = "Neleera, the Relic Hunter";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 8;
 				char_stats_ar[char_stats.base_agil] = 18;
@@ -337,7 +337,7 @@
 		
 			break;
 			case char_class.goblin_cretin:
-				char_stats_ar[char_stats.name] = "goblin cretin";
+				char_stats_ar[char_stats.name] = "Goblin Cretin";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 8;
 				char_stats_ar[char_stats.base_agil] = 14;
@@ -365,7 +365,7 @@
 		
 			break;
 			case char_class.goblin_brute:
-				char_stats_ar[char_stats.name] = "goblin brute";
+				char_stats_ar[char_stats.name] = "Goblin Brute";
 				//Stats:
 				char_stats_ar[char_stats.base_str] = 20;
 				char_stats_ar[char_stats.base_agil] = 10;

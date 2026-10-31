@@ -79,13 +79,13 @@ function scr_define_macros_and_enums(){
 	
 	//Enums for o_inv_slots - used for logic and such:
 	enum inv_slot {
-		head,
+		head, //should remain as first equipment slot
 		body,
 		rh, //if an inventory item has this, it can be equipped in either hand; all weapons and shields will have this
 		lh,
 		accessory,
 		feet, 
-		hands,
+		hands, //should stay as last equipment slot
 		backpack,
 		item_on_ground,
 		total_inv_slots
@@ -198,12 +198,12 @@ function scr_define_macros_and_enums(){
 		cur_will,
 		hp_cur,
 		hp_max,
-		stam_cur,
-		stam_max,
 		mana_cur,
 		mana_max,
 		morale_cur,
 		morale_max,
+		stam_cur,
+		stam_max,
 		base_vision_radius,
 		cur_vision_radius,
 		char_team_enum,

@@ -4,6 +4,39 @@ var win_w = window_get_width(), win_h = window_get_height();
 
 var gui_display_w = display_get_gui_width(), gui_display_h = display_get_gui_height();
 
+#region Attempt to reset window full screen:
+
+if window_has_focus() == true { //We use this because the window_get_width() and height functions only return 0 when the game doesn't have focus, so it's not useful to run this code when the game doesn't have focus
+
+	global.reset_full_screen_count--;
+
+	if global.reset_full_screen_count <= 0 {
+	
+	
+	
+		var debug_fs = false, debug_win_w = false, debug_win_h = false;
+	
+		if window_get_fullscreen() == false debug_fs = true;
+		if win_w != global.win_w debug_win_w = true;
+		if win_h != global.win_h debug_win_h = true;
+	
+		if debug_fs || debug_win_w || debug_win_h {
+			window_set_fullscreen(true);
+			d("o_con Draw GUI event: window dimensions were altered somehow (bug), automatic timer has RESET WINDOW TO FULL SCREEN. This was triggered by:");
+			if debug_fs d("window_get_fullscreen == false");
+			if debug_win_w d($"win_w: {win_w} did not == {global.win_w}");
+			if debug_win_h d($"win_h: {win_h} did not == {global.win_h}");
+			d($"win_w: {window_get_width()} win_h: {window_get_height()} gui_w: {display_get_gui_width()} gui_h: {display_get_gui_height()} display_w: {display_get_width()} display_h: {display_get_height()}");
+			d($"os_type: {os_type} focus: {window_has_focus()}");
+		}
+	
+		global.reset_full_screen_count = global.reset_full_screen_val; //reset
+	
+	}
+}
+
+#endregion
+
 #region Main game state - Draw debug information:
 
 if global.cur_game_state == game_state.main {
@@ -279,14 +312,14 @@ global.cur_game_state == game_state.view_bio {
 		
 		scr_reset_font_align();
 	
-		//Draw stat information beneath it - hp, stam, mana, morale:
+		//Draw stat information beneath it - hp, mana, morale:
 		var stat_i = char_stats.hp_cur, stat_cur, stat_max;
 		var stat_bar_w = char_spr_w;
 		var stat_bar_h = cur_char_stat_bar_h;
 		var stat_bar_origin_x = portrait_offset_x, stat_bar_origin_y = char_spr_h+portrait_offset_y;
 		var stat_bar_frame_offset = stat_bar_h / 2, stat_cur_val, stat_max_val;
 	
-		repeat(4) {
+		repeat(3) {
 		
 			stat_cur = stat_i;
 			stat_max = stat_i+1;
@@ -297,14 +330,19 @@ global.cur_game_state == game_state.view_bio {
 			//Draw stat bar:
 			var stat_c;
 			if stat_i == char_stats.hp_cur stat_c = c_red;
-			else if stat_i == char_stats.stam_cur stat_c = c_yellow;
+			else if stat_i == char_stats.morale_cur stat_c = c_white;
 			else if stat_i == char_stats.mana_cur stat_c = c_blue;
 			else stat_c = c_white;
 			draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+(stat_cur_val / stat_max_val)*stat_bar_w,stat_bar_origin_y+stat_bar_h,stat_c,stat_c,stat_c,stat_c,false);
 		
 			//Draw stat bar frame:
 			draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+stat_bar_w,stat_bar_origin_y+stat_bar_h,c_gray,c_gray,c_gray,c_gray,true);
-		
+			
+			//Draw the actual text:
+			scr_center_font_align();
+			draw_text_color(stat_bar_origin_x+stat_bar_w/2,stat_bar_origin_y+stat_bar_h/2,$"{stat_cur_val}/{stat_max_val}",c_black,c_black,c_black,c_black,1);
+			scr_reset_font_align();
+			
 			stat_i += 2; //Iterate by 2 to jump to the next "stat_cur" stat
 		
 			//Iterate our stat_bar_origin_y
@@ -338,7 +376,11 @@ global.cur_game_state == game_state.view_bio {
 			var char_spr_frame = 0;
 	
 			if mouse_win_x >= portrait_origin_x-(char_spr_w / 2) && mouse_win_x <= portrait_origin_x+portrait_offset_x-(char_spr_w / 2) && mouse_win_y <= portrait_origin_y+(char_spr_h / 2) {
+				
 				char_spr_frame = 1;
+				
+				#region Change control of the cur_char, either when within main game state or access inv:
+				
 				if mouse_check_button_released(mb_left) {
 					
 					//Only allow change if char is in the same dungeon (they always should be):
@@ -363,8 +405,23 @@ global.cur_game_state == game_state.view_bio {
 							scr_update_visibility(global.cur_dungeon_ind, global.cur_floor_ind, "o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
 							scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_LOS], global.fow_tile_id,"o_con draw gui event: Clicked on a character portrait within the pc_team_ar..");
 						}
+						
+						//If applicable, reset inv_slot instances:
+						if global.cur_game_state == game_state.access_inv {
+							scr_setup_equip_slots(global.cur_char);
+							scr_setup_backpack_slots(global.cur_char);
+						}
+						
+						items_on_ground_ar = -1;
+						items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+							
+						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+							scr_setup_items_on_ground_boxes();
+						}
 					}
 				}
+				
+				#endregion
 			} 
 			
 			//Draw sprite:
@@ -394,7 +451,7 @@ global.cur_game_state == game_state.view_bio {
 				//hp:
 				if stat_i == 0 { stat_c = c_red; stat_cur_val = char_struct.char_stats_ar[char_stats.hp_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.hp_max]; }
 				//Mana:
-				else if stat_i == 1 { stat_c = c_yellow; stat_cur_val = char_struct.char_stats_ar[char_stats.mana_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.mana_max]; }
+				else if stat_i == 1 { stat_c = c_blue; stat_cur_val = char_struct.char_stats_ar[char_stats.mana_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.mana_max]; }
 				//Morale:
 				else if stat_i == 2 { stat_c = c_white; stat_cur_val = char_struct.char_stats_ar[char_stats.morale_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.morale_max]; }
 				
@@ -403,7 +460,14 @@ global.cur_game_state == game_state.view_bio {
 		
 				//Draw stat bar frame:
 				draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+stat_bar_w,stat_bar_origin_y+stat_bar_h,c_gray,c_gray,c_gray,c_gray,true);
-		
+				
+				//Draw the actual text:
+				draw_set_font(fnt_std_8); //draw smaller text
+				scr_center_font_align();
+				draw_text_color(stat_bar_origin_x+stat_bar_w/2,stat_bar_origin_y+stat_bar_h/2,$"{stat_cur_val}/{stat_max_val}",c_black,c_black,c_black,c_black,1)
+				scr_reset_font_align();
+				draw_set_font(global.default_fnt);
+				
 				//Iterate our stat_bar_origin_y:
 				stat_bar_origin_y += stat_bar_h+stat_bar_offset_y;
 				
@@ -427,12 +491,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		
 	//Draw  background:
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
-	var half_slot_h = slot_h / 2, half_slot_w = slot_w / 2;
 	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
 	var bg_c = c_gray;
 	var bg_max_w = cur_char_spr_origin_x+slot_w*9;
-	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*11)+bg_offset_y;
-	var bg_max_h = bg_y+(slot_h*6);
+	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*8)+bg_offset_y;
+	var bg_max_h = bg_y+(slot_h*7);
 	
 	draw_set_alpha(.7);
 	
@@ -443,8 +506,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	draw_set_alpha(1);
 	
-	//Start drawing our stats for the cur_char:
+	#region Draw relevant stats for the cur_char:
+	
 	if global.cur_char != -1 && is_struct(global.cur_char) {
+		
+		draw_set_font(fnt_std_16);
 		
 		var txt_origin_x = bg_offset_x*2, txt_origin_y = bg_y+bg_offset_y, txt_c = c_white;
 		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
@@ -453,12 +519,14 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		//Name, HP, Mana, Morale:
 		draw_text_color(txt_origin_x, txt_origin_y,$"\"{char.char_stats_ar[char_stats.name]}\"",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
+		i++; //Space
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"H.P.: {char.char_stats_ar[char_stats.hp_cur]}/{char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {char.char_stats_ar[char_stats.mana_cur]}/{char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {char.char_stats_ar[char_stats.morale_cur]}/{char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
+		i++; //Space
 		//Combat related stats: 
 		
 		//Armor values:
@@ -470,6 +538,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
+		i++; //Space
 		
 		//melee and ranged to_hit, melee and ranged dmg, 
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
@@ -486,7 +555,32 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		
+		//Other stats: strength, wisdom, etc.
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Strength: {char.char_stats_ar[char_stats.cur_str]}/{char.char_stats_ar[char_stats.base_str]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Agility: {char.char_stats_ar[char_stats.cur_agil]}/{char.char_stats_ar[char_stats.base_agil]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Constitution: {char.char_stats_ar[char_stats.cur_con]}/{char.char_stats_ar[char_stats.base_con]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Willpower: {char.char_stats_ar[char_stats.cur_will]}/{char.char_stats_ar[char_stats.base_will]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Intelligence: {char.char_stats_ar[char_stats.cur_int]}/{char.char_stats_ar[char_stats.base_int]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Wisdom: {char.char_stats_ar[char_stats.cur_wis]}/{char.char_stats_ar[char_stats.base_wis]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Perception: {char.char_stats_ar[char_stats.cur_per]}/{char.char_stats_ar[char_stats.base_per]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Charisma: {char.char_stats_ar[char_stats.cur_charisma]}/{char.char_stats_ar[char_stats.base_charisma]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		//Carrying Capacity and Max:
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"C.C./Max: {char.char_stats_ar[char_stats.cur_carrying_capacity]}/{char.char_stats_ar[char_stats.max_carrying_capacity]}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		
+		draw_set_font(global.default_fnt);
+		
 	}
+	
+	#endregion
 	
 	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
 	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
@@ -496,7 +590,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	//This is the ORIGIN X AND Y for the BACKGROUND of the items on ground box... It is NOT the origin of the o_items_on_ground_boxes
 	//themselves; THAT is defined in scr_setup_items_on_ground_boxes
-	items_on_ground_box_y = bg_y+bg_max_h;
+	items_on_ground_box_y = bg_y+bg_max_h+(cur_char_stat_bar_h*3);
 	items_on_ground_box_x = bg_offset_x;
 	
 	//These are used to draw the BACKGROUND of the items on ground box
@@ -516,8 +610,24 @@ if global.cur_game_state == game_state.main || global.cur_game_state == game_sta
 global.cur_game_state == game_state.view_bio {
 	
 	if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+		
 		var bg_c = c_gray, inner_frame = c_white, inner_frame_offset = 8;
 		draw_set_alpha(.7);
+		
+		//Draw rectangular background over box title text:
+		var title = "ITEMS AT LOCATION:";
+		var title_str_w = string_width(title), title_str_h = string_height(title), title_border = 4;
+		var title_offset = 16;
+		
+		//Draw background behind our title text:
+		/*
+		draw_rectangle_color(items_on_ground_box_x, items_on_ground_box_y-(title_str_h+title_border), 
+		items_on_ground_box_x+(title_str_w+title_border), items_on_ground_box_y, 
+		bg_c, bg_c ,bg_c, bg_c, false);
+		*/
+		
+		//Draw text - ITEMS AT LOCATION:
+		draw_text(items_on_ground_box_x+title_offset,items_on_ground_box_y-(title_str_h/2)-title_offset,title);
 		
 		//Draw bg:
 		draw_rectangle_color(items_on_ground_box_x, items_on_ground_box_y, items_on_ground_box_x+items_on_ground_box_w, 
@@ -560,6 +670,7 @@ if global.cur_game_state == game_state.access_inv && draw_inv_for_load_once {
 	global.cur_game_state = game_state.main;
 	items_on_ground_ar = -1;
 	if is_struct(global.cur_char) {
+		items_on_ground_ar = -1;
 		items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
 		if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
 			scr_setup_items_on_ground_boxes();

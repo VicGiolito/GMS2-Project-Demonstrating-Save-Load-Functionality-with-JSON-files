@@ -328,44 +328,6 @@ else if (global.cur_game_state == game_state.start_menu || global.cur_game_state
 			
 			#endregion
 			
-			#region LOAD GAME FIXED 'T' GAME - DEFUNCT OPTION:
-			
-			/*
-			
-			else if cursor_pos == start_menu_options.load_game {
-				
-				//Switch to our 'load_filename_from_list' game state - we do this to simply forbid any sort of player interaction during this period (even though it should technically be impossible for the player to interact within a single frame):
-				global.cur_game_state = game_state.loading_from_file;
-				
-				//Load game data from external file - this also defines g.cur_dungeon_ind:
-				if scr_load_file(global.cur_save_filename_str,"start_menu_options.load_game") {
-					
-					//g.master_level_ar and g.master_struct_ar have been loaded for the entire corresponding dungeon
-					
-					//Define our first g.cur_char as just the first pc char we find in the dungeon:
-					scr_define_cur_char_as_first_pc_in_dungeon(global.cur_dungeon_ind);
-					
-					//Define our g.cur_floor_ind as w.e floor our g.cur_char is on:
-					global.cur_floor_ind = global.cur_char.cur_floor_level;
-					
-					//Define grid dimensions:
-					global.grid_w = ds_grid_width(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]); //Hardly matters which one you choose, maps should always be == w and h
-					global.grid_h = ds_grid_height(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN]);
-					
-					//Start game:
-					scr_start_game(global.cur_dungeon_ind,global.cur_floor_ind);	
-				}
-				//return to main menu:
-				else {
-					global.cur_game_state = game_state.start_menu;
-					d("o_con step event: start menu: using 'load_game' option: scr_load_file returned false, perhaps there was no directory or file to load.");
-				}
-			}
-			
-			*/
-			
-			#endregion
-			
 			#region LOAD SAVED GAMES LIST:
 			
 			else if cursor_pos == start_menu_options.load_game_list {
@@ -536,43 +498,11 @@ else if global.cur_game_state == game_state.debug_new_game_choose_w_and_h_and_fl
 
 #endregion
 
-#region Debug scr_add_struct_to_inst_grid:
-
-/*
-
-var debug_key_pressed = false;
-if keyboard_check_released(ord("1")) { debug_place_struct = 1; debug_key_pressed = true; }
-if keyboard_check_released(ord("2")) { debug_place_struct = 2; debug_key_pressed = true; }
-if keyboard_check_released(ord("3")) { debug_place_struct = 3; debug_key_pressed = true; }
-
-if debug_key_pressed {
-	
-	var mouse_room_x = mouse_x, mouse_room_y = mouse_y;
-	
-	if scr_check_within_grid_bounds(global.terrain_grid,mouse_room_x,mouse_room_y) {
-		var pos_ar = [];
-		pos_ar = scr_convert_room_to_grid_coords(pos_ar,mouse_room_x,mouse_room_y);
-		var mouse_grid_x = pos_ar[0], mouse_grid_y = pos_ar[1];
-		pos_ar = -1;
-		
-		if debug_place_struct >= 1 && debug_place_struct <= 3 {
-			
-			if debug_place_struct == 1 scr_add_struct_to_inst_grid(new Character(char_class.acheron,char_team.pc,mouse_grid_x,mouse_grid_y),mouse_grid_x,mouse_grid_y,global.cur_floor_ind);
-			
-			else if debug_place_struct == 2 scr_add_struct_to_inst_grid(new Item(item_enum.armor_body_chainmail_crude),mouse_grid_x,mouse_grid_y,global.cur_floor_ind);
-			
-			else if debug_place_struct == 3 scr_add_struct_to_inst_grid(new Building("fucking building"),mouse_grid_x,mouse_grid_y,global.cur_floor_ind);
-		}
-	}
-}
-*/
-
-#endregion
-
-#region Game_state == access inv:
+#region Game_state == access inv -- NOTE: logic for changing inventories between pc chars is handled in draw_gui event
 
 else if global.cur_game_state == game_state.access_inv {
 	
+	//Toggle back to main game state:
 	if keyboard_check_released(ord("I")) && global.wait {
 		
 		//Compensate for every use case with the mouse item:
@@ -585,6 +515,26 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		scr_reset_wait(1);
 	}
+	
+	var mx = window_mouse_get_x(), my = window_mouse_get_y();
+	
+	#region Our Inventory Interaction Logic:
+	
+	if mouse_check_button_released(mb_left) && global.wait {
+		
+		scr_reset_wait(1);
+		
+		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_drop_item_slot, o_items_on_ground_box, o_items_on_ground_scroll_button, o_scroll_button], false, true);
+		
+		if inv_slot_inst != noone {
+			d($"inv_slot_inst == {inv_slot_inst}");	
+		}
+	}
+	
+	
+	
+	
+	#endregion
 }
 
 #endregion
@@ -973,9 +923,6 @@ else if global.cur_game_state == game_state.main  {
 				
 				//We didn't bump into a wall or an enemy char:
 				if valid_move {
-					
-					if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box); //reset
-					if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button); //reset
 					
 					if !swap_pos_boolean {
 						//show_debug_message("Moving and NOT swapping positions!");

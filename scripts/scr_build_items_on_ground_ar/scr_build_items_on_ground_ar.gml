@@ -5,9 +5,16 @@ global.cur_dungeon_ind and global.cur_floor_ind must be properly defined.
 
 should be called from scope of o_con
 
+should be followed by scr_setup_items_on_ground_boxes(), to actually create those instances
+
 */
 
 function scr_build_items_on_ground_ar(char_struct_id){
+	
+	//If we're calling this script, it's because we want to change what is being displayed in the items_on_ground box;
+	//therefore, we need to destroy/reset the corresponding items_on_ground and scroll button instances:
+	if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box);
+	if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
 	
 	var ar_to_return = [];
 	
@@ -31,7 +38,7 @@ function scr_build_items_on_ground_ar(char_struct_id){
 				
 				//d($"scr_build_items_on_ground_ar: for inst_ar_at_cell index: {yy}, struct_id = {struct_id}");
 				
-				if is_struct(struct_id) && struct_id.struct_enum == struct_type.item {
+				if is_struct(struct_id) && struct_id.struct_enum == struct_type.item && struct_id.is_in_inv == false {
 					array_push(ar_to_return, struct_id);	
 				}
 			}

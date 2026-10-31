@@ -1,6 +1,7 @@
 /// @description o_controller - DRAW EVENT
 
 
+
 //Debug: draw our pathing vars as they move through the recursive tracker:
 
 //draw_sprite(spr_debug_pather,0,maze_pather_x*global.cell_size+global.grid_offset_x+global.half_c,
