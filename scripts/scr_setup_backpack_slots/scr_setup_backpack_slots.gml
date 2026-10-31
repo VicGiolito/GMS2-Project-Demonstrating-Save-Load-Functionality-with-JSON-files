@@ -29,7 +29,14 @@ function scr_setup_backpack_slots(char_id, called_from_str = "undefined"){
 				contents_id = -1;
 				
 				if slot_ind < array_length(char_id.inv_ar) {
-					contents_id = char_id.inv_ar[slot_ind];
+					
+					//It's possible for indices in the inv_ar to be replaced by non-struct values (such as 0 or -1) when
+					//there's nothing in that slot as items get lifted and moved around, so we need to make sure there's
+					//actually an item in this position:
+					if is_struct(char_id.inv_ar[slot_ind]) && char_id.inv_ar[slot_ind].struct_enum == struct_type.item {
+					
+						contents_id = char_id.inv_ar[slot_ind];
+					}
 				}
 			}
 			

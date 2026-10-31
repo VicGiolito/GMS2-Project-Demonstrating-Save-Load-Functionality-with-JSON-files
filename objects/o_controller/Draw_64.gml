@@ -530,7 +530,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		//Armor values:
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_body} / {char.armor_max_body}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
@@ -548,9 +548,9 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		//Dodge, Crit Chance:
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_melee_evasion}%",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_evasion}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit Chance: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		
 		//Other stats: strength, wisdom, etc.
@@ -677,6 +677,15 @@ if global.cur_game_state == game_state.access_inv && draw_inv_for_load_once {
 }
 
 #endregion
+
+//Draw our global.mouse_item_struct:
+
+if global.mouse_struct_item != -1 && is_struct(global.mouse_struct_item) && global.mouse_struct_item.struct_enum == struct_type.item {
+	
+	var win_mouse_x = device_mouse_x_to_gui(0), win_mouse_y = device_mouse_y_to_gui(0);
+	
+	draw_sprite(asset_get_index(global.mouse_struct_item.item_spr_str), 0, win_mouse_x, win_mouse_y);
+}
 
 
 

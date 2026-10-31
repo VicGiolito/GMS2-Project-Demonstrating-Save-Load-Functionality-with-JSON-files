@@ -613,47 +613,270 @@ else if global.cur_game_state == game_state.access_inv {
 			
 			else if inv_slot_inst.object_index == o_inv_slot {
 				
-				#region Pickup item from equip slot:
+				#region Pickup item from equip slot - unequip:
 				
 				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
 					
-					global.mouse_struct_item = inv_slot_inst.contents_id;
+					var slot_enum_lifted_from = inv_slot_inst.inv_slot_type;
 					
+					//Swap -1 with inv_slot item struct:
+					global.mouse_struct_item = inv_slot_inst.contents_id;
 					inv_slot_inst.contents_id = -1;
 					
+					//Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
 					mouse_item_original_char = global.cur_char;
 					mouse_item_original_index = inv_slot_inst.slot_ind;
 					mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
 					mouse_item_original_ar = global.cur_char.equip_slot_ar;
 					
+					//Adjust array:
 					global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = -1;
 					scr_equip_or_unequip_item(global.cur_char, global.mouse_struct_item, false);
 					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
 					
-					/*
-					mouse_item = o_inv_slot.contents_id; 
-					o_inv_slot.contents_id = -1; 
-					mouse_item_original_index = o_inv_slot.slot_ind;
-					mouse_item_original_inv_type = o_inv_slot.inv_slot_type;
-					mouse_item_original_char = global.cur_char;
-		
-					
-						scr_equip_or_unequip_item(unequip);
-						scr_adjust_char_carrying_capacity(global.cur_char);
-						g.cur_char.equip_slot_ar[o_inv_slot.slot_ind] = -1;
-						mouse_item_original_item_on_ground_ar =  g.cur_char.equip_slot_ar;
-					
-					
-					
-					*/
-					
+					//If this was a 2 handed item, we also need to adjust the opposite hand slot:
+					if global.mouse_struct_item.is_two_hand {
+						
+						//Empty left hand:
+						if slot_enum_lifted_from == inv_slot.rh {
+							global.cur_char.equip_slot_ar[inv_slot.lh] = -1;
+							//Find left hand o_inv_slot:
+							var lh_inv_slot_inst_id;
+							for(var i = 0; i < instance_number(o_inv_slot); i++) {
+								var inst_id = instance_find(o_inv_slot, i);
+								
+								if inst_id.inv_slot_type == inv_slot.lh {
+									lh_inv_slot_inst_id = inst_id;
+									break;
+								}
+							}
+							lh_inv_slot_inst_id.contents_id = -1;
+						}
+						
+						//Empty right hand:
+						else if slot_enum_lifted_from == inv_slot.lh {
+							global.cur_char.equip_slot_ar[inv_slot.rh] = -1;
+							//Find right hand o_inv_slot:
+							var rh_inv_slot_inst_id;
+							for(var i = 0; i < instance_number(o_inv_slot); i++) {
+								var inst_id = instance_find(o_inv_slot, i);
+								
+								if inst_id.inv_slot_type == inv_slot.rh {
+									rh_inv_slot_inst_id = inst_id;
+									break;
+								}
+							}
+							rh_inv_slot_inst_id.contents_id = -1;
+						}
+					}
 				}	
+				
+				#endregion
+				
+				#region Place item from mouse into inv_slot - equip:
+				
+				else if is_struct(global.mouse_struct_item) && inv_slot_inst.contents_id == -1 {
+					
+					var valid_equip = false, mouse_slot_type = global.mouse_struct_item.item_equip_type_enum, inv_slot_type = inv_slot_inst.inv_slot_type;
+					var two_handed_wep_equipped = false, passed_cc_check = false;
+					
+					//First, check to see if this char can actually carry the added weight of this item:
+					if global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] + global.mouse_struct_item.weight_val <=
+					global.cur_char.char_stats_ar[char_stats.max_carrying_capacity] {
+						passed_cc_check = true;	
+					}
+					
+					if passed_cc_check {
+					
+						if global.mouse_struct_item.is_two_hand && (inv_slot_type == inv_slot.rh || inv_slot_type == inv_slot.lh) {
+						
+							//If either hand contains an item, create a red box there to indicate to the player why they can't equip that item:
+							if is_struct(global.cur_char.equip_slot_ar[inv_slot.rh]) {
+							
+								var rh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var inst_id = instance_find(o_inv_slot, i);
+								
+									if inst_id.inv_slot_type == inv_slot.rh {
+										rh_inv_slot_inst_id = inst_id;
+										break;
+									}
+								}
+								
+								var spr_w = sprite_get_width(rh_inv_slot_inst_id.sprite_index);
+								var spr_h = sprite_get_height(rh_inv_slot_inst_id.sprite_index);
+							
+								scr_indicate_error_section(rh_inv_slot_inst_id.x-spr_w/2, rh_inv_slot_inst_id.y-spr_h/2, 
+								spr_w, spr_h, c_red, false);
+							}
+							if is_struct(global.cur_char.equip_slot_ar[inv_slot.lh]) {
+							
+								var lh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var inst_id = instance_find(o_inv_slot, i);
+								
+									if inst_id.inv_slot_type == inv_slot.lh {
+										lh_inv_slot_inst_id = inst_id;
+										break;
+									}
+								}
+								
+								var spr_w = sprite_get_width(lh_inv_slot_inst_id.sprite_index);
+								var spr_h = sprite_get_height(lh_inv_slot_inst_id.sprite_index);
+							
+								scr_indicate_error_section(lh_inv_slot_inst_id.x-spr_w/2, lh_inv_slot_inst_id.y-spr_h/2, 
+								spr_w, spr_h, c_red, false);
+							}
+						
+							//If both hands are free, it's valid:
+							if global.cur_char.equip_slot_ar[inv_slot.rh] == -1 && global.cur_char.equip_slot_ar[inv_slot.lh] == -1 {
+								valid_equip = true;	
+								two_handed_wep_equipped = true;
+							}
+						}
+					
+						else if (inv_slot_type == inv_slot.rh || inv_slot_type == inv_slot.lh) && (mouse_slot_type == inv_slot.rh || mouse_slot_type == inv_slot.lh) {
+							valid_equip = true;	
+						}
+					
+						else if mouse_slot_type == inv_slot_type {
+							valid_equip = true;
+						}
+					
+						if valid_equip {
+						
+							//Swap positions:
+							inv_slot_inst.contents_id = global.mouse_struct_item;
+							global.mouse_struct_item = -1;
+						
+							//Add weight to cc:
+							global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] += inv_slot_inst.contents_id.weight_val;
+						
+							//Update array:
+							global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id;
+						
+							//Apply equip effects:
+							scr_equip_or_unequip_item(global.cur_char, inv_slot_inst.contents_id, true, "o_con step event: game_state = access_inv: equipping an item by placing it into an o_inv_slot.");
+							
+							//Also add to the opposite hand slot:
+							if two_handed_wep_equipped {
+							
+								//Also add to left hand:
+								if inv_slot_inst.inv_slot_type == inv_slot.rh {
+									//Find lh slot:
+									var lh_inv_slot_inst_id;
+									for(var i = 0; i < instance_number(o_inv_slot); i++) {
+										var inst_id = instance_find(o_inv_slot, i);
+								
+										if inst_id.inv_slot_type == inv_slot.lh {
+											lh_inv_slot_inst_id = inst_id;
+											break;
+										}
+									}
+								
+									//Update array:
+									global.cur_char.equip_slot_ar[inv_slot.lh] = inv_slot_inst.contents_id;
+									lh_inv_slot_inst_id.contents_id = inv_slot_inst.contents_id;
+								}
+								//Also add to right hand:
+								else if inv_slot_inst.inv_slot_type == inv_slot.lh {
+									//Find rh slot:
+									var rh_inv_slot_inst_id;
+									for(var i = 0; i < instance_number(o_inv_slot); i++) {
+										var inst_id = instance_find(o_inv_slot, i);
+								
+										if inst_id.inv_slot_type == inv_slot.rh {
+											rh_inv_slot_inst_id = inst_id;
+											break;
+										}
+									}
+								
+									//Update array:
+									global.cur_char.equip_slot_ar[inv_slot.rh] = inv_slot_inst.contents_id;
+									rh_inv_slot_inst_id.contents_id = inv_slot_inst.contents_id;	
+								}
+							}
+						}
+						else {
+							scr_create_status_message(mx, my, "ITEM DOES NOT EQUIP THERE", c_red, true, true);
+						}
+					} //Closed bracket for if char can handle added weight
+					else {
+						scr_create_status_message(mx, my, "ITEM WOULD EXCEED\nCARRYING CAPACITY", c_red, true, true);	
+					}
+				}
 				
 				#endregion
 			
 			}
 			
 			#endregion
+			
+			#region o_backpack_slot interactions:
+			
+			else if inv_slot_inst.object_index == o_backpack_slot {
+				
+				#region Pickup item from backpack slot:
+				
+				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
+					
+					//Swap -1 with inv_slot item struct:
+					global.mouse_struct_item = inv_slot_inst.contents_id;
+					inv_slot_inst.contents_id = -1;
+					
+					//Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
+					mouse_item_original_char = global.cur_char;
+					mouse_item_original_index = inv_slot_inst.slot_ind;
+					mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
+					mouse_item_original_ar = global.cur_char.inv_ar;
+					
+					//Adjust array:
+					global.cur_char.inv_ar[inv_slot_inst.slot_ind] = -1;
+					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
+				}	
+				
+				#endregion
+				
+				#region Place item from mouse into backpack slot:
+				
+				else if is_struct(global.mouse_struct_item) && inv_slot_inst.contents_id == -1 {
+					
+					var passed_cc_check = false;
+					
+					//First, check to see if this char can actually carry the added weight of this item:
+					if global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] + global.mouse_struct_item.weight_val <=
+					global.cur_char.char_stats_ar[char_stats.max_carrying_capacity] {
+						passed_cc_check = true;	
+					}
+					
+					if passed_cc_check {
+						
+						//We first need to check and make sure that the size of the global.cur_char.inv_ar can actually 
+						//accomodate the inv_slot_inst.slot_ind index position:
+						if inv_slot_inst.slot_ind >= array_length(global.cur_char.inv_ar) {
+							array_resize(global.cur_char.inv_ar, inv_slot_inst.slot_ind);
+						}
+						
+						//Swap positions:
+						inv_slot_inst.contents_id = global.mouse_struct_item;
+						global.mouse_struct_item = -1;
+						
+						//Add weight to cc:
+						global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] += inv_slot_inst.contents_id.weight_val;
+						
+						//Update array:
+						global.cur_char.inv_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id;
+					}
+					else {
+						scr_create_status_message(mx, my, "ITEM WOULD EXCEED\nCARRYING CAPACITY", c_red, true, true);	
+					}
+				}
+				
+				#endregion
+			}
+			
+			#endregion
+			
 		}
 	}
 	

@@ -59,7 +59,14 @@ function scr_setup_items_on_ground_boxes(){
 				contents_id = -1;
 				
 				if slot_ind < array_length(o_controller.items_on_ground_ar) {
-					contents_id = o_controller.items_on_ground_ar[slot_ind];
+					
+					//It's possible for indices in the items_on_ground_ar to be replaced by non-struct values (such as 0 or -1) when
+					//there's nothing in that slot as items get lifted and moved around, so we need to make sure there's
+					//actually an item in this position:
+					if is_struct(o_controller.items_on_ground_ar[slot_ind]) && o_controller.items_on_ground_ar[slot_ind].struct_enum == struct_type.item {
+					
+						contents_id = o_controller.items_on_ground_ar[slot_ind];
+					}
 				}
 			}
 			

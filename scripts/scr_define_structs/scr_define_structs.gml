@@ -57,9 +57,8 @@
 		
 		char_stats_ar[char_stats.name] = "undefined";
 		
-		//Define resistences/penetrations:
+		//Define resistences/penetrations - not currently in use:
 		res_crushing = 0;
-		
 		
 		#region Character stats:
 		
@@ -427,8 +426,10 @@
 		base_physical_resist = 0;
 		base_magical_resist = 0;
 		base_block_chance = round(char_stats_ar[char_stats.cur_str]*.5);
-		base_melee_evasion = round(char_stats_ar[char_stats.cur_agil]*.5);
-		base_ranged_evasion = round(char_stats_ar[char_stats.cur_agil]*.5);
+		base_melee_evasion = round(char_stats_ar[char_stats.cur_agil]*.5); //Not in use
+		base_ranged_evasion = round(char_stats_ar[char_stats.cur_agil]*.5); //Not in use
+		
+		base_evasion = round(char_stats_ar[char_stats.cur_agil]*.5);
 		
 		max_action_points = cur_action_points;
 		max_move_points = cur_move_points;
@@ -549,12 +550,16 @@
 		magic_pen = 0;
 		
 		value = 0;
-		melee_evasion_mod = 0;
-		ranged_evasion_mod = 0;
+		melee_evasion_mod = 0; //Not in use
+		ranged_evasion_mod = 0; //Not in use
 		block_mod = 0;
 		physical_resist = 0;
 		magical_resist = 0;
 		stam_debuff = 0;
+		
+		evasion_mod = 0;
+		base_protect_val = 0;
+		max_protect_val = 0;
 		
 		melee_min_dmg = 0;
 		melee_max_dmg = 0;
@@ -935,6 +940,9 @@
 				magic_pen = 0;
 				item_equip_type_enum = inv_slot.rh;
 				
+				evasion_mod = 3;
+				base_protect_val = 1;
+				
 				melee_to_hit_mod = 0;
 				block_mod = 10;
 				stam_debuff = 0;
@@ -957,6 +965,9 @@
 				armor_pen = 0;
 				magic_pen = 0;
 				item_equip_type_enum = inv_slot.rh;
+				
+				evasion_mod = 6;
+				base_protect_val = 2;
 				
 				melee_to_hit_mod = 0;
 				block_mod = 15;
@@ -992,6 +1003,7 @@
 				value = 15;
 				weight_val = 7;
 				item_spr_str = "spr_wep_shortbow_rusty";
+				is_two_hand = true;
 			break;
 			
 			case item_enum.wep_bow_short_average:
@@ -1014,6 +1026,7 @@
 				value = 20;
 				weight_val = 8;
 				item_spr_str = "spr_wep_shortbow_average";
+				is_two_hand = true;
 			break;
 			
 			case item_enum.wep_crossbow_crude:
@@ -1036,6 +1049,7 @@
 				value = 20;
 				weight_val = 13;
 				item_spr_str = "spr_wep_crossbow_rusty";
+				is_two_hand = true;
 			break;
 			
 			case item_enum.wep_crossbow_average:
@@ -1058,6 +1072,7 @@
 				value = 45;
 				weight_val = 15;
 				item_spr_str = "spr_wep_crossbow_average";
+				is_two_hand = true;
 			break;
 			
 			case item_enum.armor_body_leather_vest:
@@ -1077,6 +1092,8 @@
 				value = 35;
 				weight_val = 2;
 				item_spr_str = "spr_body_vest_leather_crude";
+				
+				evasion_mod = 2;
 			break;
 			
 			case item_enum.armor_head_feather_hat:
@@ -1093,6 +1110,8 @@
 				value = 5;
 				weight_val = 1;
 				item_spr_str = "spr_head_featherhat";
+				
+				evasion_mod = 1;
 			break;
 			
 			case item_enum.armor_head_padded_cap:
@@ -1111,6 +1130,8 @@
 				value = 45;
 				weight_val = 2;
 				item_spr_str = "spr_head_cap_padded_crude";
+				
+				base_protect_val = 1;
 			break;
 			
 			case item_enum.armor_head_chainmail_coif_crude:
@@ -1129,6 +1150,8 @@
 				value = 150;
 				weight_val = 5;
 				item_spr_str = "spr_head_coif_chainmail_crude";
+				
+				base_protect_val = 3;
 			break;
 			
 			case item_enum.armor_feet_leather_crude:
@@ -1147,6 +1170,9 @@
 				value = 25;
 				weight_val = 1;
 				item_spr_str = "spr_feet_boots_leather_crude";
+				
+				base_protect_val = 2;
+				evasion_mod = 1;
 			break;
 			
 			case item_enum.armor_feet_iron_crude:
@@ -1165,6 +1191,8 @@
 				value = 115;
 				weight_val = 5;
 				item_spr_str = "spr_feet_boots_iron_crude";
+				
+				base_protect_val = 4;
 			break;
 			
 			case item_enum.armor_hands_leather_crude:
@@ -1181,6 +1209,8 @@
 				value = 35;
 				weight_val = 2;
 				item_spr_str = "spr_hands_gloves_leather_crude";
+				
+				base_protect_val = 2;
 			break;
 			
 			case item_enum.armor_hands_leather_wraps:
@@ -1197,6 +1227,8 @@
 				value = 15;
 				weight_val = 2;
 				item_spr_str = "spr_hands_wraps_leather_crude";
+				
+				base_protect_val = 1;
 			break;
 			
 			case item_enum.armor_hands_iron_gauntlets_crude:
@@ -1215,6 +1247,8 @@
 				value = 205;
 				weight_val = 5;
 				item_spr_str = "spr_hands_gauntlets_iron_crude";
+				
+				base_protect_val = 4;
 			break;
 			
 			case item_enum.armor_body_furs_crude:
@@ -1233,6 +1267,9 @@
 				value = 75;
 				weight_val = 8;
 				item_spr_str = "spr_body_furs_crude";
+				
+				base_protect_val = 2;
+				evasion_mod = 1;
 			break;
 			
 			case item_enum.armor_body_robes_crude:
@@ -1251,6 +1288,8 @@
 				value = 55;
 				weight_val = 2;
 				item_spr_str = "spr_body_robes_crude";
+				
+				evasion_mod = 2;
 			break;
 			
 			case item_enum.armor_body_rags_crude:
@@ -1269,6 +1308,8 @@
 				value = 3;
 				weight_val = 1;
 				item_spr_str = "spr_body_rags";
+				
+				evasion_mod = 1;
 			break;
 			
 			case item_enum.armor_body_chainmail_crude:
@@ -1287,6 +1328,8 @@
 				value = 550;
 				weight_val = 45;
 				item_spr_str = "spr_body_chainmail_crude";
+				
+				base_protect_val = 4;
 			break;
 			
 			case item_enum.armor_head_pillory:
@@ -1304,6 +1347,8 @@
 				magical_resist = 0;
 				value = 5;
 				weight_val = 75;
+				
+				base_protect_val = 1;
 			break;
 			
 			default:
@@ -1315,6 +1360,7 @@
 		
 		//Default values:
 		dura_max = dura_cur;
+		max_protect_val = base_protect_val;
 		
 		//Add to appropriate arrays:
 		array_push(global.master_struct_ar[cur_dungeon_enum][floor_int][AR_ITEMS],self);

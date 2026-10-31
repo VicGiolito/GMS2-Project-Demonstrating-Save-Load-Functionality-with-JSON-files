@@ -1,8 +1,8 @@
 //if use_sprite_instead_boolean == true, specified_txt_str must == the sprite_resource NOT in string format,
 //and txt_c should generally == c_white, unless you want to blend the colors of the sprite with the txt_c color
 
-function scr_create_status_message(room_origin_x,room_origin_y,specified_txt_str,txt_color,txt_scrolling_boolean = true,
-draw_on_gui_layer_boolean = false,use_sprite_instead_boolean = false,fade_spd_val = 0.5,scroll_spd_val = 0.001)
+function scr_create_status_message(room_origin_x, room_origin_y, specified_txt_str, txt_color, txt_scrolling_boolean = true,
+draw_on_gui_layer_boolean = false, use_sprite_instead_boolean = false, fade_spd_val = 0.5, scroll_spd_val = 0.001)
 {
 	var txt_offset_x = string_width(specified_txt_str) / 2;
 	
