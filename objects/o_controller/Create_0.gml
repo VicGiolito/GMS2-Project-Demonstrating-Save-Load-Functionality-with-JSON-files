@@ -206,6 +206,9 @@ global.mouse_struct_item = -1;
 
 global.max_backpack_slots_per_page = 24;
 
+items_in_backpack_min_range = 0;
+items_in_backpack_max_range = global.max_backpack_slots_per_page-1; //subtract 1 b.c array index starts at 0
+
 items_on_ground_box_x = 0;
 items_on_ground_box_y = 0;
 

@@ -510,6 +510,7 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		global.cur_game_state = game_state.main;
 		if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
+		if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
 		if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
 		if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
 		
@@ -518,16 +519,95 @@ else if global.cur_game_state == game_state.access_inv {
 	
 	var mx = window_mouse_get_x(), my = window_mouse_get_y();
 	
-	#region Our Inventory Interaction Logic:
+	#region Our Inventory Interaction Logic - NOTE: The scroll logic for the scroll buttons are in their respective draw_gui events
 	
 	if mouse_check_button_released(mb_left) && global.wait {
 		
 		scr_reset_wait(1);
 		
-		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_drop_item_slot, o_items_on_ground_box, o_items_on_ground_scroll_button, o_scroll_button], false, true);
+		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_drop_item_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button], false, true);
 		
 		if inv_slot_inst != noone {
-			d($"inv_slot_inst == {inv_slot_inst}");	
+			
+			#region Iterate through our g.cur_char inv_ar (backpack):
+			
+			if inv_slot_inst.object_index == o_scroll_button {
+				
+				d($"LMB CLICK DETECTED FOR O_SCROLL_BUTTON!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
+		
+				var iterate_dir = 1; //scroll right
+		
+				//This is a left scroll button so scroll left:
+				if inv_slot_inst.scroll_left {
+					iterate_dir = -1;
+				}
+		
+				var valid_scroll = true;
+		
+				//Iterate ranges:
+				items_in_backpack_min_range += global.max_backpack_slots_per_page*iterate_dir;
+				items_in_backpack_max_range += global.max_backpack_slots_per_page*iterate_dir;
+		
+				//Cap:
+					//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
+				if items_in_backpack_min_range < 0 {
+					items_in_backpack_min_range += global.max_backpack_slots_per_page;
+					items_in_backpack_max_range += global.max_backpack_slots_per_page;
+					valid_scroll = false;
+				}
+		
+					//We tried to iterate forward (right) past the length of the array - bring ti back (left):
+				if items_in_backpack_min_range >= array_length(items_on_ground_ar) {
+					items_in_backpack_min_range -= global.max_backpack_slots_per_page;
+					items_in_backpack_max_range -= global.max_backpack_slots_per_page;
+					valid_scroll = false;
+				}
+		
+				//Rebuild o_items_on_ground slot instances:
+				if valid_scroll scr_setup_backpack_slots(global.cur_char, $"o_scroll_button: scroll_left: {inv_slot_inst.scroll_left}, lmb click, iterating through inv_ar.");
+			}
+			
+			#endregion
+			
+			#region Iterate through our items_on_ground_ar (Items on ground):
+			
+			if inv_slot_inst.object_index == o_items_on_ground_scroll_button {
+				
+				d($"LMB CLICK DETECTED FOR o_items_on_ground_scroll_button!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
+				
+				var iterate_dir = 1; //scroll right
+		
+				//This is a left scroll button so scroll left:
+				if inv_slot_inst.scroll_left {
+					iterate_dir = -1;
+				}
+		
+				var valid_scroll = true;
+		
+				//Iterate ranges:
+				items_on_ground_min_range += global.max_items_on_ground_in_box*iterate_dir;
+				items_on_ground_max_range += global.max_items_on_ground_in_box*iterate_dir;
+		
+				//Cap:
+					//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
+				if items_on_ground_min_range < 0 {
+					items_on_ground_min_range += global.max_items_on_ground_in_box;
+					items_on_ground_max_range += global.max_items_on_ground_in_box;
+					valid_scroll = false;
+				}
+		
+					//We tried to iterate forward (right) past the length of the array - bring ti back (left):
+				if items_on_ground_min_range >= array_length(items_on_ground_ar) {
+					items_on_ground_min_range -= global.max_items_on_ground_in_box;
+					items_on_ground_max_range -= global.max_items_on_ground_in_box;
+					valid_scroll = false;
+				}
+		
+				//Rebuild o_items_on_ground slot instances:
+				if valid_scroll scr_setup_items_on_ground_boxes();
+			}
+			
+			#endregion
 		}
 	}
 	
@@ -543,6 +623,8 @@ else if global.cur_game_state == game_state.access_inv {
 
 else if global.cur_game_state == game_state.main  {
 	
+	var win_mouse_x = window_mouse_get_x(), win_mouse_y = window_mouse_get_y();
+	
 	#region Toggle inventory screen:
 	
 	if keyboard_check_released(ord("I")) && global.wait && draw_inv_for_load_once == false {
@@ -551,13 +633,59 @@ else if global.cur_game_state == game_state.main  {
 		
 			global.cur_game_state = game_state.access_inv;
 			
+			//Reset our backpack ranges whenever we're entering the access_inv screen from main:
+			items_in_backpack_min_range = 0;
+			items_in_backpack_max_range = global.max_backpack_slots_per_page-1;
+			
 			scr_setup_equip_slots(global.cur_char);
-			scr_setup_backpack_slots(global.cur_char);	
+			scr_setup_backpack_slots(global.cur_char, "o_con step event: 'I' keypress.");	
 			
 			scr_reset_wait(1);
 		}
 	}
 	
+	#endregion
+	
+	#region Iterate through our items_on_ground_ar (Items on ground):
+	
+	var scroll_inst = collision_point(win_mouse_x, win_mouse_y, o_items_on_ground_scroll_button, false, true);
+		
+	if scroll_inst != noone && mouse_check_button_released(mb_left) && global.wait {
+		
+		scr_reset_wait(1);
+		
+		var iterate_dir = 1; //scroll right
+		
+		//This is a left scroll button so scroll left:
+		if scroll_inst.scroll_left {
+			iterate_dir = -1;
+		}
+		
+		var valid_scroll = true;
+		
+		//Iterate ranges:
+		items_on_ground_min_range += global.max_items_on_ground_in_box*iterate_dir;
+		items_on_ground_max_range += global.max_items_on_ground_in_box*iterate_dir;
+		
+		//Cap:
+			//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
+		if items_on_ground_min_range < 0 {
+			items_on_ground_min_range += global.max_items_on_ground_in_box;
+			items_on_ground_max_range += global.max_items_on_ground_in_box;
+			valid_scroll = false;
+		}
+		
+			//We tried to iterate forward (right) past the length of the array - bring ti back (left):
+		if items_on_ground_min_range >= array_length(items_on_ground_ar) {
+			items_on_ground_min_range -= global.max_items_on_ground_in_box;
+			items_on_ground_max_range -= global.max_items_on_ground_in_box;
+			valid_scroll = false;
+		}
+		
+		//Rebuild o_items_on_ground slot instances:
+		if valid_scroll scr_setup_items_on_ground_boxes();	
+	}
+			
 	#endregion
 	
 	#region Debug placeholder: save game:

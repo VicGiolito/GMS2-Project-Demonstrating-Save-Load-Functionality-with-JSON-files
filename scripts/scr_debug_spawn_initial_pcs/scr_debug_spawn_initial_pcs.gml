@@ -39,6 +39,12 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					repeat(ran_quant) {
 						new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, false);	
 					}
+					
+					//Debug: add many items to backpack to test the scroll feature:
+					repeat(global.max_backpack_slots_per_page+6) {
+						var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+						array_push(pc_struct_id.inv_ar, item_struct_in_inv);
+					}
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.kurgun {
 					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);

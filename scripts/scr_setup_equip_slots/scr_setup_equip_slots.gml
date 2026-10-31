@@ -67,19 +67,19 @@ function scr_setup_equip_slots(char_id){
 	}
 	
 	//Drop item on to ground slot:
-	with(instance_create_layer(head_slot_x+slot_w,head_slot_y+slot_h*2,"layer_inv",o_drop_item_slot)) {
+	with(instance_create_layer(head_slot_x,head_slot_y+slot_h*3,"layer_inv",o_drop_item_slot)) {
 		
 	}
 	
-	//Left arrow (placeholder):
+	//Left arrow:
 	with(instance_create_layer(head_slot_x-slot_w,head_slot_y+slot_h*3,"layer_inv",o_scroll_button)) {
-		scroll_dir_ = scroll_dir.left;
+		scroll_left = true;
 		sprite_index = spr_scroll_left;
 	}
 	
-	//Right arrow (placeholder):
+	//Right arrow:
 	with(instance_create_layer(head_slot_x+slot_w,head_slot_y+slot_h*3,"layer_inv",o_scroll_button)) {
-		scroll_dir_ = scroll_dir.right;
+		scroll_left = false;
 		sprite_index = spr_scroll_right;
 	}
 }

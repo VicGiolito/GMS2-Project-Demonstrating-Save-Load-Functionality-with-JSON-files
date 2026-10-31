@@ -192,6 +192,7 @@
     {"id":{"name":"scr_define_macros_and_enums","path":"scripts/scr_define_macros_and_enums/scr_define_macros_and_enums.yy",},},
     {"id":{"name":"spr_on_ground_scroll_right","path":"sprites/spr_on_ground_scroll_right/spr_on_ground_scroll_right.yy",},},
     {"id":{"name":"spr_debug_sprite","path":"sprites/spr_debug_sprite/spr_debug_sprite.yy",},},
+    {"id":{"name":"o_backpack_slot","path":"objects/o_backpack_slot/o_backpack_slot.yy",},},
     {"id":{"name":"spr_pc_wizard","path":"sprites/spr_pc_wizard/spr_pc_wizard.yy",},},
     {"id":{"name":"spr_wep_shortbow_rusty","path":"sprites/spr_wep_shortbow_rusty/spr_wep_shortbow_rusty.yy",},},
     {"id":{"name":"scr_remove_struct_from_inst_grid","path":"scripts/scr_remove_struct_from_inst_grid/scr_remove_struct_from_inst_grid.yy",},},

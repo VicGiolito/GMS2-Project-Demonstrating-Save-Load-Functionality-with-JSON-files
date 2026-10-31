@@ -33,7 +33,7 @@
 		
 		//Define for pcs only:
 		if char_team_enum == char_team.pc {
-			inv_ar = array_create(9, -1); //The 'backpack' for the character, starts at 9 but can be infinite value, is limited only by that char's carrying capacity.
+			inv_ar = []; //The 'backpack' for the character, can be infinite value, is limited only by that char's carrying capacity.
 			equip_slot_ar = array_create(inv_slot.total_inv_slots,-1); //Misc, head, body, hands, feet, lh, rh
 		}
 		

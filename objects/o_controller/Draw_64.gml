@@ -2,7 +2,7 @@
 
 var win_w = window_get_width(), win_h = window_get_height();
 
-var gui_display_w = display_get_gui_width(), gui_display_h = display_get_gui_height();
+var gui_display_w = display_get_gui_width(); //, gui_display_h = display_get_gui_height();
 
 #region Attempt to reset window full screen:
 
@@ -11,9 +11,7 @@ if window_has_focus() == true { //We use this because the window_get_width() and
 	global.reset_full_screen_count--;
 
 	if global.reset_full_screen_count <= 0 {
-	
-	
-	
+
 		var debug_fs = false, debug_win_w = false, debug_win_h = false;
 	
 		if window_get_fullscreen() == false debug_fs = true;
@@ -328,10 +326,10 @@ global.cur_game_state == game_state.view_bio {
 			stat_max_val = global.cur_char.char_stats_ar[stat_max];
 		
 			//Draw stat bar:
-			var stat_c;
-			if stat_i == char_stats.hp_cur stat_c = c_red;
-			else if stat_i == char_stats.morale_cur stat_c = c_white;
-			else if stat_i == char_stats.mana_cur stat_c = c_blue;
+			var stat_c, stat_text = "";
+			if stat_i == char_stats.hp_cur { stat_c = c_red; stat_text = "HP"; }
+			else if stat_i == char_stats.morale_cur { stat_c = c_white; stat_text = "MORALE"; }
+			else if stat_i == char_stats.mana_cur { stat_c = c_blue; stat_text = "MANA"; }
 			else stat_c = c_white;
 			draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+(stat_cur_val / stat_max_val)*stat_bar_w,stat_bar_origin_y+stat_bar_h,stat_c,stat_c,stat_c,stat_c,false);
 		
@@ -340,7 +338,7 @@ global.cur_game_state == game_state.view_bio {
 			
 			//Draw the actual text:
 			scr_center_font_align();
-			draw_text_color(stat_bar_origin_x+stat_bar_w/2,stat_bar_origin_y+stat_bar_h/2,$"{stat_cur_val}/{stat_max_val}",c_black,c_black,c_black,c_black,1);
+			draw_text_color(stat_bar_origin_x+stat_bar_w/2,stat_bar_origin_y+stat_bar_h/2,$"{stat_text}: {stat_cur_val}/{stat_max_val}",c_black,c_black,c_black,c_black,1);
 			scr_reset_font_align();
 			
 			stat_i += 2; //Iterate by 2 to jump to the next "stat_cur" stat
