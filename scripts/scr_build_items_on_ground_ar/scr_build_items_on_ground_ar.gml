@@ -38,6 +38,7 @@ function scr_build_items_on_ground_ar(char_struct_id){
 				
 				//d($"scr_build_items_on_ground_ar: for inst_ar_at_cell index: {yy}, struct_id = {struct_id}");
 				
+				//Only items at this location that not equipped will show up on the ground - equipped items are carried by the char at this cell:
 				if is_struct(struct_id) && struct_id.struct_enum == struct_type.item && struct_id.is_in_inv == false {
 					array_push(ar_to_return, struct_id);	
 				}

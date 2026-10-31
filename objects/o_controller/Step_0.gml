@@ -514,12 +514,33 @@ else if global.cur_game_state == game_state.access_inv {
 		if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
 		if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
 		
+		//'Tidy' up our arrays global.cur_char.inv_ar and our corresponding array of instances in the g.master_level_ar,
+		//just in case the positions of the items on the ground for that grid cell has been changed so that there may be empty
+		//indices in that array now.
+		
+		//Reset all of our min_max instance vars:
+		items_in_backpack_min_range = 0;
+		items_in_backpack_max_range = global.max_backpack_slots_per_page-1;
+		items_on_ground_min_range = 0;
+		items_on_ground_max_range = global.max_items_on_ground_in_box-1;
+		
+		global.cur_char.inv_ar = scr_tidy_ar(global.cur_char.inv_ar);
+		global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y] = scr_tidy_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y]);
+		
+		//Rebuild items_on_ground_ar:
+		items_on_ground_ar = -1;
+		items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+		
+		if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+			scr_setup_items_on_ground_boxes();
+		}
+		
 		scr_reset_wait(1);
 	}
 	
 	var mx = window_mouse_get_x(), my = window_mouse_get_y();
 	
-	#region Our Inventory Interaction Logic - NOTE: The scroll logic for the scroll buttons are in their respective draw_gui events
+	#region Our Inventory Interaction Logic - 
 	
 	if mouse_check_button_released(mb_left) && global.wait {
 		
@@ -535,72 +556,66 @@ else if global.cur_game_state == game_state.access_inv {
 				
 				d($"LMB CLICK DETECTED FOR O_SCROLL_BUTTON!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
 		
-				var iterate_dir = 1; //scroll right
+				var scroll_left_bool = false; //scroll right
 		
-				//This is a left scroll button so scroll left:
+				//This is a left scroll button....
 				if inv_slot_inst.scroll_left {
-					iterate_dir = -1;
+					scroll_left_bool = true; //scroll left (backwards)
 				}
 		
-				var valid_scroll = true;
-		
-				//Iterate ranges:
-				items_in_backpack_min_range += global.max_backpack_slots_per_page*iterate_dir;
-				items_in_backpack_max_range += global.max_backpack_slots_per_page*iterate_dir;
-		
-				//Cap:
-					//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
-				if items_in_backpack_min_range < 0 {
-					items_in_backpack_min_range += global.max_backpack_slots_per_page;
-					items_in_backpack_max_range += global.max_backpack_slots_per_page;
-					valid_scroll = false;
+				var valid_scroll = false;
+				
+				if scroll_left_bool {
+					if items_in_backpack_min_range - global.max_backpack_slots_per_page >= 0 {
+						items_in_backpack_min_range -= global.max_backpack_slots_per_page;
+						items_in_backpack_max_range -= global.max_backpack_slots_per_page;
+						valid_scroll = true;
+					}
 				}
-		
-					//We tried to iterate forward (right) past the length of the array - bring ti back (left):
-				if items_in_backpack_min_range >= array_length(items_on_ground_ar) {
-					items_in_backpack_min_range -= global.max_backpack_slots_per_page;
-					items_in_backpack_max_range -= global.max_backpack_slots_per_page;
-					valid_scroll = false;
+				//Scrolling right:
+				else {
+					if items_in_backpack_min_range + global.max_backpack_slots_per_page < array_length(global.cur_char.inv_ar) * 3 {
+						items_in_backpack_min_range += global.max_backpack_slots_per_page;
+						items_in_backpack_max_range += global.max_backpack_slots_per_page;	
+						valid_scroll = true;
+					}
 				}
 		
 				//Rebuild o_items_on_ground slot instances:
-				if valid_scroll scr_setup_backpack_slots(global.cur_char, $"o_scroll_button: scroll_left: {inv_slot_inst.scroll_left}, lmb click, iterating through inv_ar.");
+				if valid_scroll scr_setup_backpack_slots(global.cur_char, $"o_con step event: access_inv game state: click scroll button to scroll through g.cur_char backpack slots, iterating through inv_ar.");
 			}
 			
 			#endregion
 			
-			#region Iterate through our items_on_ground_ar (Items on ground) - THIS CODE IS DUPLICATED PRECISELY IN MAIN GAME STATE:
+			#region Iterate through our items_on_ground_ar (Items on ground) - THIS CODE MUST BE DUPLICATED PRECISELY IN MAIN GAME STATE:
 			
 			else if inv_slot_inst.object_index == o_items_on_ground_scroll_button {
 				
 				d($"LMB CLICK DETECTED FOR o_items_on_ground_scroll_button!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
 				
-				var iterate_dir = 1; //scroll right
+				var scroll_left_bool = false; //scroll right
 		
-				//This is a left scroll button so scroll left:
+				//This is a left scroll button....
 				if inv_slot_inst.scroll_left {
-					iterate_dir = -1;
+					scroll_left_bool = true; //scroll left (backwards)
 				}
 		
-				var valid_scroll = true;
-		
-				//Iterate ranges:
-				items_on_ground_min_range += global.max_items_on_ground_in_box*iterate_dir;
-				items_on_ground_max_range += global.max_items_on_ground_in_box*iterate_dir;
-		
-				//Cap:
-					//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
-				if items_on_ground_min_range < 0 {
-					items_on_ground_min_range += global.max_items_on_ground_in_box;
-					items_on_ground_max_range += global.max_items_on_ground_in_box;
-					valid_scroll = false;
+				var valid_scroll = false;
+				
+				if scroll_left_bool {
+					if items_on_ground_min_range - global.max_items_on_ground_in_box >= 0 {
+						items_on_ground_min_range -= global.max_items_on_ground_in_box;
+						items_on_ground_max_range -= global.max_items_on_ground_in_box;
+						valid_scroll = true;
+					}
 				}
-		
-					//We tried to iterate forward (right) past the length of the array - bring ti back (left):
-				if items_on_ground_min_range >= array_length(items_on_ground_ar) {
-					items_on_ground_min_range -= global.max_items_on_ground_in_box;
-					items_on_ground_max_range -= global.max_items_on_ground_in_box;
-					valid_scroll = false;
+				//Scrolling right:
+				else {
+					if items_on_ground_min_range + global.max_items_on_ground_in_box < array_length(items_on_ground_ar)+(global.max_items_on_ground_in_box * 2) {
+						items_on_ground_min_range += global.max_items_on_ground_in_box;
+						items_on_ground_max_range += global.max_items_on_ground_in_box;	
+						valid_scroll = true;
+					}
 				}
 		
 				//Rebuild o_items_on_ground slot instances:
@@ -633,6 +648,10 @@ else if global.cur_game_state == game_state.access_inv {
 					global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = -1;
 					scr_equip_or_unequip_item(global.cur_char, global.mouse_struct_item, false);
 					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
+					
+					//Important! We need to change the is_in_inv boolean var of the item_struct to == false, otherwise this
+					//item will continue to appear as being in this char's inventory, if it was set to true:
+					global.mouse_struct_item.is_in_inv = false;
 					
 					//If this was a 2 handed item, we also need to adjust the opposite hand slot:
 					if global.mouse_struct_item.is_two_hand {
@@ -678,7 +697,7 @@ else if global.cur_game_state == game_state.access_inv {
 				else if is_struct(global.mouse_struct_item) && inv_slot_inst.contents_id == -1 {
 					
 					var valid_equip = false, mouse_slot_type = global.mouse_struct_item.item_equip_type_enum, inv_slot_type = inv_slot_inst.inv_slot_type;
-					var two_handed_wep_equipped = false, passed_cc_check = false;
+					var two_handed_wep_equipped = false, passed_cc_check = false, msg_alread_provided = false;
 					
 					//First, check to see if this char can actually carry the added weight of this item:
 					if global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] + global.mouse_struct_item.weight_val <=
@@ -687,7 +706,9 @@ else if global.cur_game_state == game_state.access_inv {
 					}
 					
 					if passed_cc_check {
-					
+						
+						#region Restriction logic for two hand items:
+						
 						if global.mouse_struct_item.is_two_hand && (inv_slot_type == inv_slot.rh || inv_slot_type == inv_slot.lh) {
 						
 							//If either hand contains an item, create a red box there to indicate to the player why they can't equip that item:
@@ -734,15 +755,110 @@ else if global.cur_game_state == game_state.access_inv {
 								two_handed_wep_equipped = true;
 							}
 						}
-					
+						
+						#endregion
+						
+						#region Restriction logic for rh and lh items - no 2 weapons and no 2 shields can be equipped simultaneously:
+						
 						else if (inv_slot_type == inv_slot.rh || inv_slot_type == inv_slot.lh) && (mouse_slot_type == inv_slot.rh || mouse_slot_type == inv_slot.lh) {
-							valid_equip = true;	
+							
+							//If we're equipping the rh, check what is in our lh:
+							if inv_slot_type == inv_slot.rh {
+								
+								//Locate contents id of left hand:
+								var lh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var slot_inst = instance_find(o_inv_slot, i);
+									
+									if slot_inst.inv_slot_type == inv_slot.lh {
+										lh_inv_slot_inst_id = slot_inst;
+										break;
+									}
+								}
+								
+								//If our mouse item is a shield...
+								if global.mouse_struct_item.item_weapon_type_enum == wep_type.shield {
+									//The opposite hand must either be empty...
+									if lh_inv_slot_inst_id.contents_id == -1 { valid_equip = true; }
+									//... or a non-shield item:
+									else if is_struct(lh_inv_slot_inst_id.contents_id) && lh_inv_slot_inst_id.contents_id.item_weapon_type_enum != wep_type.shield {
+										valid_equip = true;
+									}
+									else if is_struct(lh_inv_slot_inst_id.contents_id) && lh_inv_slot_inst_id.contents_id.item_weapon_type_enum == wep_type.shield {
+										msg_alread_provided = true;
+										scr_create_status_message(mx, my, "CANNOT EQUIP\nTWO SHIELDS", c_red, true, true);
+									}
+								}
+								
+								//If our mouse item is not a shield (it's a rh or lh type weapon):
+								else if global.mouse_struct_item.item_weapon_type_enum != wep_type.shield {
+									//The opposite hand must either be empty...
+									if lh_inv_slot_inst_id.contents_id == -1 { valid_equip = true; }
+									//... or a shield item:
+									else if is_struct(lh_inv_slot_inst_id.contents_id) && lh_inv_slot_inst_id.contents_id.item_weapon_type_enum == wep_type.shield {
+										valid_equip = true;
+									}
+									else if is_struct(lh_inv_slot_inst_id.contents_id) && lh_inv_slot_inst_id.contents_id.item_weapon_type_enum != wep_type.shield {
+										msg_alread_provided = true;
+										scr_create_status_message(mx, my, "CANNOT DUAL-\nWIELD WEAPONS", c_red, true, true);
+									}
+								}
+							}
+							
+							//If we're equipping the lh, check what is in our rh:
+							if inv_slot_type == inv_slot.lh {
+								
+								//Locate contents id of right hand:
+								var rh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var slot_inst = instance_find(o_inv_slot, i);
+									
+									if slot_inst.inv_slot_type == inv_slot.rh {
+										rh_inv_slot_inst_id = slot_inst;
+										break;
+									}
+								}
+								
+								//If our mouse item is a shield...
+								if global.mouse_struct_item.item_weapon_type_enum == wep_type.shield {
+									//The opposite hand must either be empty...
+									if rh_inv_slot_inst_id.contents_id == -1 { valid_equip = true; }
+									//... or a non-shield item:
+									else if is_struct(rh_inv_slot_inst_id.contents_id) && rh_inv_slot_inst_id.contents_id.item_weapon_type_enum != wep_type.shield {
+										valid_equip = true;
+									}
+									else if is_struct(rh_inv_slot_inst_id.contents_id) && rh_inv_slot_inst_id.contents_id.item_weapon_type_enum == wep_type.shield {
+										msg_alread_provided = true;
+										scr_create_status_message(mx, my, "CANNOT EQUIP\nTWO SHIELDS", c_red, true, true);
+									}
+								}
+								
+								//If our mouse item is not a shield (it's a rh or lh type weapon)...
+								else if global.mouse_struct_item.item_weapon_type_enum != wep_type.shield {
+									//The opposite hand must either be empty...
+									if rh_inv_slot_inst_id.contents_id == -1 { valid_equip = true; }
+									//... or a shield item:
+									else if is_struct(rh_inv_slot_inst_id.contents_id) && rh_inv_slot_inst_id.contents_id.item_weapon_type_enum == wep_type.shield {
+										valid_equip = true;
+									}	
+									else if is_struct(rh_inv_slot_inst_id.contents_id) && rh_inv_slot_inst_id.contents_id.item_weapon_type_enum != wep_type.shield {
+										msg_alread_provided = true;
+										scr_create_status_message(mx, my, "CANNOT DUAL-\nWIELD WEAPONS", c_red, true, true);
+									}
+								}
+							}
 						}
-					
+						
+						#endregion
+						
+						#region Restriction logic for all other equip slots is simple - if they match, it's valid:
+						
 						else if mouse_slot_type == inv_slot_type {
 							valid_equip = true;
 						}
-					
+						
+						#endregion
+						
 						if valid_equip {
 						
 							//Swap positions:
@@ -752,11 +868,16 @@ else if global.cur_game_state == game_state.access_inv {
 							//Add weight to cc:
 							global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] += inv_slot_inst.contents_id.weight_val;
 						
-							//Update array:
+							//Update array - we don't need to actually manually resize our array here - gms2 automatically
+							//does this for us when we choose an index beyond the size of the array:
 							global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id;
 						
 							//Apply equip effects:
 							scr_equip_or_unequip_item(global.cur_char, inv_slot_inst.contents_id, true, "o_con step event: game_state = access_inv: equipping an item by placing it into an o_inv_slot.");
+							
+							//Important! We need to change the is_in_inv boolean var of the item_struct to == true, otherwise this
+							//item may continue to appear as being on the ground (if it was set to false):
+							inv_slot_inst.contents_id.is_in_inv = true;
 							
 							//Also add to the opposite hand slot:
 							if two_handed_wep_equipped {
@@ -797,7 +918,7 @@ else if global.cur_game_state == game_state.access_inv {
 								}
 							}
 						}
-						else {
+						else if msg_alread_provided == false {
 							scr_create_status_message(mx, my, "ITEM DOES NOT EQUIP THERE", c_red, true, true);
 						}
 					} //Closed bracket for if char can handle added weight
@@ -832,7 +953,12 @@ else if global.cur_game_state == game_state.access_inv {
 					
 					//Adjust array:
 					global.cur_char.inv_ar[inv_slot_inst.slot_ind] = -1;
-					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
+					//Reduce CC
+					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val;
+					
+					//Important! We need to change the is_in_inv var of the item_struct to = false, b.c if it was set to true,
+					//it will still show as being in that char's inventory, even if on the ground
+					global.mouse_struct_item.is_in_inv = false;
 				}	
 				
 				#endregion
@@ -866,10 +992,80 @@ else if global.cur_game_state == game_state.access_inv {
 						
 						//Update array:
 						global.cur_char.inv_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id;
+						
+						//Important! We need to change the is_in_inv boolean var of the item_struct to == true, otherwise this
+						//item will continue to appear as being on the ground, if it was false:
+						inv_slot_inst.contents_id.is_in_inv = true;
 					}
 					else {
 						scr_create_status_message(mx, my, "ITEM WOULD EXCEED\nCARRYING CAPACITY", c_red, true, true);	
 					}
+				}
+				
+				#endregion
+			}
+			
+			#endregion
+			
+			#region o_item_on_ground_box interactions
+			
+			else if inv_slot_inst.object_index == o_items_on_ground_box {
+				
+				#region Pickup item from ground:
+				
+				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
+						
+					//Swap -1 with inv_slot item struct:
+					global.mouse_struct_item = inv_slot_inst.contents_id;
+					inv_slot_inst.contents_id = -1;
+					
+					//Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
+					mouse_item_original_char = global.cur_char;
+					mouse_item_original_index = inv_slot_inst.slot_ind;
+					mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
+					mouse_item_original_ar = global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y];
+					
+					//Adjust array:
+					items_on_ground_ar[inv_slot_inst.slot_ind] = -1;
+					scr_delete_val_from_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y], global.mouse_struct_item, "o_con step event: game_state == access_inv: picking up item from ground");
+				
+					//Important! We need to change the is_in_inv var of the item_struct to = false, to be thorough and properly keep track:
+					global.mouse_struct_item.is_in_inv = false;
+				}
+				
+				#endregion
+				
+				#region Place item from mouse on to ground:
+				
+				else if is_struct(global.mouse_struct_item) && inv_slot_inst.contents_id == -1 {
+					
+					//We first need to check and make sure that the size of the items_on_ground_ar can actually 
+					//accomodate the inv_slot_inst.slot_ind index position; we will simply use array_push() with our
+					//global.master_level_ar[] array, so we don't need the actual index for that array.
+					//Edit: this is actually unnecessary, gms2 automatically adjusts the size of the array when using
+					//write functions for the array. It will still throw errors for out-of-bounds indices on read functions though.
+					if inv_slot_inst.slot_ind >= array_length(items_on_ground_ar) {
+						array_resize(items_on_ground_ar, inv_slot_inst.slot_ind);
+					}
+					
+					//Swap positions:
+					inv_slot_inst.contents_id = global.mouse_struct_item;
+					global.mouse_struct_item = -1;
+						
+					//Update array:
+					items_on_ground_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id; //This also adjusts the length of the array, if necessary.
+					//This will alter the index positions of the structs within the global.master_level_ar[] compared
+					//to the item structs in the items_on_ground_ar, but this doesn't matter so long as all of the appropriate
+					//item structs are still in the global.master_level_ar[]; their index positions are defined in scr_build_items_on_ground_ar anyway
+					array_push(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y], inv_slot_inst.contents_id);
+				
+					//Important! We need to set the is_in_inv var of this item_struct = false, to keep proper track of it:
+					inv_slot_inst.contents_id.is_in_inv = false;
+					
+					//We also need to now update it's grid_x and grid_y, because it could've been passed to another character
+					//before being dropped on to the ground:
+					inv_slot_inst.contents_id.item_grid_x = global.cur_char.char_grid_x;
+					inv_slot_inst.contents_id.item_grid_y = global.cur_char.char_grid_y;
 				}
 				
 				#endregion

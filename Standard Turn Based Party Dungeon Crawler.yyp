@@ -159,6 +159,7 @@
     {"id":{"name":"spr_goblin","path":"sprites/spr_goblin/spr_goblin.yy",},},
     {"id":{"name":"scr_add_stairs_to_dungeon","path":"scripts/scr_add_stairs_to_dungeon/scr_add_stairs_to_dungeon.yy",},},
     {"id":{"name":"o_indicate_box","path":"objects/o_indicate_box/o_indicate_box.yy",},},
+    {"id":{"name":"scr_tidy_ar","path":"scripts/scr_tidy_ar/scr_tidy_ar.yy",},},
     {"id":{"name":"scr_convert_grid_to_room_coordinates","path":"scripts/scr_convert_grid_to_room_coordinates/scr_convert_grid_to_room_coordinates.yy",},},
     {"id":{"name":"spr_wep_mace_rusty","path":"sprites/spr_wep_mace_rusty/spr_wep_mace_rusty.yy",},},
     {"id":{"name":"spr_pc_necromancer","path":"sprites/spr_pc_necromancer/spr_pc_necromancer.yy",},},

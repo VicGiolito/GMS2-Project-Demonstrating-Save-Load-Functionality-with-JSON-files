@@ -20,20 +20,19 @@ function scr_setup_items_on_ground_boxes(){
 	if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
 	
 	//Create our scroll buttons:
-	if ar_len > global.max_items_on_ground_in_box {
-		//Scroll left button:
-		with(instance_create_layer(o_controller.items_on_ground_scroll_button_x, o_controller.items_on_ground_box_y, "layer_inv", o_items_on_ground_scroll_button)) {
-			scroll_left = true;
-			sprite_index = spr_on_ground_scroll_left;
-		}
+	
+	//Scroll left button:
+	with(instance_create_layer(o_controller.items_on_ground_scroll_button_x, o_controller.items_on_ground_box_y, "layer_inv", o_items_on_ground_scroll_button)) {
+		scroll_left = true;
+		sprite_index = spr_on_ground_scroll_left;
+	}
 		
-		var scroll_button_h = sprite_get_height(spr_on_ground_scroll_left);
+	var scroll_button_h = sprite_get_height(spr_on_ground_scroll_left);
 		
-		//Scroll right button:
-		with(instance_create_layer(o_controller.items_on_ground_scroll_button_x, o_controller.items_on_ground_box_y+scroll_button_h, "layer_inv", o_items_on_ground_scroll_button)) {
-			scroll_left = false;
-			sprite_index = spr_on_ground_scroll_right;
-		}
+	//Scroll right button:
+	with(instance_create_layer(o_controller.items_on_ground_scroll_button_x, o_controller.items_on_ground_box_y+scroll_button_h, "layer_inv", o_items_on_ground_scroll_button)) {
+		scroll_left = false;
+		sprite_index = spr_on_ground_scroll_right;
 	}
 	
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);

@@ -47,15 +47,15 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					
 					repeat(global.max_backpack_slots_per_page+6) {
 						//Add ran items:
-						var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+						//var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 						//Add light weight items:
-						//var item_struct_in_inv = new Item(item_enum.misc_gold_necklace, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+						var item_struct_in_inv = new Item(item_enum.misc_gold_necklace, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 						
 						array_push(pc_struct_id.inv_ar, item_struct_in_inv);
 						pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct_in_inv.weight_val;
 					}
 					
-					//Debug: add ran items to backpack just for testing purposes:
+					//Debug: add just a few ran items to backpack just for testing purposes:
 					/*
 					repeat(8) {
 						var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);

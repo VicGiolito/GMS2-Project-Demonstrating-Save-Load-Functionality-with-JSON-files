@@ -386,7 +386,14 @@ global.cur_game_state == game_state.view_bio {
 						
 						//Change g.cur_char
 						global.cur_char = char_struct;
-					
+						
+						//If we're in access_inv screen, it's possible the items on ground and inv_ar items have been moved around
+						//and/or manipulated, resulting in empty indices in those arrays; tidy them up to remove this:
+						if global.cur_game_state == game_state.access_inv {
+							global.cur_char.inv_ar = scr_tidy_ar(global.cur_char.inv_ar);
+							global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y] = scr_tidy_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y]);	
+						}
+						
 						//If applicable, change floor:
 						if global.cur_char.cur_floor_level != global.cur_floor_ind {
 							//Define g.cur_floor_ind:
@@ -410,6 +417,7 @@ global.cur_game_state == game_state.view_bio {
 							scr_setup_backpack_slots(global.cur_char);
 						}
 						
+						//Always change items_on_ground_ar and any applicable items on ground boxes - no two chars can exist on the same cell:
 						items_on_ground_ar = -1;
 						items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
 							
@@ -534,7 +542,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Feet Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		i++; //Space
 		
@@ -580,6 +588,14 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	#endregion
 	
+	//Draw the 'page' our backpack display (g.cur_char.inv_ar) is currently on:
+	var pg_num_x = head_slot_x-(slot_w*2)-(slot_w / 2);
+	var pg_num_y = head_slot_y+slot_h*3;
+	
+	var pg_count = (items_in_backpack_min_range div global.max_backpack_slots_per_page) + 1;
+	
+	draw_text_color(pg_num_x, pg_num_y,$"Page {pg_count}",c_white, c_white, c_white,c_white, 1);
+	
 	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
 	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
 	head_slot_y = bg_y+inner_frame_offset+slot_h/2;
@@ -612,8 +628,10 @@ global.cur_game_state == game_state.view_bio {
 		var bg_c = c_gray, inner_frame = c_white, inner_frame_offset = 8;
 		draw_set_alpha(.7);
 		
+		var items_on_ground_pg_count = (items_on_ground_min_range div global.max_items_on_ground_in_box) + 1;
+		
 		//Draw rectangular background over box title text:
-		var title = "ITEMS AT LOCATION:";
+		var title = $"ITEMS AT LOCATION, PAGE {items_on_ground_pg_count}:";
 		var title_str_w = string_width(title), title_str_h = string_height(title), title_border = 4;
 		var title_offset = 16;
 		
