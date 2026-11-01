@@ -335,7 +335,7 @@ function scr_define_macros_and_enums(){
 		total_char_classes
 	}
 	
-	//Enum for char_team:
+	//Enum for char_team - NOTE: ALSO USED FOR BUILDINGS!
 	enum char_team {
 		pc,
 		enemy,

@@ -7,9 +7,11 @@ returns the struct_id of the struct with the matching struct_enum (struct_type_e
 
 if unsuccessful, returns false
 
+IMPORTANT!: This will only return the FIRST struct_id of the match struct_type_enum, so should not be used for items
+
 */
 
-function scr_return_struct_id(grid_x,grid_y,struct_type_enum,floor_int,dungeon_int){
+function scr_return_struct_id(grid_x, grid_y, struct_type_enum, floor_int, dungeon_int){
 	
 	var struct_ar = global.master_level_ar[dungeon_int][floor_int][GRID_INST][# grid_x,grid_y];
 	

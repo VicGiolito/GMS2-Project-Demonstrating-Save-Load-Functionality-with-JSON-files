@@ -32,8 +32,8 @@ global.saved_games_list = -1;
 
 global.cur_char = -1;
 
-//Where are these vars being defined?: Currently under o_con step event: global.cur_game_state == game_state.create_new_game: enter key press; defined as '25'
-global.grid_w = 0; //maximum possible grid size == 152x152 (assuming cell_size == 32, and including a buffer of 128px on both left and right sides)
+//These vars are currently defined under o_con step event: global.cur_game_state == game_state.create_new_game: enter key press; defined as '25'
+global.grid_w = 0; 
 global.grid_h = 0;
 
 global.cell_size = 32;
@@ -229,6 +229,8 @@ mouse_item_original_index = 0;
 mouse_item_original_inv_type = -1; //will be one of the inv_slot enums: head, body, rh, lh, accessory, feet, hands, backpack, item_on_ground.
 mouse_item_original_ar = -1; //an array reference to any of the following: items on ground: g.master_level_ar[dungeon_index][floor_index][GRID_INST][# gridx, gridy] where the mouse item originally picked up the item from; equipment slots: global.cur_char.equip_slot_ar; backpack slots: global.cur_char.inv_ar.
 mouse_item_original_char = -1; //will contain the struct_id of the character the item originally belonged to when we lifted it into our g.mouse_struct_item.
+
+adjacent_pcs_for_inv_ar = -1; //Used as an array for defining our local party when inv screen is open, so we can only pass items to adjacent pcs.
 
 draw_inv_for_load_once = true; //Also calls scr_setup_items_on_ground_boxes() when it's var is switched at the end of the draw_gui event
 

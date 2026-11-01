@@ -535,6 +535,9 @@ else if global.cur_game_state == game_state.access_inv {
 			scr_setup_items_on_ground_boxes();
 		}
 		
+		//Reset adjacent_pcs_for_inv_ar:
+		adjacent_pcs_for_inv_ar = -1;
+		
 		scr_reset_wait(1);
 	}
 	
@@ -1104,6 +1107,21 @@ else if global.cur_game_state == game_state.main  {
 			
 			scr_setup_equip_slots(global.cur_char);
 			scr_setup_backpack_slots(global.cur_char, "o_con step event: 'I' keypress.");	
+			
+			//Define our adjacent_pcs_for_inv_ar to enforce passing item restriction to only adjacent pcs:
+			adjacent_pcs_for_inv_ar = -1;
+			adjacent_pcs_for_inv_ar = [];
+			adjacent_pcs_for_inv_ar = scr_define_adjacent_structs_ar(global.cur_char, struct_type.character, char_team.pc);
+		
+			//Debug:
+			if is_array(adjacent_pcs_for_inv_ar) {
+				for(var i = 0; i < array_length(adjacent_pcs_for_inv_ar); i++){
+					d($"o_con step event: 'i' keypress: adjacent_pcs_for_inv_ar[{i}] == {adjacent_pcs_for_inv_ar[i].char_stats_ar[char_stats.name]}");	
+				}
+			}
+			else {
+				d($"o_con step event: 'i' keypress: adjacent_pcs_for_inv_ar was not an array after calling scr_define_adjacent_structs_ar, something went wrong with that script.");	
+			}
 			
 			scr_reset_wait(1);
 		}

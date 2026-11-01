@@ -351,7 +351,7 @@ global.cur_game_state == game_state.view_bio {
 	//Now draw the rest of our party:
 	if is_array(global.pc_team_ar) && array_length(global.pc_team_ar) > 0 {
 		
-		var ar_len = array_length(global.pc_team_ar), portrait_scale = 2;
+		var portrait_scale = 2;
 		var char_struct;
 		var char_spr_w = sprite_get_width(asset_get_index("spr_pc_ogre"))*portrait_scale;
 		var char_spr_h = sprite_get_height(asset_get_index("spr_pc_ogre"))*portrait_scale;
@@ -361,18 +361,33 @@ global.cur_game_state == game_state.view_bio {
 		//Mouse gui vars:
 		var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
 		
+		//Define which array we're using:
+		var ar_to_use = global.pc_team_ar;
+		
+		if global.cur_game_state == game_state.access_inv && is_array(adjacent_pcs_for_inv_ar) && array_length(adjacent_pcs_for_inv_ar) > 0 {
+			ar_to_use = adjacent_pcs_for_inv_ar;
+		}
+		
+		var ar_len = array_length(ar_to_use);
+		
 		//Iterate through team array:
 		for(var i = 0; i < ar_len; i++) {
 			
 			//Define struct:
-			char_struct = global.pc_team_ar[i];
+			char_struct = ar_to_use[i];
 			
 			//Don't re-draw the g.cur_char:
 			if char_struct == global.cur_char continue;
 			
 			//Detect mouse hover:
 			var char_spr_frame = 0;
-	
+			
+			/*If our mouse is within the general x and y border of where the current pc party is being displayed;
+			Note: The reason this code works as intended, and always selects the character in the party that you want it to, 
+			is BECAUSE PORTRAIT_ORIGIN_X CHANGES WITH EACH ITERATION THROUGH OUR ARRAY, AND THEREFORE ONLY EVER COVERS THE 
+			AREA ON THE GUI DISPLAY THAT IS DRAWING THE SECTION THAT OUR MOUSE IS CURRENTLY HOVERING OVER. SO WHEN WE CLICK,
+			THE CHAR_STRUCT VAR (SET ABOVE) IS ALREADY DEFINED AS THAT CHARACTER.
+			*/
 			if mouse_win_x >= portrait_origin_x-(char_spr_w / 2) && mouse_win_x <= portrait_origin_x+portrait_offset_x-(char_spr_w / 2) && mouse_win_y <= portrait_origin_y+(char_spr_h / 2) {
 				
 				char_spr_frame = 1;
@@ -388,7 +403,7 @@ global.cur_game_state == game_state.view_bio {
 						global.cur_char = char_struct;
 						
 						//If we're in access_inv screen, it's possible the items on ground and inv_ar items have been moved around
-						//and/or manipulated, resulting in empty indices in those arrays; tidy them up to remove this:
+						//and/or manipulated, resulting in empty indices in those arrays; TIDY them up to remove this:
 						if global.cur_game_state == game_state.access_inv {
 							global.cur_char.inv_ar = scr_tidy_ar(global.cur_char.inv_ar);
 							global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y] = scr_tidy_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y]);	
@@ -449,7 +464,6 @@ global.cur_game_state == game_state.view_bio {
 				stat_cur = stat_i;
 				stat_max = stat_i+1;
 		
-				
 				stat_max_val = char_struct.char_stats_ar[stat_max];
 		
 				//Draw stat bar:
