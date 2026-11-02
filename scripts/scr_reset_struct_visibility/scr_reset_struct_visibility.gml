@@ -22,7 +22,16 @@ function scr_reset_struct_visibility(dungeon_index, floor_index, called_from_str
 				
 				if is_array(global.master_struct_ar[dungeon_index][floor_index][team_i]) {
 					for(var struct_i = 0; struct_i < array_length(global.master_struct_ar[dungeon_index][floor_index][team_i]); struct_i++) {
+						
 						struct_id = global.master_struct_ar[dungeon_index][floor_index][team_i][struct_i];
+						
+						//For the convenience of the player, we never reset stair visibility; once discovered, they're always visible on the current floor.
+						if struct_id.struct_enum == struct_type.building {
+							if struct_id.building_type_enum == building_type.stair_up || struct_id.building_type_enum == building_type.stair_down {
+								continue;	
+							}
+						}
+						
 						struct_id.visible_boolean = false;
 					}
 				}

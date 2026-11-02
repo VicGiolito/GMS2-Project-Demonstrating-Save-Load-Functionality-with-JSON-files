@@ -222,7 +222,7 @@ items_on_ground_scroll_button_x = 0;
 items_on_ground_scroll_button_y = 0;
 
 items_on_ground_min_range = 0;
-items_on_ground_max_range = global.max_items_on_ground_in_box-1; //subtract 1 b.c array index starts at 0
+items_on_ground_max_range = global.max_items_on_ground_in_box-1; //subtract 1 b.c array index starts at 0... currently this var literally has no logic use at all, it's only used to display the 'page number' of the items on ground page we're on.
 
 //Vars for keeping track of where our global.mouse_struct_item came from while changing focus between characters:
 mouse_item_original_index = 0;

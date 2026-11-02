@@ -594,8 +594,6 @@ else if global.cur_game_state == game_state.access_inv {
 			
 			else if inv_slot_inst.object_index == o_items_on_ground_scroll_button {
 				
-				d($"LMB CLICK DETECTED FOR o_items_on_ground_scroll_button!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
-				
 				var scroll_left_bool = false; //scroll right
 		
 				//This is a left scroll button....
@@ -1065,10 +1063,14 @@ else if global.cur_game_state == game_state.access_inv {
 					//Important! We need to set the is_in_inv var of this item_struct = false, to keep proper track of it:
 					inv_slot_inst.contents_id.is_in_inv = false;
 					
-					//We also need to now update it's grid_x and grid_y, because it could've been passed to another character
-					//before being dropped on to the ground:
+					//We also need to now update it's grid_x and y and item x and y, because it could've been passed to 
+					//another character before being dropped on to the ground, or the char could've simply moved from the place
+					//where the item was originally picked up:
 					inv_slot_inst.contents_id.item_grid_x = global.cur_char.char_grid_x;
 					inv_slot_inst.contents_id.item_grid_y = global.cur_char.char_grid_y;
+					
+					inv_slot_inst.contents_id.item_room_x = inv_slot_inst.contents_id.item_grid_x*global.cell_size+global.grid_offset_x+global.half_c;
+					inv_slot_inst.contents_id.item_room_y = inv_slot_inst.contents_id.item_grid_y*global.cell_size+global.grid_offset_y+global.half_c;
 				}
 				
 				#endregion
@@ -1108,20 +1110,19 @@ else if global.cur_game_state == game_state.main  {
 			scr_setup_equip_slots(global.cur_char);
 			scr_setup_backpack_slots(global.cur_char, "o_con step event: 'I' keypress.");	
 			
+			//If there are no items on the ground at this location, we still want to create the items_on_the_ground 
+			//boxes, so that this char can easily drop their items on the ground if they want:
+			var create_items_on_ground_boxes = false;
+			if !is_array(items_on_ground_ar) create_items_on_ground_boxes = true;
+			if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) == 0 create_items_on_ground_boxes = true;
+			if create_items_on_ground_boxes {
+				scr_setup_items_on_ground_boxes();	
+			}
+			
 			//Define our adjacent_pcs_for_inv_ar to enforce passing item restriction to only adjacent pcs:
 			adjacent_pcs_for_inv_ar = -1;
 			adjacent_pcs_for_inv_ar = [];
 			adjacent_pcs_for_inv_ar = scr_define_adjacent_structs_ar(global.cur_char, struct_type.character, char_team.pc);
-		
-			//Debug:
-			if is_array(adjacent_pcs_for_inv_ar) {
-				for(var i = 0; i < array_length(adjacent_pcs_for_inv_ar); i++){
-					d($"o_con step event: 'i' keypress: adjacent_pcs_for_inv_ar[{i}] == {adjacent_pcs_for_inv_ar[i].char_stats_ar[char_stats.name]}");	
-				}
-			}
-			else {
-				d($"o_con step event: 'i' keypress: adjacent_pcs_for_inv_ar was not an array after calling scr_define_adjacent_structs_ar, something went wrong with that script.");	
-			}
 			
 			scr_reset_wait(1);
 		}
@@ -1137,32 +1138,29 @@ else if global.cur_game_state == game_state.main  {
 		
 		scr_reset_wait(1);
 		
-		var iterate_dir = 1; //scroll right
+		var scroll_left_bool = false; //scroll right
 		
-		//This is a left scroll button so scroll left:
-		if scroll_inst.scroll_left {
-			iterate_dir = -1;
+		//This is a left scroll button....
+		if inv_slot_inst.scroll_left {
+			scroll_left_bool = true; //scroll left (backwards)
 		}
 		
-		var valid_scroll = true;
-		
-		//Iterate ranges:
-		items_on_ground_min_range += global.max_items_on_ground_in_box*iterate_dir;
-		items_on_ground_max_range += global.max_items_on_ground_in_box*iterate_dir;
-		
-		//Cap:
-			//We tried to iterate backwards (left) past the 0 zero index - bring it back (right):
-		if items_on_ground_min_range < 0 {
-			items_on_ground_min_range += global.max_items_on_ground_in_box;
-			items_on_ground_max_range += global.max_items_on_ground_in_box;
-			valid_scroll = false;
+		var valid_scroll = false;
+				
+		if scroll_left_bool {
+			if items_on_ground_min_range - global.max_items_on_ground_in_box >= 0 {
+				items_on_ground_min_range -= global.max_items_on_ground_in_box;
+				items_on_ground_max_range -= global.max_items_on_ground_in_box;
+				valid_scroll = true;
+			}
 		}
-		
-			//We tried to iterate forward (right) past the length of the array - bring ti back (left):
-		if items_on_ground_min_range >= array_length(items_on_ground_ar) {
-			items_on_ground_min_range -= global.max_items_on_ground_in_box;
-			items_on_ground_max_range -= global.max_items_on_ground_in_box;
-			valid_scroll = false;
+		//Scrolling right:
+		else {
+			if items_on_ground_min_range + global.max_items_on_ground_in_box < array_length(items_on_ground_ar)+(global.max_items_on_ground_in_box * 2) {
+				items_on_ground_min_range += global.max_items_on_ground_in_box;
+				items_on_ground_max_range += global.max_items_on_ground_in_box;	
+				valid_scroll = true;
+			}
 		}
 		
 		//Rebuild o_items_on_ground slot instances:

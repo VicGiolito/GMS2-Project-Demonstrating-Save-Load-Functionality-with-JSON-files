@@ -436,8 +436,21 @@ global.cur_game_state == game_state.view_bio {
 						items_on_ground_ar = -1;
 						items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
 							
-						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+						//Whether or not the items_on_ground_ar was built or not, if we're in the inventory screen, we still want 
+						//this char to be able to drop items on the ground if they need to, so we'll create those boxes now;
+						if global.cur_game_state == game_state.access_inv {
 							scr_setup_items_on_ground_boxes();
+						}
+						//... However if were in the main game state now, we only want to build the items on ground boxes if
+						//its applicable:
+						else if global.cur_game_state == game_state.main && is_array(items_on_ground_ar) && array_length(items_on_ground_ar) {
+							scr_setup_items_on_ground_boxes();	
+						}
+						
+						//If none of those conditions apply, simply destroy the o items on ground boxes:
+						else {
+							if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box);
+							if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
 						}
 					}
 				}
@@ -637,7 +650,15 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || 
 global.cur_game_state == game_state.view_bio {
 	
-	if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+	var draw_bg = false;
+	
+	if global.cur_game_state == game_state.access_inv draw_bg = true;
+	
+	if global.cur_game_state == game_state.main && is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+		draw_bg = true;	
+	}
+	
+	if draw_bg {
 		
 		var bg_c = c_gray, inner_frame = c_white, inner_frame_offset = 8;
 		draw_set_alpha(.7);

@@ -417,6 +417,7 @@ function scr_define_macros_and_enums(){
 	//Enum for building struct types:
 	enum building_type
 	{
+		//the up/down stairs, do NOT have their visible boolean reset to FALSE in scr_reset_visibility; once set to true, they always remain visible in the current floor.
 		door_closed, //Considered empty cells for the purposes of the pathing algorithms; do not have a "weight_pathing_val" associated with them.
 		door_open,
 		stair_up,

@@ -3,16 +3,17 @@ function scr_setup_items_on_ground_boxes(){
 	
 	d("Entering scr_setup_items_on_ground_boxes...");
 	
-	if is_array(o_controller.items_on_ground_ar) == false {
-		d("We called scr_setup_items_on_ground_boxes, but items_on_ground_ar was not an array; returning false.");
-		return false;
+	//Just create an empty array in this case - we called for this script for a reason, even if to just create empty
+	//items on ground boxes that the pc can drop items into
+	if !is_array(o_controller.items_on_ground_ar) {
+		
+		o_controller.items_on_ground_ar = [];
 	}
 	
-	var ar_len = array_length(o_controller.items_on_ground_ar);
-	
-	if ar_len == 0 {
-		d("We called scr_setup_items_on_ground_boxes, but items_on_ground_ar length was == 0; returning false.");
-		return false;	
+	//In such a case, we still need to define our min_max ranges, which is normally done in scr_build_items_on_ground_ar:
+	if array_length(o_controller.items_on_ground_ar) == 0 {
+		o_controller.items_on_ground_min_range = 0;
+		o_controller.items_on_ground_max_range = global.max_items_on_ground_in_box-1;
 	}
 	
 	//Reset slot and button instances:
