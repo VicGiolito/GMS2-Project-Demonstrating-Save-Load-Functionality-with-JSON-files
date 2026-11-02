@@ -1259,7 +1259,7 @@
 				
 				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
-				description = "A molting collection of furs from animals too disintegrated to discern.";
+				description = "A molting collection of furs from animal parts too disintegrated to discern.";
 				physical_resist = 2;
 				magical_resist = 0;
 				gold_value = 75;

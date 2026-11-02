@@ -664,7 +664,9 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		//Draw our lower_box_item, and possibly our comparison item afterwards:
 		
 		if !is_undefined(lower_box_item_struct_id) {
-		
+			
+			#region Drawing lower box item:
+			
 			var inv_slot_w = sprite_get_width(spr_inv_frame), inv_slot_h = sprite_get_height(spr_inv_frame);
 			var bg_c = c_gray, lower_box_w = inv_slot_w*5, lower_box_h = inv_slot_h*7, inner_frame_offset = 8;
 			var inner_frame_c = c_white;
@@ -716,11 +718,15 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			var lb_stat_origin_y = lower_box_origin_y+inner_frame_offset;
 			var i = 0;
 			
-			//Set text color:
+			//Set text color and font:
 			draw_set_color(c_white);
+			draw_set_font(fnt_std_14);
 			
+			//Denote the type of item box we are looking at:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y, $"VIEWING ITEM:");
+			i++;
 			//Name:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y, $"{lower_box_item_struct_id.item_name}");
+			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"{lower_box_item_struct_id.item_name}");
 			i++;
 			//Quality:
 			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(lower_box_item_struct_id.item_quality_enum)}");
@@ -759,8 +765,155 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 					
 			}
 			
-			//Reset color:
+			//Always end with the description of the item:
+			var item_desc_str = lower_box_item_struct_id.description;
+			var max_str_w = lower_box_w-(inner_frame_offset*4); //We multiply by 4 b.c with draw_text_ext(), if there is no white-space inside of a particularly long word, it will still run over the max-width
+			
+			draw_text_ext(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w);
+			
+			#endregion
+			
+			//Determine if we had a applicable item equipped that is necessary to compare this item to:
+			var lb_item_inv_slot_type = lower_box_item_struct_id.item_equip_type_enum;
+		
+			var comparison_equipped_item = -1;
+			
+			//Logic for rh and lh items will be different; other equip slots are straight-forward, we'll cover this first -
+			if lb_item_inv_slot_type == inv_slot.head || lb_item_inv_slot_type == inv_slot.body || lb_item_inv_slot_type == inv_slot.accessory ||
+			lb_item_inv_slot_type == inv_slot.feet || lb_item_inv_slot_type == inv_slot.hands {
+				comparison_equipped_item = global.cur_char.equip_slot_ar[lb_item_inv_slot_type];
+			}
+			
+			//Logic for rh and lh equipped items:
+			else if lb_item_inv_slot_type == inv_slot.rh || lb_item_inv_slot_type == inv_slot.lh {
+				
+				//We can simply check the right hand to see if there is a equipped weapon there, as two_hand items occupy both hands:
+				if lower_box_item_struct_id.is_two_hand == true {
+					comparison_equipped_item = global.cur_char.equip_slot_ar[inv_slot.rh];	
+				}
+				
+				//If it's not a 2h weapon, check to see if it's a shield...
+				else if lower_box_item_struct_id.item_weapon_type_enum == wep_type.shield {
+					
+					//If either hand has a shield, use that for comparison:
+					if is_struct(global.cur_char.equip_slot_ar[inv_slot.rh]) && global.cur_char.equip_slot_ar[inv_slot.rh].item_weapon_type_enum == wep_type.shield {
+						comparison_equipped_item = global.cur_char.equip_slot_ar[inv_slot.rh];
+					}
+					else if is_struct(global.cur_char.equip_slot_ar[inv_slot.lh]) && global.cur_char.equip_slot_ar[inv_slot.lh].item_weapon_type_enum == wep_type.shield {
+						comparison_equipped_item = global.cur_char.equip_slot_ar[inv_slot.lh];
+					}
+				}
+				
+				//If it's not a shield, then simply check to see if either hand contains a non-shield item and if it does, 
+				//we'll use that, since chars can't dual wield, we'll always find the correct one:
+				else {
+					if is_struct(global.cur_char.equip_slot_ar[inv_slot.rh]) && global.cur_char.equip_slot_ar[inv_slot.rh].item_weapon_type_enum != wep_type.shield {
+						comparison_equipped_item = global.cur_char.equip_slot_ar[inv_slot.rh];	
+					}
+					else if is_struct(global.cur_char.equip_slot_ar[inv_slot.lh]) && global.cur_char.equip_slot_ar[inv_slot.lh].item_weapon_type_enum != wep_type.shield {
+						comparison_equipped_item = global.cur_char.equip_slot_ar[inv_slot.lh];	
+					}
+				}
+			}	
+			
+			#region Drawing upper box equipped item:
+			
+			//Alright, we've defined our comparison_equipped_item as an item struct, it's time to draw it,
+			//in (almost) the exact same way we drew our lower box item:
+			if is_struct(comparison_equipped_item) && comparison_equipped_item.struct_enum == struct_type.item {
+				
+				var bg_c = c_gray;
+				var inner_frame_c = c_white;
+		
+				var upper_box_origin_x = items_on_ground_box_x+items_on_ground_box_w+(inv_slot_w);
+				var upper_box_origin_y = lower_box_origin_y-lower_box_h;
+			
+				//Draw with inv_bg transparency:
+				draw_set_alpha(global.inv_screen_alpha);
+			
+				//Draw bg:
+				draw_rectangle_color(upper_box_origin_x, upper_box_origin_y, upper_box_origin_x+lower_box_w, 
+				upper_box_origin_y+lower_box_h, bg_c, bg_c, bg_c, bg_c, false);
+			
+				//Draw white inner frame:
+				draw_rectangle_color(upper_box_origin_x+inner_frame_offset, upper_box_origin_y+inner_frame_offset, 
+				upper_box_origin_x+lower_box_w-inner_frame_offset, 
+				upper_box_origin_y+lower_box_h-inner_frame_offset, 
+				inner_frame_c, inner_frame_c, inner_frame_c, inner_frame_c, true);
+			
+				//Reset alpha:
+				draw_set_alpha(1);
+			
+				//Draw our relevant stats, depending upon the item:
+			
+				//Always draw our item's sprite in the upper right corner of the box, so we know what we're looking at immediately:
+				draw_sprite(asset_get_index(comparison_equipped_item.item_spr_str), 0, upper_box_origin_x+lower_box_w-(inner_frame_offset+(inv_slot_w/2)),
+				upper_box_origin_y+inner_frame_offset+(inv_slot_h/2) );
+			
+				//Start drawing stats:
+				var upper_stat_origin_x = upper_box_origin_x+inner_frame_offset;
+				var upper_stat_origin_y = upper_box_origin_y+inner_frame_offset;
+				var i = 0;
+			
+				//Set text color and font:
+				draw_set_color(c_white);
+				draw_set_font(fnt_std_14);
+			
+				//Denote the type of item box we are looking at:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y, $"EQUIPPED ITEM:");
+				i++;
+				//Name:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"{comparison_equipped_item.item_name}");
+				i++;
+				//Quality:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(comparison_equipped_item.item_quality_enum)}");
+				i++;
+				//Item type:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(comparison_equipped_item.item_weapon_type_enum)}");
+				i++;
+				//Weight:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"WEIGHT: {comparison_equipped_item.weight_val}");
+				i++;
+				//Value:
+				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"VALUE: {comparison_equipped_item.gold_value}");
+				i++;
+			
+				//Now we draw different stats depending upon the item type:
+					//Armors:
+				if comparison_equipped_item.item_weapon_type_enum >= wep_type.cloth && comparison_equipped_item.item_weapon_type_enum <= wep_type.plate {
+					//Protective value:
+					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ARMOR: {comparison_equipped_item.base_protect_val}");
+					i++;
+					//Evasion:
+					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"EVASION: {comparison_equipped_item.evasion_mod}");
+					i++;
+				}
+					//Weapons:
+				else if comparison_equipped_item.item_weapon_type_enum >= wep_type.mace && comparison_equipped_item.item_weapon_type_enum <= wep_type.firearm {
+					//Min-max damage:
+					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {comparison_equipped_item.min_dmg}-{comparison_equipped_item.max_dmg}");
+					i++;
+					//ToHit Mod:
+					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {comparison_equipped_item.to_hit_mod}");
+					i++;
+				}
+					//Misc: various stat mods:
+				else if comparison_equipped_item.item_weapon_type_enum >= wep_type.misc {
+					
+				}
+			
+				//Always end with the description of the item:
+				var item_desc_str = comparison_equipped_item.description;
+				var max_str_w = lower_box_w-(inner_frame_offset*4); //We multiply by 4 b.c with draw_text_ext(), if there is no white-space inside of a particularly long word, it will still run over the max-width
+			
+				draw_text_ext(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w);
+			}
+			
+			#endregion
+			
+			//Reset color and font:
 			draw_set_color(c_black);
+			draw_set_font(global.default_fnt);
 		}
 	}
 		
@@ -802,7 +955,7 @@ global.cur_game_state == game_state.view_bio {
 		*/
 		
 		//Draw text - ITEMS AT LOCATION:
-		draw_text(items_on_ground_box_x+title_offset,items_on_ground_box_y-(title_str_h/2)-title_offset,title);
+		draw_text_color(items_on_ground_box_x+title_offset,items_on_ground_box_y-(title_str_h/2)-title_offset,title,c_white,c_white,c_white,c_white,1);
 		
 		//Draw bg:
 		draw_rectangle_color(items_on_ground_box_x, items_on_ground_box_y, items_on_ground_box_x+items_on_ground_box_w, 

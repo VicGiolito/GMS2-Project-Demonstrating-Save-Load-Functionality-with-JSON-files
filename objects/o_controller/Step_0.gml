@@ -1102,6 +1102,7 @@ else if global.cur_game_state == game_state.access_inv {
 	
 	
 	#endregion
+	
 }
 
 #endregion
@@ -1158,7 +1159,7 @@ else if global.cur_game_state == game_state.main  {
 		var scroll_left_bool = false; //scroll right
 		
 		//This is a left scroll button....
-		if inv_slot_inst.scroll_left {
+		if scroll_inst.scroll_left {
 			scroll_left_bool = true; //scroll left (backwards)
 		}
 		
