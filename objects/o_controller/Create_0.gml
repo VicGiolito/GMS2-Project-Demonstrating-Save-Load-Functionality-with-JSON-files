@@ -7,6 +7,8 @@ randomize();
 global.reset_full_screen_val = game_get_speed(gamespeed_fps)*4;
 global.reset_full_screen_count = global.reset_full_screen_val;
 
+global.inv_screen_alpha = .7;
+
 //global.version_num = "v002"; //We could incoporate this into save filenames at some point to ensure we're always testing the correct version.
 
 global.prompt_stack_ar = -1; //Is used as an array containing different game states. 

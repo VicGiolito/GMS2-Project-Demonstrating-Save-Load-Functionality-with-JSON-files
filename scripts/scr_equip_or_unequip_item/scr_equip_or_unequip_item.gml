@@ -9,15 +9,21 @@ function scr_equip_or_unequip_item(char_struct_id, item_struct_id, equip_boolean
 	//Weapon or shield:
 	if item_struct_id.item_equip_type_enum == inv_slot.rh || item_struct_id.item_equip_type_enum == inv_slot.lh {
 		
-		char_struct_id.base_melee_min_dmg += item_struct_id.melee_min_dmg*addition_multiplier;
-		char_struct_id.base_melee_max_dmg += item_struct_id.melee_max_dmg*addition_multiplier;
+		//If it's a melee type weapon, change melee min-max dmg and tohit:
+		if item_struct_id.item_weapon_type_enum >= wep_type.mace && item_struct_id.item_weapon_type_enum <= wep_type.spear {
+			char_struct_id.base_melee_min_dmg += item_struct_id.min_dmg*addition_multiplier;
+			char_struct_id.base_melee_max_dmg += item_struct_id.max_dmg*addition_multiplier;
+			
+			char_struct_id.base_melee_tohit_mod += item_struct_id.to_hit_mod*addition_multiplier;
+		}
 		
-		char_struct_id.base_ranged_min_dmg += item_struct_id.ranged_min_dmg*addition_multiplier;
-		char_struct_id.base_ranged_max_dmg += item_struct_id.ranged_max_dmg*addition_multiplier;
-		
-		char_struct_id.base_melee_tohit_mod += item_struct_id.melee_to_hit_mod*addition_multiplier;
-		
-		char_struct_id.base_ranged_tohit_mod += item_struct_id.ranged_to_hit_mod*addition_multiplier;
+		//If it's a ranged type weapon, change ranged min-max dmg and tohit:
+		if item_struct_id.item_weapon_type_enum >= wep_type.bow && item_struct_id.item_weapon_type_enum <= wep_type.firearm {
+			char_struct_id.base_ranged_min_dmg += item_struct_id.min_dmg*addition_multiplier;
+			char_struct_id.base_ranged_max_dmg += item_struct_id.max_dmg*addition_multiplier;
+			
+			char_struct_id.base_ranged_tohit_mod += item_struct_id.to_hit_mod*addition_multiplier;
+		}
 		
 		//Shields are (usually) the only equippable weapon that provide armor or evasion bonuses; their protective values apply to the entire body:
 		if item_struct_id.item_weapon_type_enum == wep_type.shield {

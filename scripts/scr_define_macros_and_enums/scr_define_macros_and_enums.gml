@@ -91,6 +91,16 @@ function scr_define_macros_and_enums(){
 		total_inv_slots
 	}
 	
+	//Enum for item quality - determines stats for each item:
+	enum item_quality {
+		crude,
+		poor, 
+		average,
+		good, 
+		excellent,
+		total_item_quality
+	}
+	
 	enum scroll_dir {
 		left,
 		right,
@@ -153,12 +163,13 @@ function scr_define_macros_and_enums(){
 		total_terrain_features
 	}
 	
-	//Enum for weapon skills - wep_skills_ar; is used for determining buffs/skills etc.
+	//Enum for weapon skills - wep_skills_ar; is used for determining buffs/skills etc.;
+	//IMPORTANT NOTE: also used for ALL other items, including armor, and misc accessories:
 	enum wep_type {
 		none, //unequippable items
 		misc, //items that equip to the 'misc' slot.
-		two_handed,
-		mace,
+		
+		mace, //should remain grouped and ordered as is
 		sword,
 		axe,
 		dagger,
@@ -166,12 +177,24 @@ function scr_define_macros_and_enums(){
 		polearm,
 		hammer,
 		staff,
-		spear,
-		shield,
-		bow, //Start of ranged type weps
+		spear, //should remain grouped and ordered as is
+		shield, //should remain grouped and ordered as is
+		
+		bow, //Start of ranged type weps; //should remain grouped and ordered as is
 		crossbow,
-		firearm, //End of ranged type weps
+		firearm, //End of ranged type weps; //should remain grouped and ordered as is
+		
 		torch,
+		
+		cloth, //should remain grouped and ordered as is
+		leather,
+		chain_mail,
+		plate, //should remain grouped and ordered as is
+		
+		missile,
+		consumable,
+		inert, //Things that have low value but can't be equipped?
+		treasure, //Things that have high value but can't be equipped?
 		total_wep_types
 	}
 	

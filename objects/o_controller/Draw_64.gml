@@ -4,6 +4,9 @@ var win_w = window_get_width(), win_h = window_get_height();
 
 var gui_display_w = display_get_gui_width(); //, gui_display_h = display_get_gui_height();
 
+//Mouse gui vars:
+var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
+
 #region Attempt to reset window full screen:
 
 if window_has_focus() == true { //We use this because the window_get_width() and height functions only return 0 when the game doesn't have focus, so it's not useful to run this code when the game doesn't have focus
@@ -358,8 +361,6 @@ global.cur_game_state == game_state.view_bio {
 		var portrait_origin_x = char_spr_w*3;
 		var portrait_origin_y = char_spr_h;
 		var portrait_offset_x = char_spr_w+16, portrait_offset_y = 16;
-		//Mouse gui vars:
-		var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
 		
 		//Define which array we're using:
 		var ar_to_use = global.pc_team_ar;
@@ -530,7 +531,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*8)+bg_offset_y;
 	var bg_max_h = bg_y+(slot_h*7);
 	
-	draw_set_alpha(.7);
+	draw_set_alpha(global.inv_screen_alpha);
 	
 	//Draw bg:
 	draw_rectangle_color(bg_offset_x, bg_y, bg_max_w, bg_y+bg_max_h, bg_c, bg_c ,bg_c, bg_c, false);
@@ -576,9 +577,9 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		//melee and ranged to_hit, melee and ranged dmg, 
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {char.base_melee_min_dmg} - {char.base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+		i++;
+		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
 		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
 		i++;
@@ -641,6 +642,129 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	//Instance position vars for our o_items_on_ground_scroll_button:
 	items_on_ground_scroll_button_x = items_on_ground_box_x+items_on_ground_box_w;
 	items_on_ground_scroll_button_y = items_on_ground_box_y;
+	
+	#region Logic for display info boxes in middle of screen:
+		
+	var hovered_inst = collision_point(mouse_win_x, mouse_win_y, [o_inv_slot, o_backpack_slot, o_items_on_ground_box], false, true);
+		
+	if hovered_inst != noone || global.mouse_struct_item != -1 {
+		
+		//Define our lower_box_item - any item in the mouse will always take precedence over an item we may be hovering over:
+		var lower_box_item_struct_id = undefined;
+		
+		//If the inv_slot we are hovering over 
+		if hovered_inst != noone && is_struct(hovered_inst.contents_id) && hovered_inst.contents_id.struct_enum == struct_type.item && global.mouse_struct_item == -1 {
+			lower_box_item_struct_id = hovered_inst.contents_id;
+		}
+	
+		if is_struct(global.mouse_struct_item) && global.mouse_struct_item.struct_enum == struct_type.item {
+			lower_box_item_struct_id = global.mouse_struct_item;
+		}
+		
+		//Draw our lower_box_item, and possibly our comparison item afterwards:
+		
+		if !is_undefined(lower_box_item_struct_id) {
+		
+			var inv_slot_w = sprite_get_width(spr_inv_frame), inv_slot_h = sprite_get_height(spr_inv_frame);
+			var bg_c = c_gray, lower_box_w = inv_slot_w*5, lower_box_h = inv_slot_h*7, inner_frame_offset = 8;
+			var inner_frame_c = c_white;
+		
+			var lower_box_origin_x = items_on_ground_box_x+items_on_ground_box_w+(inv_slot_w);
+			var lower_box_origin_y = items_on_ground_box_y-(inv_slot_h*4);
+			
+			//Draw with inv_bg transparency:
+			draw_set_alpha(global.inv_screen_alpha);
+			
+			//Draw bg:
+			draw_rectangle_color(lower_box_origin_x, lower_box_origin_y, lower_box_origin_x+lower_box_w, 
+			lower_box_origin_y+lower_box_h, bg_c, bg_c, bg_c, bg_c, false);
+			
+			//Draw white inner frame:
+			draw_rectangle_color(lower_box_origin_x+inner_frame_offset, lower_box_origin_y+inner_frame_offset, 
+			lower_box_origin_x+lower_box_w-inner_frame_offset, 
+			lower_box_origin_y+lower_box_h-inner_frame_offset, 
+			inner_frame_c, inner_frame_c, inner_frame_c, inner_frame_c, true);
+			
+			//Reset alpha:
+			draw_set_alpha(1);
+			
+			//Draw our relevant stats, depending upon the item:
+			
+			/* Relevant stats:
+			
+			Always relevant, regardless of item_type:
+			Name; Quality: (crude, poor, average, good, excellent); Weight; Gold Value; item_type string
+			
+			rh or lh weapon (not shield):
+			 min/max dmg; toHitMod; 
+			 
+			rh or lh weapon (shield) || or body, feet, or hands:
+			Armor Val; Evasion Val;
+			
+			Misc inv slot (accesory):
+				various stat mods, can figure out later:
+			
+			*/
+			
+			//Always draw our item's sprite in the upper right corner of the box, so we know what we're looking at immediately:
+			draw_sprite(asset_get_index(lower_box_item_struct_id.item_spr_str), 0, lower_box_origin_x+lower_box_w-(inner_frame_offset+(inv_slot_w/2)),
+			lower_box_origin_y+inner_frame_offset+(inv_slot_h/2) );
+			
+			//Start drawing stats:
+			var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			var lb_stat_origin_x = lower_box_origin_x+inner_frame_offset;
+			var lb_stat_origin_y = lower_box_origin_y+inner_frame_offset;
+			var i = 0;
+			
+			//Set text color:
+			draw_set_color(c_white);
+			
+			//Name:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y, $"{lower_box_item_struct_id.item_name}");
+			i++;
+			//Quality:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(lower_box_item_struct_id.item_quality_enum)}");
+			i++;
+			//Item type:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(lower_box_item_struct_id.item_weapon_type_enum)}");
+			i++;
+			//Weight:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"WEIGHT: {lower_box_item_struct_id.weight_val}");
+			i++;
+			//Value:
+			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"VALUE: {lower_box_item_struct_id.gold_value}");
+			i++;
+			
+			//Now we draw different stats depending upon the item type:
+				//Armors:
+			if lower_box_item_struct_id.item_weapon_type_enum >= wep_type.cloth && lower_box_item_struct_id.item_weapon_type_enum <= wep_type.plate {
+				//Protective value:
+				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ARMOR: {lower_box_item_struct_id.base_protect_val}");
+				i++;
+				//Evasion:
+				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"EVASION: {lower_box_item_struct_id.evasion_mod}");
+				i++;
+			}
+				//Weapons:
+			else if lower_box_item_struct_id.item_weapon_type_enum >= wep_type.mace && lower_box_item_struct_id.item_weapon_type_enum <= wep_type.firearm {
+				//Min-max damage:
+				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {lower_box_item_struct_id.min_dmg}-{lower_box_item_struct_id.max_dmg}");
+				i++;
+				//ToHit Mod:
+				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {lower_box_item_struct_id.to_hit_mod}");
+				i++;
+			}
+				//Misc: various stat mods:
+			else if lower_box_item_struct_id.item_weapon_type_enum >= wep_type.misc {
+					
+			}
+			
+			//Reset color:
+			draw_set_color(c_black);
+		}
+	}
+		
+	#endregion
 }
 
 #endregion
@@ -661,7 +785,7 @@ global.cur_game_state == game_state.view_bio {
 	if draw_bg {
 		
 		var bg_c = c_gray, inner_frame = c_white, inner_frame_offset = 8;
-		draw_set_alpha(.7);
+		draw_set_alpha(global.inv_screen_alpha);
 		
 		var items_on_ground_pg_count = (items_on_ground_min_range div global.max_items_on_ground_in_box) + 1;
 		

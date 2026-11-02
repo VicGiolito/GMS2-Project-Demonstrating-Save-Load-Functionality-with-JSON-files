@@ -43,7 +43,7 @@
 		char_portrait_spr_str = -1;
 		cur_wep_skill = -1;
 		cur_wep_type = wep_type.none; //Is defined in scr_update_combat_stats_with_item 
-		shield_equipped = false;
+		shield_equipped = false; //We generally use the 
 		
 		cur_action_points = 2;
 		cur_move_points = 1;
@@ -77,7 +77,6 @@
 				char_stats_ar[char_stats.base_will] = 16;
 				char_stats_ar[char_stats.base_vision_radius] = global.default_los_radius;
 				//Wep skills:
-				wep_skills_ar[wep_type.two_handed] = 4;
 				wep_skills_ar[wep_type.mace] = 4;
 				wep_skills_ar[wep_type.hammer] = 4;
 				//Idle conversation elements:
@@ -376,7 +375,6 @@
 				char_stats_ar[char_stats.base_will] = 4;
 				char_stats_ar[char_stats.base_vision_radius] = global.default_los_radius;
 				//Wep skills:
-				wep_skills_ar[wep_type.two_handed] = 5;
 				wep_skills_ar[wep_type.mace] = 2;
 				wep_skills_ar[wep_type.hammer] = 2;
 				wep_skills_ar[wep_type.shield] = 2;
@@ -419,8 +417,10 @@
 		base_melee_max_dmg = round(char_stats_ar[char_stats.cur_str]*1.5);
 		base_ranged_min_dmg = round(char_stats_ar[char_stats.cur_per]*.5);
 		base_ranged_max_dmg = round(char_stats_ar[char_stats.cur_per]*1.5);
+		
 		base_ranged_tohit_mod = char_stats_ar[char_stats.cur_per]*4;
 		base_melee_tohit_mod = char_stats_ar[char_stats.cur_agil]*4;
+		
 		base_armor_pen = 0;
 		base_magic_pen = 0;
 		base_physical_resist = 0;
@@ -549,9 +549,8 @@
 		armor_pen = 0;
 		magic_pen = 0;
 		
-		value = 0;
-		melee_evasion_mod = 0; //Not in use
-		ranged_evasion_mod = 0; //Not in use
+		gold_value = 0;
+		
 		block_mod = 0;
 		physical_resist = 0;
 		magical_resist = 0;
@@ -561,12 +560,10 @@
 		base_protect_val = 0;
 		max_protect_val = 0;
 		
-		melee_min_dmg = 0;
-		melee_max_dmg = 0;
-		ranged_min_dmg = 0;
-		ranged_max_dmg = 0;
-		melee_to_hit_mod = 0;
-		ranged_to_hit_mod = 0;
+		min_dmg = 0;
+		max_dmg = 0;
+		
+		to_hit_mod = 0;
 	
 		is_cursed = false;
 		weight_val = 0; //In pounds
@@ -582,7 +579,7 @@
 		item_range = 0; //0: melee; 1: polearm; 2: ranged.
 		
 		//defaults:
-		is_shield = false;
+		is_shield = false; //We generally instead use the item_weapon_type_enum in logic checks to determine if this is a shield or not.
 		is_two_hand = false;
 		is_armor = false;
 		
@@ -600,6 +597,8 @@
 		//Default 'missing sprite' sprite:
 		item_spr_str = "spr_unassigned";
 		
+		item_quality_enum = item_quality.average;
+		
 		#region The actual stats for each weapon:
 		
 		switch(item_class) {
@@ -607,17 +606,17 @@
 			case item_enum.wep_axe_two_hand_rusty:
 				item_name = "Rusty Woodcutter's Axe";
 				dura_cur = 25;
-				melee_min_dmg = 2;
-				melee_max_dmg = 6;
+				min_dmg = 2;
+				max_dmg = 6;
 				armor_pen = 125;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 7;
 				stam_debuff = 1;
-				item_weapon_type_enum = wep_type.two_handed;
+				item_weapon_type_enum = wep_type.axe;
 				description = "This basic version of a big woodcutter's axe is battered and blunted.";
-				value = 10;
+				gold_value = 10;
 				weight_val = 25;
 				is_two_hand = true;
 				item_spr_str = "spr_wep_axe_woodcut_rusty";
@@ -627,17 +626,17 @@
 			case item_enum.wep_axe_one_hand_rusty:
 				item_name = "Rusty Hatchet";
 				dura_cur = 20;
-				melee_min_dmg = 1;
-				melee_max_dmg = 3;
+				min_dmg = 1;
+				max_dmg = 3;
 				armor_pen = 125;
 				item_equip_type_enum = inv_slot.rh;
 			
-				melee_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 3;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.axe;
 				description = "This basic version of a woodcutter's hatchet is battered and blunted.";
-				value = 5;
+				gold_value = 5;
 				weight_val = 8;
 				item_spr_str = "spr_wep_axe_hatchet_rusty";
 			break;
@@ -645,17 +644,17 @@
 			case item_enum.wep_sword_one_hand_rusty:
 				item_name = "Rusty Short Sword";
 				dura_cur = 20;
-				melee_min_dmg = 2;
-				melee_max_dmg = 4;
+				min_dmg = 2;
+				max_dmg = 4;
 				armor_pen = 85;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 4;
+				to_hit_mod = 4;
 				block_mod = 5;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.sword;
 				description = "Rusty iron short sword.";
-				value = 10;
+				gold_value = 10;
 				weight_val = 12;
 				item_spr_str = "spr_wep_sword_onehand_rusty";
 			break;
@@ -663,17 +662,17 @@
 			case item_enum.wep_sword_two_hand_rusty:
 				item_name = "Rusty Two Handed Great Sword";
 				dura_cur = 25;
-				melee_min_dmg = 3;
-				melee_max_dmg = 8;
+				min_dmg = 3;
+				max_dmg = 8;
 				armor_pen = 75;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 10;
+				to_hit_mod = 10;
 				block_mod = 7;
 				stam_debuff = 1;
-				item_weapon_type_enum = wep_type.two_handed;
+				item_weapon_type_enum = wep_type.sword;
 				description = "This may have been a noble great sword a century ago; now it's barely passable as a weapon.";
-				value = 10;
+				gold_value = 10;
 				weight_val = 25;
 				is_two_hand = true;
 				item_spr_str = "spr_wep_sword_twohand_rusty";
@@ -682,17 +681,17 @@
 			case item_enum.wep_polearm_pike_rusty:
 				item_name = "Rusty Pike";
 				dura_cur = 35;
-				melee_min_dmg = 3;
-				melee_max_dmg = 6;
+				min_dmg = 3;
+				max_dmg = 6;
 				armor_pen = 75;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 10;
+				to_hit_mod = 10;
 				block_mod = 7;
 				stam_debuff = 1;
 				item_weapon_type_enum = wep_type.polearm;
 				description = "Just a huge length of hard wood with a rusty iron spear head.";
-				value = 10;
+				gold_value = 10;
 				weight_val = 25;
 				item_range = 1;
 				is_two_hand = true;
@@ -702,17 +701,17 @@
 			case item_enum.wep_polearm_halberd_rusty:
 				item_name = "Rusty Halberd";
 				dura_cur = 35;
-				melee_min_dmg = 4;
-				melee_max_dmg = 8;
+				min_dmg = 4;
+				max_dmg = 8;
 				armor_pen = 110;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 7;
 				stam_debuff = 1;
 				item_weapon_type_enum = wep_type.polearm;
 				description = "A powerful and versatile weapon that can serve as both an axe, a spear, and a hammer. Nonetheless, this particular weapon has seen better days.";
-				value = 10;
+				gold_value = 10;
 				weight_val = 25;
 				item_range = 1;
 				is_two_hand = true;
@@ -722,17 +721,17 @@
 			case item_enum.wep_mace_one_hand_rusty:
 				item_name = "Rusty Mace";
 				dura_cur = 20;
-				melee_min_dmg = 1;
-				melee_max_dmg = 3;
+				min_dmg = 1;
+				max_dmg = 3;
 				armor_pen = 150;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 2;
+				to_hit_mod = 2;
 				block_mod = 3;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.mace;
 				description = "This is just a stick with an iron head; looks like it could break at any moment.";
-				value = 5;
+				gold_value = 5;
 				weight_val = 15;
 				item_spr_str = "spr_wep_mace_rusty";
 				
@@ -741,17 +740,17 @@
 			case item_enum.wep_mace_one_hand_average:
 				item_name = "Iron Mace";
 				dura_cur = 20;
-				melee_min_dmg = 2;
-				melee_max_dmg = 5;
+				min_dmg = 2;
+				max_dmg = 5;
 				armor_pen = 150;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 6;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.mace;
 				description = "Likely forged by a castle smithy, this sturdy mace with a flanged iron head could deal some decent blunt damage.";
-				value = 5;
+				gold_value = 5;
 				weight_val = 18;
 				item_spr_str = "spr_wep_mace_average";
 			break;
@@ -759,17 +758,17 @@
 			case item_enum.wep_hammer_one_hand_rusty:
 				item_name = "Rusty Hammer";
 				dura_cur = 10;
-				melee_min_dmg = 1;
-				melee_max_dmg = 2;
+				min_dmg = 1;
+				max_dmg = 2;
 				armor_pen = 200;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 1;
+				to_hit_mod = 1;
 				block_mod = 1;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.hammer;
 				description = "This fragile looking hammer looks like it could have been made for a carpenter. Still, it could puncture armor a bit.";
-				value = 3;
+				gold_value = 3;
 				weight_val = 13;
 				item_spr_str = "spr_wep_hammer_rusty";
 			break;
@@ -777,17 +776,17 @@
 			case item_enum.wep_dagger_one_hand_rusty:
 				item_name = "Rusty Knife";
 				dura_cur = 10;
-				melee_min_dmg = 1;
-				melee_max_dmg = 2;
+				min_dmg = 1;
+				max_dmg = 2;
 				armor_pen = 75;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 1;
+				to_hit_mod = 1;
 				block_mod = 1;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.dagger;
 				description = "This might have been a kitchen knife in a previous life; better than nothing, at any rate.";
-				value = 2;
+				gold_value = 2;
 				weight_val = 2;
 				item_spr_str = "spr_wep_dagger_rusty";
 			break;
@@ -795,17 +794,17 @@
 			case item_enum.wep_spear_one_hand_rusty:
 				item_name = "Pointed Stick";
 				dura_cur = 20;
-				melee_min_dmg = 2;
-				melee_max_dmg = 4;
+				min_dmg = 2;
+				max_dmg = 4;
 				armor_pen = 85;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 1;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.spear;
 				description = "This is just a sturdy stick with a sharpened point.";
-				value = 5;
+				gold_value = 5;
 				weight_val = 8;
 				item_spr_str = "spr_wep_spear_rusty";
 			break;
@@ -815,17 +814,17 @@
 			case item_enum.wep_torch_crude:
 				item_name = "Crude Torch";
 				dura_cur = 20;
-				melee_min_dmg = 0; //Be sure to keep this 0 as it's the only wep in the game that can be 'dual wielded'
-				melee_max_dmg = 0;
+				min_dmg = 0; //Be sure to keep this 0 as it's the only wep in the game that can be 'dual wielded'
+				max_dmg = 0;
 				armor_pen = 0;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 0;
+				to_hit_mod = 0;
 				block_mod = 0;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.torch; //Is unique
 				description = "An invaluable tool for any spelunking adventurer. Its fragile flames can reveal treasures from your wildest dreams--or monsters from your darkest nightmares.";
-				value = 15;
+				gold_value = 15;
 				weight_val = 2;
 				item_spr_str = "spr_wep_torch_crude";
 			break;
@@ -833,17 +832,16 @@
 			case item_enum.misc_gold_necklace:
 				item_name = "Crude Golden Necklace";
 				dura_cur = 1;
-				melee_min_dmg = 0;
-				melee_max_dmg = 0;
+				
 				armor_pen = 0;
 				item_equip_type_enum = inv_slot.accessory;
 				
-				melee_to_hit_mod = 0;
+				
 				block_mod = 0;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.none;
 				description = "A kind-hearted merchant might accept this shiny bauble for a coin or two.";
-				value = 50;
+				gold_value = 50;
 				weight_val = 1;
 				item_spr_str = "spr_misc_necklace_crude";
 			break;
@@ -852,20 +850,23 @@
 				item_name = "A Rock";
 				dura_cur = 25;
 				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
+				item_weapon_type_enum = wep_type.missile;
 				description = "A flinty piece of stone.";
-				value = 1;
+				gold_value = 1;
 				weight_val = 4;
 				is_rock = true;
+				
+				min_dmg = 1;
+				max_dmg = 2;
 			break;
 			
 			case item_enum.item_boulder_giant:
 				item_name = "A Giant Boulder";
 				dura_cur = 75;
 				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
+				item_weapon_type_enum = wep_type.inert;
 				description = "It would take an immensely strong person to lug this giant boulder around.";
-				value = 1;
+				gold_value = 1;
 				weight_val = 350;
 				is_rock = true;
 			break;
@@ -874,9 +875,9 @@
 				item_name = "An Average Boulder";
 				dura_cur = 75;
 				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
+				item_weapon_type_enum = wep_type.inert;
 				description = "It would take a strong person to lug this boulder around.";
-				value = 1;
+				gold_value = 1;
 				weight_val = 200;
 				is_rock = true;
 			break;
@@ -885,9 +886,9 @@
 				item_name = "A Small Boulder";
 				dura_cur = 75;
 				item_equip_type_enum = inv_slot.backpack;
-				item_weapon_type_enum = wep_type.none;
+				item_weapon_type_enum = wep_type.inert;
 				description = "Who could find a use for this small boulder?";
-				value = 1;
+				gold_value = 1;
 				weight_val = 125;
 				is_rock = true;
 			break;
@@ -895,17 +896,17 @@
 			case item_enum.wep_staff_two_hand_rusty:
 				item_name = "Battered Staff";
 				dura_cur = 20;
-				melee_min_dmg = 2;
-				melee_max_dmg = 4;
+				min_dmg = 2;
+				max_dmg = 4;
 				armor_pen = 60;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 4;
+				to_hit_mod = 4;
 				block_mod = 6;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.staff;
 				description = "This giant staff looks like it may serve better as a walking stick.";
-				value = 8;
+				gold_value = 8;
 				weight_val = 12;
 				is_two_hand = true;
 				item_spr_str = "spr_wep_staff_rusty";
@@ -914,18 +915,18 @@
 			case item_enum.wep_staff_two_hand_acheron: //Unique weapon, only acheron can wield it.
 				item_name = "Acheron's Griffin Core Staff";
 				dura_cur = 75;
-				melee_min_dmg = 5;
-				melee_max_dmg = 10;
+				min_dmg = 5;
+				max_dmg = 10;
 				armor_pen = 115;
 				magic_pen = 25;
 				item_equip_type_enum = inv_slot.rh;
 				
-				melee_to_hit_mod = 35;
+				to_hit_mod = 35;
 				block_mod = 10;
 				stam_debuff = 0;
 				item_weapon_type_enum = wep_type.staff;
 				description = "This gnarled iron-wood staff with a griffin feather core has served for centuries as Acheron's steadfast companion through countless wars and adventures.";
-				value = 500;
+				gold_value = 500;
 				weight_val = 15;
 				is_two_hand = true;
 				item_spr_str = "spr_wep_staff_acheron";
@@ -934,8 +935,7 @@
 			case item_enum.wep_shield_buckler_leather:
 				item_name = "Small Leather Buckler";
 				dura_cur = 30;
-				melee_min_dmg = 0;
-				melee_max_dmg = 0;
+				
 				armor_pen = 0;
 				magic_pen = 0;
 				item_equip_type_enum = inv_slot.rh;
@@ -943,7 +943,7 @@
 				evasion_mod = 3;
 				base_protect_val = 1;
 				
-				melee_to_hit_mod = 0;
+				
 				block_mod = 10;
 				stam_debuff = 0;
 				melee_evasion_mod = 5;
@@ -951,7 +951,7 @@
 				item_weapon_type_enum = wep_type.shield;
 				is_armor = false;
 				description = "This leather buckler doesn't offer much protection.";
-				value = 15;
+				gold_value = 15;
 				weight_val = 15;
 				is_shield = true;
 				item_spr_str = "spr_shield_buckler_rusty";
@@ -960,8 +960,7 @@
 			case item_enum.wep_shield_medium_leather:
 				item_name = "Medium Leather Shield";
 				dura_cur = 50;
-				melee_min_dmg = 0;
-				melee_max_dmg = 0;
+				
 				armor_pen = 0;
 				magic_pen = 0;
 				item_equip_type_enum = inv_slot.rh;
@@ -969,7 +968,7 @@
 				evasion_mod = 6;
 				base_protect_val = 2;
 				
-				melee_to_hit_mod = 0;
+				
 				block_mod = 15;
 				stam_debuff = 1;
 				melee_evasion_mod = 15;
@@ -977,7 +976,7 @@
 				item_weapon_type_enum = wep_type.shield;
 				is_armor = false;
 				description = "This leather shield has seen better days.";
-				value = 50;
+				gold_value = 50;
 				weight_val = 30;
 				is_shield = true;
 				item_spr_str = "spr_shield_infantry_rusty";
@@ -986,21 +985,21 @@
 			case item_enum.wep_bow_short_crude:
 				item_name = "Crude Wooden Short Bow";
 				dura_cur = 10;
-				ranged_min_dmg = 2;
-				ranged_max_dmg = 4;
+				min_dmg = 2;
+				max_dmg = 4;
 				armor_pen = 80;
 				magic_pen = 0;
 				item_range = 2;
 				item_equip_type_enum = inv_slot.rh;
 				
-				ranged_to_hit_mod = 2;
+				to_hit_mod = 2;
 				block_mod = 3;
 				stam_debuff = 0;
 				melee_evasion_mod = 0;
 				item_weapon_type_enum = wep_type.bow;
 				is_armor = false;
 				description = "Crudely made long ago, it still serves its purpose.";
-				value = 15;
+				gold_value = 15;
 				weight_val = 7;
 				item_spr_str = "spr_wep_shortbow_rusty";
 				is_two_hand = true;
@@ -1009,21 +1008,21 @@
 			case item_enum.wep_bow_short_average:
 				item_name = "Wooden Short Bow";
 				dura_cur = 15;
-				ranged_min_dmg = 4;
-				ranged_max_dmg = 6;
+				min_dmg = 4;
+				max_dmg = 6;
 				armor_pen = 85;
 				magic_pen = 0;
 				item_range = 2;
 				item_equip_type_enum = inv_slot.rh;
 				
-				ranged_to_hit_mod = 4;
+				to_hit_mod = 4;
 				block_mod = 4;
 				stam_debuff = 0;
 				melee_evasion_mod = 0;
 				item_weapon_type_enum = wep_type.bow;
 				is_armor = false;
 				description = "Competently constructed wooden short bow.";
-				value = 20;
+				gold_value = 20;
 				weight_val = 8;
 				item_spr_str = "spr_wep_shortbow_average";
 				is_two_hand = true;
@@ -1032,21 +1031,21 @@
 			case item_enum.wep_crossbow_crude:
 				item_name = "Crude Crossbow";
 				dura_cur = 15;
-				ranged_min_dmg = 4;
-				ranged_max_dmg = 6;
+				min_dmg = 4;
+				max_dmg = 6;
 				armor_pen = 125;
 				magic_pen = 0;
 				item_range = 2;
 				item_equip_type_enum = inv_slot.rh;
 				
-				ranged_to_hit_mod = 5;
+				to_hit_mod = 5;
 				block_mod = 6;
 				stam_debuff = 0;
 				melee_evasion_mod = 0;
 				item_weapon_type_enum = wep_type.crossbow;
 				is_armor = false;
 				description = "This crude crossbow has seen better days.";
-				value = 20;
+				gold_value = 20;
 				weight_val = 13;
 				item_spr_str = "spr_wep_crossbow_rusty";
 				is_two_hand = true;
@@ -1055,21 +1054,21 @@
 			case item_enum.wep_crossbow_average:
 				item_name = "Iron Crossbow";
 				dura_cur = 25;
-				ranged_min_dmg = 6;
-				ranged_max_dmg = 8;
+				min_dmg = 6;
+				max_dmg = 8;
 				armor_pen = 125;
 				magic_pen = 0;
 				item_range = 2;
 				item_equip_type_enum = inv_slot.rh;
 				
-				ranged_to_hit_mod = 8;
+				to_hit_mod = 8;
 				block_mod = 7;
 				stam_debuff = 0;
 				melee_evasion_mod = 0;
 				item_weapon_type_enum = wep_type.crossbow;
 				is_armor = false;
 				description = "This iron crossbow looks relatively new and in good condition.";
-				value = 45;
+				gold_value = 45;
 				weight_val = 15;
 				item_spr_str = "spr_wep_crossbow_average";
 				is_two_hand = true;
@@ -1082,14 +1081,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 2;
-				ranged_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "A simple traveler's vest of cured leather.";
 				physical_resist = 2;
 				magical_resist = 0;
-				value = 35;
+				gold_value = 35;
 				weight_val = 2;
 				item_spr_str = "spr_body_vest_leather_crude";
 				
@@ -1103,11 +1101,11 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 1;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "A green hunter's hat adorned with the bright yellow feather of a falcon.";
-				value = 5;
+				gold_value = 5;
 				weight_val = 1;
 				item_spr_str = "spr_head_featherhat";
 				
@@ -1121,13 +1119,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "A simple leather cap stuffed with wool and cloth for added protection.";
 				physical_resist = 1;
 				magical_resist = 0;
-				value = 45;
+				gold_value = 45;
 				weight_val = 2;
 				item_spr_str = "spr_head_cap_padded_crude";
 				
@@ -1141,13 +1139,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.chain_mail;
 				is_armor = true;
 				description = "Rusty chainmail links over a padded cap serve as crude protection for the skull.";
 				physical_resist = 3;
 				magical_resist = 0;
-				value = 150;
+				gold_value = 150;
 				weight_val = 5;
 				item_spr_str = "spr_head_coif_chainmail_crude";
 				
@@ -1161,13 +1159,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 1;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "Old leather boots that have seen too many leagues pass beneath them.";
 				physical_resist = 1;
 				magical_resist = 0;
-				value = 25;
+				gold_value = 25;
 				weight_val = 1;
 				item_spr_str = "spr_feet_boots_leather_crude";
 				
@@ -1182,13 +1180,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.plate;
 				is_armor = true;
 				description = "Old iron boots that have seen too many leagues pass beneath them.";
 				physical_resist = 2;
 				magical_resist = 0;
-				value = 115;
+				gold_value = 115;
 				weight_val = 5;
 				item_spr_str = "spr_feet_boots_iron_crude";
 				
@@ -1202,11 +1200,11 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 1;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "Falling apart, but they will serve.";
-				value = 35;
+				gold_value = 35;
 				weight_val = 2;
 				item_spr_str = "spr_hands_gloves_leather_crude";
 				
@@ -1220,11 +1218,11 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "Just stripes of cured animal hide to be tied around the wrists and forearms.";
-				value = 15;
+				gold_value = 15;
 				weight_val = 2;
 				item_spr_str = "spr_hands_wraps_leather_crude";
 				
@@ -1238,13 +1236,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 1;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.plate;
 				is_armor = true;
 				description = "Poorly made, could use a good scouring.";
 				physical_resist = 2;
 				magical_resist = 0;
-				value = 205;
+				gold_value = 205;
 				weight_val = 5;
 				item_spr_str = "spr_hands_gauntlets_iron_crude";
 				
@@ -1258,13 +1256,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.leather;
 				is_armor = true;
 				description = "A molting collection of furs from animals too disintegrated to discern.";
 				physical_resist = 2;
 				magical_resist = 0;
-				value = 75;
+				gold_value = 75;
 				weight_val = 8;
 				item_spr_str = "spr_body_furs_crude";
 				
@@ -1279,13 +1277,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 1;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.cloth;
 				is_armor = true;
 				description = "These old gray robes are patched and fraying at the edges.";
 				physical_resist = 0;
 				magical_resist = 3;
-				value = 55;
+				gold_value = 55;
 				weight_val = 2;
 				item_spr_str = "spr_body_robes_crude";
 				
@@ -1299,13 +1297,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.cloth;
 				is_armor = true;
 				description = "These rags are filthy and barely even preserve the wearer's modesty.";
 				physical_resist = 0;
 				magical_resist = 0;
-				value = 3;
+				gold_value = 3;
 				weight_val = 1;
 				item_spr_str = "spr_body_rags";
 				
@@ -1319,13 +1317,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.chain_mail;
 				is_armor = true;
 				description = "Poorly made, could use a good scouring.";
 				physical_resist = 8;
 				magical_resist = 0;
-				value = 550;
+				gold_value = 550;
 				weight_val = 45;
 				item_spr_str = "spr_body_chainmail_crude";
 				
@@ -1339,13 +1337,13 @@
 				is_weapon = false;
 				block_mod = 0;
 				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.none;
+				
+				item_weapon_type_enum = wep_type.cloth;
 				is_armor = true;
 				description = "A wooden frame with three holes through which the neck and hands of some unfortunate criminal are fastened. Commonly used to publicy shame convicted thieves and cut-throats while subjecting them to the jeers and abuse of the masses.";
 				physical_resist = 0;
 				magical_resist = 0;
-				value = 5;
+				gold_value = 5;
 				weight_val = 75;
 				
 				base_protect_val = 1;

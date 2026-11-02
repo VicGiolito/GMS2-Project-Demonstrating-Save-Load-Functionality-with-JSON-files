@@ -566,18 +566,6 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		scr_reset_wait(1);
 		
-		var hovered_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box], false, true);
-		
-		#region Logic for display info boxes in middle of screen:
-		
-		if hovered_inst != noone {
-			
-			
-			
-		}
-		
-		#endregion
-		
 		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button], false, true);
 		
 		if inv_slot_inst != noone {
