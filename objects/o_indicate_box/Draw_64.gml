@@ -1,4 +1,6 @@
 /// @description o_indicate_box - draw gui event
+
+if draw_on_gui_layer {
 	
 	// Reduce alpha evenly: 1 / 3 per second
 	alpha_val -= (delta_time / 1000000) / fade_duration;
@@ -13,6 +15,7 @@
 
 	// Destroy once fully faded
 	if (alpha_val <= 0) instance_destroy();
+}
 	
 
 

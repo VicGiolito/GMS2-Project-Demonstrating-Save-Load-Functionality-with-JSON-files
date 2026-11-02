@@ -502,46 +502,63 @@ else if global.cur_game_state == game_state.debug_new_game_choose_w_and_h_and_fl
 
 else if global.cur_game_state == game_state.access_inv {
 	
-	//Toggle back to main game state:
+	//Define mouse window coordinates:
+	var mx = window_mouse_get_x(), my = window_mouse_get_y();
+	
+	#region Toggle back to main game state:
+	
 	if keyboard_check_released(ord("I")) && global.wait {
 		
-		//Compensate for every use case with the mouse item:
-		global.mouse_struct_item = -1;
+		//Simply don't allow the user to switch back to the main game state (or any other) if they haven't
+		//placed the global mouse item yet:
+		if global.mouse_struct_item == -1 {
+			
+			global.cur_game_state = game_state.main;
+			
+			if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
+			if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
+			if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
+			if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
 		
-		global.cur_game_state = game_state.main;
-		if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
-		if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
-		if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
-		if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
+			//'Tidy' up our arrays global.cur_char.inv_ar and our corresponding array of instances in the g.master_level_ar,
+			//just in case the positions of the items on the ground for that grid cell has been changed so that there may be empty
+			//indices in that array now.
 		
-		//'Tidy' up our arrays global.cur_char.inv_ar and our corresponding array of instances in the g.master_level_ar,
-		//just in case the positions of the items on the ground for that grid cell has been changed so that there may be empty
-		//indices in that array now.
+			//Reset all of our min_max instance vars:
+			items_in_backpack_min_range = 0;
+			items_in_backpack_max_range = global.max_backpack_slots_per_page-1;
+			items_on_ground_min_range = 0;
+			items_on_ground_max_range = global.max_items_on_ground_in_box-1;
 		
-		//Reset all of our min_max instance vars:
-		items_in_backpack_min_range = 0;
-		items_in_backpack_max_range = global.max_backpack_slots_per_page-1;
-		items_on_ground_min_range = 0;
-		items_on_ground_max_range = global.max_items_on_ground_in_box-1;
+			global.cur_char.inv_ar = scr_tidy_ar(global.cur_char.inv_ar);
+			global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y] = scr_tidy_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y]);
 		
-		global.cur_char.inv_ar = scr_tidy_ar(global.cur_char.inv_ar);
-		global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y] = scr_tidy_ar(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST][# global.cur_char.char_grid_x, global.cur_char.char_grid_y]);
+			//Rebuild items_on_ground_ar:
+			items_on_ground_ar = -1;
+			items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
 		
-		//Rebuild items_on_ground_ar:
-		items_on_ground_ar = -1;
-		items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+			if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+				scr_setup_items_on_ground_boxes();
+			}
 		
-		if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
-			scr_setup_items_on_ground_boxes();
+			//Reset adjacent_pcs_for_inv_ar:
+			adjacent_pcs_for_inv_ar = -1;
+		
+			scr_reset_wait(1);
 		}
 		
-		//Reset adjacent_pcs_for_inv_ar:
-		adjacent_pcs_for_inv_ar = -1;
-		
-		scr_reset_wait(1);
+		//Draw red box over mouse, and display message:
+		else {
+			
+			var inv_box_w = sprite_get_width(spr_inv_frame), inv_box_h = sprite_get_height(spr_inv_frame);
+			
+			scr_create_status_message(mx, my, "PLACE ITEM FIRST!", c_red, true, true);
+			
+			scr_indicate_error_section(mx-inv_box_w/2, my-inv_box_h/2, inv_box_w, inv_box_h, c_red, false, true );
+		}
 	}
 	
-	var mx = window_mouse_get_x(), my = window_mouse_get_y();
+	#endregion
 	
 	#region Our Inventory Interaction Logic - 
 	
@@ -549,7 +566,19 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		scr_reset_wait(1);
 		
-		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_drop_item_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button], false, true);
+		var hovered_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box], false, true);
+		
+		#region Logic for display info boxes in middle of screen:
+		
+		if hovered_inst != noone {
+			
+			
+			
+		}
+		
+		#endregion
+		
+		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button], false, true);
 		
 		if inv_slot_inst != noone {
 			
@@ -729,7 +758,7 @@ else if global.cur_game_state == game_state.access_inv {
 								var spr_h = sprite_get_height(rh_inv_slot_inst_id.sprite_index);
 							
 								scr_indicate_error_section(rh_inv_slot_inst_id.x-spr_w/2, rh_inv_slot_inst_id.y-spr_h/2, 
-								spr_w, spr_h, c_red, false);
+								spr_w, spr_h, c_red, false, true);
 							}
 							if is_struct(global.cur_char.equip_slot_ar[inv_slot.lh]) {
 							
@@ -747,7 +776,7 @@ else if global.cur_game_state == game_state.access_inv {
 								var spr_h = sprite_get_height(lh_inv_slot_inst_id.sprite_index);
 							
 								scr_indicate_error_section(lh_inv_slot_inst_id.x-spr_w/2, lh_inv_slot_inst_id.y-spr_h/2, 
-								spr_w, spr_h, c_red, false);
+								spr_w, spr_h, c_red, false, true);
 							}
 						
 							//If both hands are free, it's valid:

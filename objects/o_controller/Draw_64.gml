@@ -526,7 +526,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
 	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
 	var bg_c = c_gray;
-	var bg_max_w = cur_char_spr_origin_x+slot_w*9;
+	var bg_max_w = cur_char_spr_origin_x+slot_w*8;
 	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*8)+bg_offset_y;
 	var bg_max_h = bg_y+(slot_h*7);
 	
