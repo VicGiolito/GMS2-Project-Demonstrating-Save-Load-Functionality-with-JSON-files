@@ -522,6 +522,8 @@ else if global.cur_game_state == game_state.access_inv {
 			if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
 			if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
 			if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
+			if instance_exists(o_cycle_stats_button) instance_destroy(o_cycle_stats_button);
+			cur_stat_page_int = 0; //reset
 		
 			//'Tidy' up our arrays global.cur_char.inv_ar and our corresponding array of instances in the g.master_level_ar,
 			//just in case the positions of the items on the ground for that grid cell has been changed so that there may be empty
@@ -573,9 +575,22 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		if inv_slot_inst != noone {
 			
+			#region Iterate through cycle_stats ranges:
+			
+			if inv_slot_inst.object_index == o_cycle_stats_button {
+				
+				//Increment:
+				cur_stat_page_int++;
+				
+				//Cap:
+				if cur_stat_page_int > 1 cur_stat_page_int = 0;	
+			}
+			
+			#endregion
+			
 			#region Iterate through our g.cur_char inv_ar (backpack):
 			
-			if inv_slot_inst.object_index == o_scroll_button {
+			else if inv_slot_inst.object_index == o_scroll_button {
 				
 				d($"LMB CLICK DETECTED FOR O_SCROLL_BUTTON!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
 		

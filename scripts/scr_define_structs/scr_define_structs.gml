@@ -584,6 +584,18 @@
 		max_dmg = 0;
 		
 		to_hit_mod = 0;
+		
+		//Resistences:
+		res_crushing_mod = 0;
+		res_slashing_mod = 0;
+		res_piercing_mod = 0;
+		res_ice_mod = 0;
+		res_fire_mod = 0;
+		res_poison_mod = 0;
+		res_arcane_mod = 0;
+		res_shock_mod = 0;
+		res_light_mod = 0;
+		res_dark_mod = 0;
 	
 		is_cursed = false;
 		weight_val = 0; //In pounds
@@ -623,7 +635,7 @@
 		
 		switch(item_class) {
 			
-			case item_enum.wep_axe_two_hand_rusty:
+			case item_enum.wep_axe_two_hand_woodcut:
 				item_name = "Rusty Woodcutter's Axe";
 				dura_cur = 25;
 				min_dmg = 2;
@@ -643,7 +655,7 @@
 				
 			break;
 			
-			case item_enum.wep_axe_one_hand_rusty:
+			case item_enum.wep_axe_one_hand:
 				item_name = "Rusty Hatchet";
 				dura_cur = 20;
 				min_dmg = 1;
@@ -661,7 +673,7 @@
 				item_spr_str = "spr_wep_axe_hatchet_rusty";
 			break;
 			
-			case item_enum.wep_sword_one_hand_rusty:
+			case item_enum.wep_sword_one_hand:
 				item_name = "Rusty Short Sword";
 				dura_cur = 20;
 				min_dmg = 2;
@@ -679,7 +691,7 @@
 				item_spr_str = "spr_wep_sword_onehand_rusty";
 			break;
 			
-			case item_enum.wep_sword_two_hand_rusty:
+			case item_enum.wep_sword_two_hand_ancient:
 				item_name = "Rusty Two Handed Great Sword";
 				dura_cur = 25;
 				min_dmg = 3;
@@ -698,7 +710,7 @@
 				item_spr_str = "spr_wep_sword_twohand_rusty";
 			break;
 			
-			case item_enum.wep_polearm_pike_rusty:
+			case item_enum.wep_polearm_pike:
 				item_name = "Rusty Pike";
 				dura_cur = 35;
 				min_dmg = 3;
@@ -718,7 +730,7 @@
 				item_spr_str = "spr_wep_pike_rusty";
 			break;
 			
-			case item_enum.wep_polearm_halberd_rusty:
+			case item_enum.wep_polearm_halberd:
 				item_name = "Rusty Halberd";
 				dura_cur = 35;
 				min_dmg = 4;
@@ -738,7 +750,7 @@
 				item_spr_str = "spr_wep_halberd_rusty";
 			break;
 			
-			case item_enum.wep_mace_one_hand_rusty:
+			case item_enum.wep_mace_one_hand:
 				item_name = "Rusty Mace";
 				dura_cur = 20;
 				min_dmg = 1;
@@ -757,7 +769,7 @@
 				
 			break;
 			
-			case item_enum.wep_mace_one_hand_average:
+			case item_enum.wep_mace_one_hand:
 				item_name = "Iron Mace";
 				dura_cur = 20;
 				min_dmg = 2;
@@ -775,7 +787,7 @@
 				item_spr_str = "spr_wep_mace_average";
 			break;
 			
-			case item_enum.wep_hammer_one_hand_rusty:
+			case item_enum.wep_hammer_one_hand:
 				item_name = "Rusty Hammer";
 				dura_cur = 10;
 				min_dmg = 1;
@@ -793,7 +805,7 @@
 				item_spr_str = "spr_wep_hammer_rusty";
 			break;
 			
-			case item_enum.wep_dagger_one_hand_rusty:
+			case item_enum.wep_dagger_one_hand:
 				item_name = "Rusty Knife";
 				dura_cur = 10;
 				min_dmg = 1;
@@ -811,7 +823,7 @@
 				item_spr_str = "spr_wep_dagger_rusty";
 			break;
 			
-			case item_enum.wep_spear_one_hand_rusty:
+			case item_enum.wep_spear_one_hand:
 				item_name = "Pointed Stick";
 				dura_cur = 20;
 				min_dmg = 2;
@@ -831,7 +843,7 @@
 
 			//ITEMS:
 			
-			case item_enum.wep_torch_crude:
+			case item_enum.wep_torch:
 				item_name = "Crude Torch";
 				dura_cur = 20;
 				min_dmg = 0; //Be sure to keep this 0 as it's the only wep in the game that can be 'dual wielded'
@@ -864,6 +876,15 @@
 				gold_value = 50;
 				weight_val = 1;
 				item_spr_str = "spr_misc_necklace_crude";
+				
+				res_ice_mod = 1;
+				res_fire_mod = 2;
+				res_poison_mod = 3;
+				res_shock_mod = 4;
+				res_light_mod = 5;
+				res_dark_mod = 6;
+				res_arcane_mod = 10;
+				
 			break;
 			
 			case item_enum.item_rock:
@@ -913,7 +934,7 @@
 				is_rock = true;
 			break;
 			
-			case item_enum.wep_staff_two_hand_rusty:
+			case item_enum.wep_staff_two_hand:
 				item_name = "Battered Staff";
 				dura_cur = 20;
 				min_dmg = 2;
@@ -950,6 +971,14 @@
 				weight_val = 15;
 				is_two_hand = true;
 				item_spr_str = "spr_wep_staff_acheron";
+				
+				res_ice_mod = 10;
+				res_fire_mod = 10;
+				res_poison_mod = 10;
+				res_shock_mod = 10;
+				res_light_mod = 10;
+				res_dark_mod = 10;
+				res_arcane_mod = 10;
 			break;
 			
 			case item_enum.wep_shield_buckler_leather:
@@ -975,6 +1004,11 @@
 				weight_val = 15;
 				is_shield = true;
 				item_spr_str = "spr_shield_buckler_rusty";
+				
+				res_crushing_mod = 10;
+				res_piercing_mod = 10;
+				res_slashing_mod = 10;
+				
 			break;
 			
 			case item_enum.wep_shield_medium_leather:
@@ -1000,9 +1034,13 @@
 				weight_val = 30;
 				is_shield = true;
 				item_spr_str = "spr_shield_infantry_rusty";
+				
+				res_crushing_mod = 10;
+				res_piercing_mod = 10;
+				res_slashing_mod = 10;
 			break;
 			
-			case item_enum.wep_bow_short_crude:
+			case item_enum.wep_bow_short:
 				item_name = "Crude Wooden Short Bow";
 				dura_cur = 10;
 				min_dmg = 2;
@@ -1025,30 +1063,8 @@
 				is_two_hand = true;
 			break;
 			
-			case item_enum.wep_bow_short_average:
-				item_name = "Wooden Short Bow";
-				dura_cur = 15;
-				min_dmg = 4;
-				max_dmg = 6;
-				armor_pen = 85;
-				magic_pen = 0;
-				item_range = 2;
-				item_equip_type_enum = inv_slot.rh;
-				
-				to_hit_mod = 4;
-				block_mod = 4;
-				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.bow;
-				is_armor = false;
-				description = "Competently constructed wooden short bow.";
-				gold_value = 20;
-				weight_val = 8;
-				item_spr_str = "spr_wep_shortbow_average";
-				is_two_hand = true;
-			break;
 			
-			case item_enum.wep_crossbow_crude:
+			case item_enum.wep_crossbow:
 				item_name = "Crude Crossbow";
 				dura_cur = 15;
 				min_dmg = 4;
@@ -1071,29 +1087,6 @@
 				is_two_hand = true;
 			break;
 			
-			case item_enum.wep_crossbow_average:
-				item_name = "Iron Crossbow";
-				dura_cur = 25;
-				min_dmg = 6;
-				max_dmg = 8;
-				armor_pen = 125;
-				magic_pen = 0;
-				item_range = 2;
-				item_equip_type_enum = inv_slot.rh;
-				
-				to_hit_mod = 8;
-				block_mod = 7;
-				stam_debuff = 0;
-				melee_evasion_mod = 0;
-				item_weapon_type_enum = wep_type.crossbow;
-				is_armor = false;
-				description = "This iron crossbow looks relatively new and in good condition.";
-				gold_value = 45;
-				weight_val = 15;
-				item_spr_str = "spr_wep_crossbow_average";
-				is_two_hand = true;
-			break;
-			
 			case item_enum.armor_body_leather_vest:
 				item_name = "Crude Leather Vest";
 				dura_cur = 4;
@@ -1112,6 +1105,10 @@
 				item_spr_str = "spr_body_vest_leather_crude";
 				
 				evasion_mod = 2;
+				
+				res_crushing_mod = 10;
+				res_piercing_mod = 1;
+				res_slashing_mod = 1;
 			break;
 			
 			case item_enum.armor_head_feather_hat:
@@ -1150,9 +1147,13 @@
 				item_spr_str = "spr_head_cap_padded_crude";
 				
 				base_protect_val = 1;
+				
+				res_crushing_mod = 10;
+				res_piercing_mod = 1;
+				res_slashing_mod = 1;
 			break;
 			
-			case item_enum.armor_head_chainmail_coif_crude:
+			case item_enum.armor_head_chainmail_coif:
 				item_name = "Rusty Chainmail Coif";
 				dura_cur = 8;
 				item_equip_type_enum = inv_slot.head;
@@ -1170,9 +1171,13 @@
 				item_spr_str = "spr_head_coif_chainmail_crude";
 				
 				base_protect_val = 3;
+				
+				res_crushing_mod = 5;
+				res_piercing_mod = 1;
+				res_slashing_mod = 10;
 			break;
 			
-			case item_enum.armor_feet_leather_crude:
+			case item_enum.armor_feet_leather:
 				item_name = "Battered Leather Boots";
 				dura_cur = 2;
 				item_equip_type_enum = inv_slot.feet;
@@ -1191,9 +1196,13 @@
 				
 				base_protect_val = 2;
 				evasion_mod = 1;
+				
+				res_crushing_mod = 1;
+				res_piercing_mod = 1;
+				res_slashing_mod = 1;
 			break;
 			
-			case item_enum.armor_feet_iron_crude:
+			case item_enum.armor_feet_iron:
 				item_name = "Battered Iron Boots";
 				dura_cur = 5;
 				item_equip_type_enum = inv_slot.feet;
@@ -1211,9 +1220,13 @@
 				item_spr_str = "spr_feet_boots_iron_crude";
 				
 				base_protect_val = 4;
+				
+				res_crushing_mod = 5;
+				res_piercing_mod = 5;
+				res_slashing_mod = 5;
 			break;
 			
-			case item_enum.armor_hands_leather_crude:
+			case item_enum.armor_hands_leather:
 				item_name = "Crude Leather Gloves";
 				dura_cur = 3;
 				item_equip_type_enum = inv_slot.hands;
@@ -1229,6 +1242,10 @@
 				item_spr_str = "spr_hands_gloves_leather_crude";
 				
 				base_protect_val = 2;
+				
+				res_crushing_mod = 1;
+				res_piercing_mod = 1;
+				res_slashing_mod = 1;
 			break;
 			
 			case item_enum.armor_hands_leather_wraps:
@@ -1247,9 +1264,11 @@
 				item_spr_str = "spr_hands_wraps_leather_crude";
 				
 				base_protect_val = 1;
+				
+				res_slashing_mod = 2;
 			break;
 			
-			case item_enum.armor_hands_iron_gauntlets_crude:
+			case item_enum.armor_hands_iron_gauntlets:
 				item_name = "Rusty Iron Gauntlets";
 				dura_cur = 8;
 				item_equip_type_enum = inv_slot.hands;
@@ -1267,9 +1286,13 @@
 				item_spr_str = "spr_hands_gauntlets_iron_crude";
 				
 				base_protect_val = 4;
+				
+				res_crushing_mod = 3;
+				res_piercing_mod = 3;
+				res_slashing_mod = 3;
 			break;
 			
-			case item_enum.armor_body_furs_crude:
+			case item_enum.armor_body_furs:
 				item_name = "Tattered Furs";
 				dura_cur = 8;
 				item_equip_type_enum = inv_slot.body;
@@ -1288,9 +1311,13 @@
 				
 				base_protect_val = 2;
 				evasion_mod = 1;
+				
+				res_crushing_mod = 3;
+				res_piercing_mod = 3;
+				res_slashing_mod = 3;
 			break;
 			
-			case item_enum.armor_body_robes_crude:
+			case item_enum.armor_body_robes:
 				item_name = "Tattered Magician's Robe";
 				dura_cur = 2;
 				item_equip_type_enum = inv_slot.body;
@@ -1308,9 +1335,17 @@
 				item_spr_str = "spr_body_robes_crude";
 				
 				evasion_mod = 2;
+				
+				res_ice_mod = 1;
+				res_fire_mod = 1;
+				res_poison_mod = 1;
+				res_shock_mod = 1;
+				res_light_mod = 1;
+				res_dark_mod = 1;
+				res_arcane_mod = 1;
 			break;
 			
-			case item_enum.armor_body_rags_crude:
+			case item_enum.armor_body_rags:
 				item_name = "Tattered Roughspun Rags";
 				dura_cur = 1;
 				item_equip_type_enum = inv_slot.body;
@@ -1328,9 +1363,13 @@
 				item_spr_str = "spr_body_rags";
 				
 				evasion_mod = 1;
+				
+				res_crushing_mod = 1;
+				res_piercing_mod = 1;
+				res_slashing_mod = 1;
 			break;
 			
-			case item_enum.armor_body_chainmail_crude:
+			case item_enum.armor_body_chainmail:
 				item_name = "Rusty Iron Chainmail";
 				dura_cur = 20;
 				item_equip_type_enum = inv_slot.body;
@@ -1348,6 +1387,10 @@
 				item_spr_str = "spr_body_chainmail_crude";
 				
 				base_protect_val = 4;
+				
+				res_crushing_mod = 5;
+				res_piercing_mod = 5;
+				res_slashing_mod = 20;
 			break;
 			
 			case item_enum.armor_head_pillory:

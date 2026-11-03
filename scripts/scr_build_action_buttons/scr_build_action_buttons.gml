@@ -26,12 +26,15 @@ function scr_build_action_buttons(pc_struct_id){
 		}
 		
 		if !is_undefined(wep_type_enum) {
-			var action_enum = scr_return_basic_wep_abil_enum_from_wep_type();	
+			
+			var abil_enum = scr_return_basic_wep_abil_enum_from_wep_type(wep_type_enum);
+			
+			array_push(actions_ar, abil_enum);
 		}
 		
 	#endregion
 	
-	#region Check to see if we're adjacent to a valid NPC:
+	#region Check to see if we're adjacent to a valid NPC we can trade with:
 	
 	var char_struct;
 	
@@ -51,5 +54,11 @@ function scr_build_action_buttons(pc_struct_id){
 	#endregion
 	
 	//Iterate through our actions_ar, instantiating action_button instances as we go:
+	var ar_len = array_length(actions_ar);
 	
+	for(var i = 0; i < ar_len; i++){ 
+		
+		
+		
+	}
 }

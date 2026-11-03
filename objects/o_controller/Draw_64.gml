@@ -555,65 +555,101 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
 		var char = global.cur_char;
 		
-		//Name, HP, Mana, Morale:
-		draw_text_color(txt_origin_x, txt_origin_y,$"\"{char.char_stats_ar[char_stats.name]}\"",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		i++; //Space
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"H.P.: {char.char_stats_ar[char_stats.hp_cur]}/{char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {char.char_stats_ar[char_stats.mana_cur]}/{char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {char.char_stats_ar[char_stats.morale_cur]}/{char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		i++; //Space
-		//Combat related stats: 
+		if cur_stat_page_int == 0 {
 		
-		//Armor values:
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_body} / {char.armor_max_body}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Feet Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		i++; //Space
+			//Name, HP, Mana, Stamina, Morale:
+			draw_text_color(txt_origin_x, txt_origin_y,$"{char.char_stats_ar[char_stats.name]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hit Points: {char.char_stats_ar[char_stats.hp_cur]}/{char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {char.char_stats_ar[char_stats.mana_cur]}/{char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Stamina: {char.char_stats_ar[char_stats.stam_cur]}/{char.char_stats_ar[char_stats.stam_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {char.char_stats_ar[char_stats.morale_cur]}/{char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			//Combat related stats: 
 		
-		//melee and ranged to_hit, melee and ranged dmg, 
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {char.base_melee_min_dmg} - {char.base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		//Dodge, Crit Chance:
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_evasion}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit Chance: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
+			//Armor values:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_body} / {char.armor_max_body}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Feet Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
 		
-		//Other stats: strength, wisdom, etc.
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Strength: {char.char_stats_ar[char_stats.cur_str]}/{char.char_stats_ar[char_stats.base_str]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Agility: {char.char_stats_ar[char_stats.cur_agil]}/{char.char_stats_ar[char_stats.base_agil]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Constitution: {char.char_stats_ar[char_stats.cur_con]}/{char.char_stats_ar[char_stats.base_con]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Willpower: {char.char_stats_ar[char_stats.cur_will]}/{char.char_stats_ar[char_stats.base_will]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Intelligence: {char.char_stats_ar[char_stats.cur_int]}/{char.char_stats_ar[char_stats.base_int]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Wisdom: {char.char_stats_ar[char_stats.cur_wis]}/{char.char_stats_ar[char_stats.base_wis]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Perception: {char.char_stats_ar[char_stats.cur_per]}/{char.char_stats_ar[char_stats.base_per]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Charisma: {char.char_stats_ar[char_stats.cur_charisma]}/{char.char_stats_ar[char_stats.base_charisma]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
-		//Carrying Capacity and Max:
-		draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"C.C./Max: {char.char_stats_ar[char_stats.cur_carrying_capacity]}/{char.char_stats_ar[char_stats.max_carrying_capacity]}",txt_c,txt_c,txt_c,txt_c,1);
-		i++;
+			//melee and ranged to_hit, melee and ranged dmg, 
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {char.base_melee_min_dmg} - {char.base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			//Dodge, Crit Chance:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_evasion}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit Chance: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+		
+			//Carrying Capacity and Max:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"C.C./Max: {char.char_stats_ar[char_stats.cur_carrying_capacity]}/{char.char_stats_ar[char_stats.max_carrying_capacity]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+		}
+		
+		else if cur_stat_page_int == 1 {
+			
+			//Other stats: strength, wisdom, etc.
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Stats:",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Strength: {char.char_stats_ar[char_stats.cur_str]}/{char.char_stats_ar[char_stats.base_str]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Agility: {char.char_stats_ar[char_stats.cur_agil]}/{char.char_stats_ar[char_stats.base_agil]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Constitution: {char.char_stats_ar[char_stats.cur_con]}/{char.char_stats_ar[char_stats.base_con]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Willpower: {char.char_stats_ar[char_stats.cur_will]}/{char.char_stats_ar[char_stats.base_will]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Intelligence: {char.char_stats_ar[char_stats.cur_int]}/{char.char_stats_ar[char_stats.base_int]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Wisdom: {char.char_stats_ar[char_stats.cur_wis]}/{char.char_stats_ar[char_stats.base_wis]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Perception: {char.char_stats_ar[char_stats.cur_per]}/{char.char_stats_ar[char_stats.base_per]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Charisma: {char.char_stats_ar[char_stats.cur_charisma]}/{char.char_stats_ar[char_stats.base_charisma]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Resistence:",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crushing: {char.char_stats_ar[char_stats.cur_res_crushing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Slashing: {char.char_stats_ar[char_stats.cur_res_slashing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Piercing: {char.char_stats_ar[char_stats.cur_res_slashing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Arcane: {char.char_stats_ar[char_stats.cur_res_arcane]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Poison: {char.char_stats_ar[char_stats.cur_res_poison]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ice: {char.char_stats_ar[char_stats.cur_res_ice]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Fire: {char.char_stats_ar[char_stats.cur_res_fire]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Shock: {char.char_stats_ar[char_stats.cur_res_shock]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Light: {char.char_stats_ar[char_stats.cur_res_light]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dark: {char.char_stats_ar[char_stats.cur_res_fire]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+		}
 		
 		draw_set_font(global.default_fnt);
 		
@@ -710,7 +746,6 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			
 			Misc inv slot (accesory):
 				various stat mods, can figure out later:
-			
 			*/
 			
 			//Always draw our item's sprite in the upper right corner of the box, so we know what we're looking at immediately:

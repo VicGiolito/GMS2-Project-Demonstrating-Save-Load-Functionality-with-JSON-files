@@ -219,6 +219,8 @@ items_on_ground_box_y = 0;
 items_on_ground_box_w = 0;
 items_on_ground_box_h = 0;
 
+cur_stat_page_int = 0;
+
 items_on_ground_ar = -1;
 
 global.max_items_on_ground_in_box = 27;

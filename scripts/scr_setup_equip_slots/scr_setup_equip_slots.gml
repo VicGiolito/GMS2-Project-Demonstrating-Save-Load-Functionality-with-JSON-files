@@ -7,6 +7,8 @@ function scr_setup_equip_slots(char_id){
 	if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
 	if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
 	if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
+	if instance_exists(o_cycle_stats_button) instance_destroy(o_cycle_stats_button);
+	cur_stat_page_int = 0; //reset
 	
 	var slot_h = sprite_get_height(spr_inv_frame), slot_w = sprite_get_width(spr_inv_frame);
 	
@@ -25,6 +27,11 @@ function scr_setup_equip_slots(char_id){
 		
 		contents_id = char_id.equip_slot_ar[slot_ind];
 	}
+	
+	var cycle_stats_spr_w = sprite_get_width(spr_cycle_stats_button);
+	
+	//Create cycle stats button:
+	instance_create_layer(head_slot_x+slot_w+(slot_w/2)+(cycle_stats_spr_w/2), head_slot_y, "layer_inv", o_cycle_stats_button);
 	
 	//Body slot:
 	with(instance_create_layer(head_slot_x,head_slot_y+slot_h,"layer_inv",o_inv_slot)) {
