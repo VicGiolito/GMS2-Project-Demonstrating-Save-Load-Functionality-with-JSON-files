@@ -208,6 +208,7 @@
     {"id":{"name":"spr_wep_shortbow_rusty","path":"sprites/spr_wep_shortbow_rusty/spr_wep_shortbow_rusty.yy",},},
     {"id":{"name":"scr_remove_struct_from_inst_grid","path":"scripts/scr_remove_struct_from_inst_grid/scr_remove_struct_from_inst_grid.yy",},},
     {"id":{"name":"spr_down_stairs_ass","path":"sprites/spr_down_stairs_ass/spr_down_stairs_ass.yy",},},
+    {"id":{"name":"scr_adjust_item_stats_for_quality","path":"scripts/scr_adjust_item_stats_for_quality/scr_adjust_item_stats_for_quality.yy",},},
     {"id":{"name":"spr_loot_drop","path":"sprites/spr_loot_drop/spr_loot_drop.yy",},},
     {"id":{"name":"spr_body_rags","path":"sprites/spr_body_rags/spr_body_rags.yy",},},
     {"id":{"name":"scr_center_font_align","path":"scripts/scr_center_font_align/scr_center_font_align.yy",},},

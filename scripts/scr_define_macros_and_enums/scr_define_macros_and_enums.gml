@@ -96,6 +96,7 @@ function scr_define_macros_and_enums(){
 	
 	//Enum for item quality - determines stats for each item:
 	enum item_quality {
+		cursed,
 		crude,
 		poor, 
 		average,
@@ -224,12 +225,12 @@ function scr_define_macros_and_enums(){
 		cur_will,
 		hp_cur,
 		hp_max,
+		stam_cur,
+		stam_max,
 		mana_cur,
 		mana_max,
 		morale_cur,
 		morale_max,
-		stam_cur,
-		stam_max,
 		
 		base_res_crushing,
 		cur_res_crushing,

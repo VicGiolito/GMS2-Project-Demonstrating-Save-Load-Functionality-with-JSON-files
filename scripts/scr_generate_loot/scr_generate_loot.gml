@@ -42,7 +42,7 @@ function scr_generate_loot(dungeon_index,floor_index){
 				var ran_stack_quantity = choose(1,5,27,35,27*4);
 				
 				repeat(ran_stack_quantity) {
-					var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace);
+					var ran_item_enum = irandom_range(item_enum.wep_axe_two_hand_woodcut, item_enum.misc_gold_necklace);
 					new Item(ran_item_enum, floor_index, dungeon_index, grid_x, grid_y, false);
 				}
 				

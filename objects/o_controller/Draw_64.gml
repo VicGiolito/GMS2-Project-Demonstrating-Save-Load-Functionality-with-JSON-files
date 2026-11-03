@@ -320,7 +320,7 @@ global.cur_game_state == game_state.view_bio {
 		var stat_bar_origin_x = portrait_offset_x, stat_bar_origin_y = char_spr_h+portrait_offset_y;
 		var stat_bar_frame_offset = stat_bar_h / 2, stat_cur_val, stat_max_val;
 	
-		repeat(3) {
+		repeat(4) {
 		
 			stat_cur = stat_i;
 			stat_max = stat_i+1;
@@ -333,6 +333,7 @@ global.cur_game_state == game_state.view_bio {
 			if stat_i == char_stats.hp_cur { stat_c = c_red; stat_text = "HP"; }
 			else if stat_i == char_stats.morale_cur { stat_c = c_white; stat_text = "MORALE"; }
 			else if stat_i == char_stats.mana_cur { stat_c = c_blue; stat_text = "MANA"; }
+			else if stat_i == char_stats.stam_cur { stat_c = c_yellow; stat_text = "STAMINA"; }
 			else stat_c = c_white;
 			draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+(stat_cur_val / stat_max_val)*stat_bar_w,stat_bar_origin_y+stat_bar_h,stat_c,stat_c,stat_c,stat_c,false);
 		
@@ -476,7 +477,7 @@ global.cur_game_state == game_state.view_bio {
 			var stat_bar_origin_y = portrait_origin_y+(char_spr_h / 2)+stat_bar_h / 2;
 			var stat_bar_offset_x = portrait_offset_x;
 			var stat_bar_offset_y = stat_bar_h / 2, stat_cur_val, stat_max_val;
-			var total_stat_bars = 3;
+			var total_stat_bars = 4;
 			
 			repeat(total_stat_bars) {
 		
@@ -493,6 +494,8 @@ global.cur_game_state == game_state.view_bio {
 				else if stat_i == 1 { stat_c = c_blue; stat_cur_val = char_struct.char_stats_ar[char_stats.mana_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.mana_max]; }
 				//Morale:
 				else if stat_i == 2 { stat_c = c_white; stat_cur_val = char_struct.char_stats_ar[char_stats.morale_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.morale_max]; }
+				//Morale:
+				else if stat_i == 3 { stat_c = c_yellow; stat_cur_val = char_struct.char_stats_ar[char_stats.stam_cur]; stat_max_val = char_struct.char_stats_ar[char_stats.stam_max]; }
 				
 				//Draw stat bar:
 				draw_rectangle_color(stat_bar_origin_x,stat_bar_origin_y,stat_bar_origin_x+(stat_cur_val / stat_max_val)*stat_bar_w,stat_bar_origin_y+stat_bar_h,stat_c,stat_c,stat_c,stat_c,false);
@@ -533,7 +536,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	var bg_offset_y = 16, bg_offset_x = 16, inner_frame_offset = 8;
 	var bg_c = c_gray;
 	var bg_max_w = cur_char_spr_origin_x+slot_w*8;
-	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*8)+bg_offset_y;
+	var bg_y = cur_char_spr_origin_y+(cur_char_stat_bar_h*8)+bg_offset_y+(cur_char_stat_bar_h/2);
 	var bg_max_h = bg_y+(slot_h*7);
 	
 	draw_set_alpha(global.inv_screen_alpha);
@@ -545,7 +548,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	draw_set_alpha(1);
 	
-	#region Draw relevant stats for the cur_char:
+	#region Draw relevant stat text for the cur_char:
 	
 	if global.cur_char != -1 && is_struct(global.cur_char) {
 		
@@ -626,7 +629,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			i++;
 			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Charisma: {char.char_stats_ar[char_stats.cur_charisma]}/{char.char_stats_ar[char_stats.base_charisma]}",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
-			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Resistence:",txt_c,txt_c,txt_c,txt_c,1);
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Resistances:",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
 			i++; //Space
 			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crushing: {char.char_stats_ar[char_stats.cur_res_crushing]}%",txt_c,txt_c,txt_c,txt_c,1);
@@ -958,6 +961,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	}
 		
 	#endregion
+	
 }
 
 #endregion

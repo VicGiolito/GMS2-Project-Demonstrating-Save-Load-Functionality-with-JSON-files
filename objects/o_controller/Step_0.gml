@@ -571,7 +571,7 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		scr_reset_wait(1);
 		
-		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button], false, true);
+		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button, o_cycle_stats_button], false, true);
 		
 		if inv_slot_inst != noone {
 			
@@ -1322,6 +1322,11 @@ else if global.cur_game_state == game_state.main  {
 		//Unassign g.cur_char:
 		global.cur_char = -1;
 		
+		//Reset items on ground:
+		items_on_ground_ar = -1;
+		if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box);
+		if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
+		
 		var iterate_dir = undefined;;
 		
 		if keyboard_lastchar == "+" {
@@ -1483,7 +1488,15 @@ else if global.cur_game_state == game_state.main  {
 						//Assign terrain_grid and then update tilemap:
 						global.terrain_grid = global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN];
 						scr_define_tilemap_from_grid(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_TERRAIN],global.terrain_tile_id,"Using debug keys to change level floor.");
-				
+						
+						//Reset/rebuild items on ground:
+						items_on_ground_ar = -1;
+						items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+		
+						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+							scr_setup_items_on_ground_boxes();
+						}
+						
 						//Update los and define fow tilemap - it frankly doesn't matter if we reset or not the visible_boolean flag
 						//of the chars on the floor we are leaving, so as long as we always reset and properly update every char on
 						//the floor we are moving to - only the structs from the current floor willl ever be drawn anyway:
@@ -1674,6 +1687,14 @@ else if global.cur_game_state == game_state.main  {
 						global.cur_char = struct_id;
 						
 						d($"struct_id == {struct_id}");
+						
+						//Rebuild items_on_ground_ar:
+						items_on_ground_ar = -1;
+						items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
+		
+						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
+							scr_setup_items_on_ground_boxes();
+						}
 						
 						/*
 						global.cur_game_state = game_state.pc_plotting_path;

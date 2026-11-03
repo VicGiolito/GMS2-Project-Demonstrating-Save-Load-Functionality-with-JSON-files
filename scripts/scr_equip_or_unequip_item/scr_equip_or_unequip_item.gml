@@ -81,5 +81,17 @@ function scr_equip_or_unequip_item(char_struct_id, item_struct_id, equip_boolean
 			
 	}
 	
+	//Any type of item could grant res/vulnerabilities, add now:
+	char_struct_id.char_stats_ar[char_stats.cur_res_arcane] += item_struct_id.res_arcane_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_piercing] += item_struct_id.res_piercing_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_crushing] += item_struct_id.res_crushing_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_slashing] += item_struct_id.res_slashing_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_fire] += item_struct_id.res_fire_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_ice] += item_struct_id.res_ice_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_light] += item_struct_id.res_light_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_dark] += item_struct_id.res_dark_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_shock] += item_struct_id.res_shock_mod*addition_multiplier;
+	char_struct_id.char_stats_ar[char_stats.cur_res_poison] += item_struct_id.res_poison_mod*addition_multiplier;
+	
 	d($"scr_equip_or_unequip_item: equip_boolean: {equip_boolean}, char_struct_id.name: {char_struct_id.char_stats_ar[char_stats.name]} has equipped or unequipped the: {item_struct_id.item_name}")
 }

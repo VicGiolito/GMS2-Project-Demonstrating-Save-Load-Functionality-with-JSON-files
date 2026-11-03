@@ -549,7 +549,7 @@
 	#region Our item struct: NOTE: STRUCTS DO NOT CALL THEIR CONSTRUCTOR EVENT WHEN INSTANTIATED WITH JSON_PARSE
 	
 	//grid_x and grid_y can be -1 if item is being spawned inside of a char's inventory:
-	function Item(item_class_enum, floor_int, cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean) constructor
+	function Item(item_class_enum, floor_int, cur_dungeon_enum, grid_x, grid_y, is_in_inv_boolean, item_quality_ = item_quality.crude) constructor
 	{
 		cur_floor_level = floor_int;
 		
@@ -629,7 +629,7 @@
 		//Default 'missing sprite' sprite:
 		item_spr_str = "spr_unassigned";
 		
-		item_quality_enum = item_quality.average;
+		item_quality_enum = item_quality_;
 		
 		#region The actual stats for each weapon:
 		
@@ -767,24 +767,6 @@
 				weight_val = 15;
 				item_spr_str = "spr_wep_mace_rusty";
 				
-			break;
-			
-			case item_enum.wep_mace_one_hand:
-				item_name = "Iron Mace";
-				dura_cur = 20;
-				min_dmg = 2;
-				max_dmg = 5;
-				armor_pen = 150;
-				item_equip_type_enum = inv_slot.rh;
-				
-				to_hit_mod = 5;
-				block_mod = 6;
-				stam_debuff = 0;
-				item_weapon_type_enum = wep_type.mace;
-				description = "Likely forged by a castle smithy, this sturdy mace with a flanged iron head could deal some decent blunt damage.";
-				gold_value = 5;
-				weight_val = 18;
-				item_spr_str = "spr_wep_mace_average";
 			break;
 			
 			case item_enum.wep_hammer_one_hand:
@@ -1418,6 +1400,8 @@
 		}
 		
 		#endregion
+		
+		scr_adjust_item_stats_for_quality(self);
 		
 		//Default values:
 		dura_max = dura_cur;

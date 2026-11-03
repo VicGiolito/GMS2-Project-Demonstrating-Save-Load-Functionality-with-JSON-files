@@ -39,7 +39,7 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					//Just as a debug feature, add a few items to this starting position, just to test our items_on_ground_ar:
 					var ran_quant = choose(35,46);
 					repeat(ran_quant) {
-						new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, false);	
+						new Item(irandom_range(item_enum.wep_axe_two_hand_woodcut, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, false);	
 					}
 					
 					//Debug: add many items to backpack to test the scroll feature:
@@ -64,28 +64,28 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					*/
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.kurgun {
-					var item_struct = new Item(item_enum.armor_body_furs_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+					var item_struct = new Item(item_enum.armor_body_furs, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);
 					pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct.weight_val;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.acheron {
-					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+					var item_struct = new Item(item_enum.armor_body_robes, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);
 					pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct.weight_val;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.thade {
-					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true); 
+					var item_struct = new Item(item_enum.armor_body_rags, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true); 
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);
 					pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct.weight_val;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.ulric {
-					var item_struct = new Item(item_enum.armor_body_rags_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+					var item_struct = new Item(item_enum.armor_body_rags, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);
@@ -99,7 +99,7 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct.weight_val;
 				}
 				else if pc_struct_id.char_stats_ar[char_stats.char_class_enum] == char_class.zool {
-					var item_struct = new Item(item_enum.armor_body_robes_crude, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+					var item_struct = new Item(item_enum.armor_body_robes, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 					item_struct.is_in_inv = true;
 					pc_struct_id.equip_slot_ar[inv_slot.body] = item_struct;
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);

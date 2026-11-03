@@ -34,7 +34,7 @@ function scr_debug_spawn_trader(dungeon_enum_int){
 					
 				repeat(global.max_backpack_slots_per_page+6) {
 					//Add ran items:
-					var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, neutral_grid_x, neutral_grid_y, true);
+					var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_woodcut, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, neutral_grid_x, neutral_grid_y, true);
 					
 					//Add light weight items:
 						//var item_struct_in_inv = new Item(item_enum.misc_gold_necklace, floor_num_int, dungeon_enum_int, neutral_grid_x, neutral_grid_y, true);
