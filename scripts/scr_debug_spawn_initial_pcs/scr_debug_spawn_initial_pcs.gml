@@ -22,10 +22,9 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 		
 				pc_count++;
 				
-				new Character(pc_class,char_team.pc,grid_x,grid_y,floor_num_int,dungeon_enum_int, true);
+				var pc_struct_id = new Character(pc_class,char_team.pc,grid_x,grid_y,floor_num_int,dungeon_enum_int, true);
 				
-				//Add corresponding starting equipment for the most recently created pc; we definitely need to script this process:
-				var pc_struct_id = global.pc_team_ar[array_length(global.pc_team_ar)-1];
+				#region Add corresponding starting equipment for the most recently created pc; we definitely need to script this process:
 				
 				var pc_grid_x = pc_struct_id.char_grid_x, pc_grid_y = pc_struct_id.char_grid_y;
 				
@@ -106,6 +105,8 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					scr_equip_or_unequip_item(pc_struct_id, item_struct, true);
 					pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct.weight_val;
 				}
+				
+				#endregion
 				
 				//Increment class:
 				pc_class++;

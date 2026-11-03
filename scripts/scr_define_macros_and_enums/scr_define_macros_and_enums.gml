@@ -20,7 +20,10 @@ function scr_define_macros_and_enums(){
 		load_game_list,
 		access_inv,
 		view_stats,
-		view_bio
+		view_bio,
+		
+		select_trader
+		
 	}
 	
 	//Struct enum - used with scr_return_struct_id, also used to help identify/distinguish structs from eachother:
@@ -238,7 +241,19 @@ function scr_define_macros_and_enums(){
 	
 	#endregion
 	
-	#region Enum for abilities - these include spells as well; some are passive, and some need to be activated:
+	#region Enum for character actions - every one of these can show up as a button in the char_action_bar_ar:
+	
+	//Edit: should these be combined with the 'ability' enum?
+	
+	enum char_action {
+		
+		basic_attack,
+	
+	}
+	
+	#endregion
+	
+	#region Enum for abilities - used with ability_ar, scr_build_action_buttons, and more; these include spells as well as combat abilities; some are passive, and some need to be activated; not all are combat related.
 	
 	enum ability { //**CAREFUL WHEN RE-ORDERING THESE: THEIR ORDER MATTERS IN SCR_BUILD_ACTION_BUTTONS; THEIR ORDER MUST ALIGN WITH THE BUTTON_ACTION ENUM
 		
@@ -255,7 +270,7 @@ function scr_define_macros_and_enums(){
 		two_handed_cleave, //-toHit, can hit up to 2 in different rank +-1 of each other
 		flail_swing,
 		flail_target_head, //-toHit, always hits head
-		dagger_thrust,
+		dagger_stab,
 		dagger_armor_pierce, //-toHit, -dmg, bypasses armor altogether
 		staff_thrust, //-toHit,+dmg
 		staff_swing, //+toHit,-dmg
@@ -270,7 +285,7 @@ function scr_define_macros_and_enums(){
 		mace_smash,
 		mace_stun,
 		spear_thrust,
-		spear_spear_wall, //Every enemy targeting the same rank or beyond with a melee attack must first pass a free hit test.
+		spear_spear_wall, //Every enemy moving into a cell adjacent must pass a hit check, or be forced back.
 		torch_swing, //+toHit;-dmg; chance to set on fire
 		torch_thrust, //-toHit; +dmg; chance to set on fire.
 		
@@ -278,6 +293,22 @@ function scr_define_macros_and_enums(){
 		shield_shield_wall, //End of weapon type abilities; gains +5 melee and +5 ranged def for each pc that uses this in the same rank used with another pc in the same rank
 		
 		//Start of spell or racial or class abilities that are ACTIVATABLE in combat or in the main screen:
+		
+		heal_1,
+		heal_2,
+		heal_3,
+		heal_group_1,
+		heal_group_2,
+		heal_group_3,
+		bless_1,
+		bless_2,
+		bless_3,
+		stone_skin_1,
+		stone_skin_2,
+		stone_skin_3,
+		regenerate_1,
+		regenerate_2,
+		regenerate_3,
 		
 		arcane_bolt,
 		fireball,
@@ -304,7 +335,7 @@ function scr_define_macros_and_enums(){
 		disarm_trap_1,
 		disarm_trap_2,
 		disarm_trap_3,
-		craggy_skin_1, //increases physical resist, wep break chance
+		craggy_skin_1, //increases physical resist, wep break chance, attacker injure chance
 		craggy_skin_2,
 		craggy_skin_3,
 		shimmering_stones_1, //increases magic resist
@@ -319,6 +350,28 @@ function scr_define_macros_and_enums(){
 		troll_blood_1, //troll: increases hp regen and limb regen chance
 		troll_blood_2,
 		troll_blood_3, //End of PASSIVE ABILITIES
+		
+		//ogre and/or troll or golem abilities:
+		headbutt, //small chance to stun self
+		bite,
+		throttle, //stuns both
+		claw_swipe,
+		charge,
+		eye_gouge,
+		
+		//ogre:
+		blood_letting, //injures self in order to increase his rage, has a chance of giving himself the 'bleeding' debuff.
+		
+		//troll
+		feast, 
+		terrorizing_howl,
+		
+		//golem abilities:
+		golem_pulverize, //deals aoe damage all around the golem, damaging even pcs and neutrals
+		golem_swing, //3 cell aoe anywhere him.
+		
+		//Start of misc abilities:
+		trade_with_npc,
 		
 		total_ablities
 	}
@@ -353,8 +406,13 @@ function scr_define_macros_and_enums(){
 		rogue_wizard, //half-wizard half-warrior
 		brood_mother, //late game creation: spider queen that gestates goblin children on her back
 		lich, //??
+		
 		goblin_cretin, //Enemy classes from here on:
 		goblin_brute,
+		
+		//Neutral classes from here on:
+		npc_trader_generic,
+		
 		total_char_classes
 	}
 	

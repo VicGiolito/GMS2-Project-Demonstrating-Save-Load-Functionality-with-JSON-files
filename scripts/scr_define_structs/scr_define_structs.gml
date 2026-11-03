@@ -22,7 +22,7 @@
 		//Arrays:
 		char_stats_ar = array_create(char_stats.total_stats,false);
 		wep_skills_ar = array_create(wep_type.total_wep_types,0);
-		ability_ar = array_create(ability.total_ablities,-1);
+		ability_ar = -1;
 		idle_conv_ar = []; 
 		victory_conv_ar = [];
 		inv_ar = -1; //Is used as an array
@@ -31,8 +31,8 @@
 		//Define char team:
 		char_stats_ar[char_stats.char_team_enum] = char_team_enum;
 		
-		//Define for pcs only:
-		if char_team_enum == char_team.pc {
+		//Define for pcs and neutrals only:
+		if char_team_enum == char_team.pc || char_team_enum == char_team.neutral {
 			inv_ar = []; //The 'backpack' for the character, can be infinite value, is limited only by that char's carrying capacity.
 			equip_slot_ar = array_create(inv_slot.total_inv_slots,-1); //Misc, head, body, hands, feet, lh, rh
 		}
@@ -385,6 +385,26 @@
 				char_portrait_spr_str = "spr_orc";
 				
 				enemy_position_weight = 0;
+		
+			break;
+			
+			case char_class.npc_trader_generic:
+				char_stats_ar[char_stats.name] = "Danrys, the Itinerant Merchant";
+				//Stats:
+				char_stats_ar[char_stats.base_str] = 106; //monstrous strength just for debug purposes, for huge C.C.
+				char_stats_ar[char_stats.base_agil] = 4;
+				char_stats_ar[char_stats.base_int] = 10;
+				char_stats_ar[char_stats.base_wis] = 10;
+				char_stats_ar[char_stats.base_con] = 7;
+				char_stats_ar[char_stats.base_per] = 11;
+				char_stats_ar[char_stats.base_charisma] = 16;
+				char_stats_ar[char_stats.base_will] = 12;
+				char_stats_ar[char_stats.base_vision_radius] = global.default_los_radius;
+		
+				array_push(idle_conv_ar,"I have nothing to say.");
+				
+				char_spr_str = "spr_neutral_generic_trader";
+				char_portrait_spr_str = "spr_neutral_generic_trader";
 		
 			break;
 		}

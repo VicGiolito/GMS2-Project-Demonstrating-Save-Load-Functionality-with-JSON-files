@@ -237,7 +237,8 @@ else if global.cur_game_state == game_state.loading_chars_screen {
 		
 		global.level_progress_percent = (global.floors_loaded_count / global.max_floors_on_level) * 100;
 	}
-	//Reset g.floors_loaded_count and iterate cur_dungeon_ind to next dungeon:
+	
+	//Reset g.floors_loaded_count and iterate cur_dungeon_ind to next dungeon;
 	if global.floors_loaded_count >= global.max_floors_on_level {
 		
 		//Iterate:
@@ -255,13 +256,15 @@ else if global.cur_game_state == game_state.loading_chars_screen {
 			global.cur_dungeon_ind = dungeon_type.overworld;
 		
 			//Randomly place our pcs in levels scattered throughout the first dungeon - 
-			for(var dungeon_i = 0; dungeon_i <= dungeon_type.overworld; dungeon_i++) {
-				scr_debug_spawn_initial_pcs(dungeon_i);
-			}
+			scr_debug_spawn_initial_pcs(dungeon_type.overworld);
+			
+			//Randomly place several traders on the first level for debug purposes:
+			scr_debug_spawn_trader(dungeon_type.overworld);
 			
 			//Randomly place portals in the up/down portals first level of each world - 
 			//they're debug buildings which allow pcs to move to/from different worlds
-			scr_debug_spawn_initial_portals(dungeon_type.minotaur_maze, true);
+			//Edit: defunct for now - portals will only spawn after the objective for that dungeon has been completed:
+				//scr_debug_spawn_initial_portals(dungeon_type.minotaur_maze, true);
 		
 			//Debug placeholder - Assign cur_char as first pc player in the first floor we find of the first world:
 			// [dungeon_ind][floor_ind][team_ind][1d array within team_ind containg structs]

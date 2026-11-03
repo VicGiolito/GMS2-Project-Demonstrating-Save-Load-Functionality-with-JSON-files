@@ -400,6 +400,11 @@ global.cur_game_state == game_state.view_bio {
 					//Only allow change if char is in the same dungeon (they always should be):
 					if char_struct.cur_dungeon_ind == global.cur_dungeon_ind {
 						
+						//We've clicked on a char in our party rather than the specified trader, reset game state (game state was main):
+						if global.cur_game_state = game_state.select_trader {
+							global.cur_game_state = game_state.main;	
+						}
+						
 						//Change g.cur_char
 						global.cur_char = char_struct;
 						
