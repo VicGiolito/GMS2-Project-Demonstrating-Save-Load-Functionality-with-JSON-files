@@ -9,8 +9,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "Debug or GUI objects",
+    "path": "folders/Objects/Debug or GUI objects.yy",
   },
   "parentObjectId": null,
   "persistent": false,

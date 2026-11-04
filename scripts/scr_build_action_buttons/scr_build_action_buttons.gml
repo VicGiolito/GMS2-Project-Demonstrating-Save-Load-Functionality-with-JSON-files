@@ -1,8 +1,14 @@
 
+/*
+
+
+*/
 
 function scr_build_action_buttons(pc_struct_id){
 	
-	var actions_ar = [];
+	//Reset:
+	o_controller.action_button_ar = -1;
+	o_controller.action_button_ar = [];
 	
 	#region Add our 'basic' attack depending upon the first valid weapon we find equipped, if any:
 		
@@ -29,7 +35,7 @@ function scr_build_action_buttons(pc_struct_id){
 			
 			var abil_enum = scr_return_basic_wep_abil_enum_from_wep_type(wep_type_enum);
 			
-			array_push(actions_ar, abil_enum);
+			array_push(o_controller.action_button_ar, abil_enum);
 		}
 		
 	#endregion
@@ -45,7 +51,7 @@ function scr_build_action_buttons(pc_struct_id){
 			
 			if is_struct(char_struct) && char_struct.char_stats_ar[char_stats.char_team_enum] == char_team.neutral {
 				if is_array(char_struct.inv_ar) && array_length(char_struct.inv_ar)	> 0 {
-					array_push(actions_ar, ability.trade_with_npc);	
+					array_push(o_controller.action_button_ar, ability.trade_with_npc);	
 				}
 			}
 		}
@@ -53,12 +59,22 @@ function scr_build_action_buttons(pc_struct_id){
 	
 	#endregion
 	
-	//Iterate through our actions_ar, instantiating action_button instances as we go:
-	var ar_len = array_length(actions_ar);
+	//Iterate through our action_button_ar, instantiating action_button instances as we go:
+	var ar_len = array_length(o_controller.action_button_ar), abil_enum_, button_h = sprite_get_height(spr_action_button);
 	
 	for(var i = 0; i < ar_len; i++){ 
 		
+		abil_enum_ = o_controller.action_button_ar[i];
 		
-		
+		with(instance_create_layer(action_button_origin_x, action_button_origin_y+(button_h*i), "layer_action_buttons", o_action_button)) {
+			
+			ab_title = "undefined";
+			
+			ab_tooltip = "undefined";
+			
+			ab_abil_enum = abil_enum_;
+			
+			abil_struct_id = global.abil_ar[ab_abil_enum];
+		}
 	}
 }

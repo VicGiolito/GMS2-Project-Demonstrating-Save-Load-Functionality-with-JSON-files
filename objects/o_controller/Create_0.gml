@@ -238,7 +238,18 @@ mouse_item_original_char = -1; //will contain the struct_id of the character the
 
 adjacent_pcs_for_inv_ar = -1; //Used as an array for defining our local party when inv screen is open, so we can only pass items to adjacent pcs.
 
-draw_inv_for_load_once = true; //Also calls scr_setup_items_on_ground_boxes() when it's var is switched at the end of the draw_gui event
+//draw_inv_for_load_once is used to define several position-type instance vars in our o_con draw gui event before our game starts; we deliberately start
+//our game_state in access_inv for one frame for this reason.
+//Also calls scr_setup_items_on_ground_boxes() and scr_build_action_buttons() when it's var is switched at the end of the draw_gui event
+draw_inv_for_load_once = true; 
+
+action_button_origin_x = 0;
+action_button_origin_y = 0;
+
+action_button_ar = -1;
+
+global.tooltip_hover_count = 0;
+global.tooltip_hover_max = 2000000; // 2 seconds in microseconds
 
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 

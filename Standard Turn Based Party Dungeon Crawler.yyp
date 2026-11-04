@@ -74,6 +74,8 @@
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Prompts","folderPath":"folders/Sprites/Prompts.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Tile Sets","folderPath":"folders/Tile Sets.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Timelines","folderPath":"folders/Timelines.yy",},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Debug or GUI objects","folderPath":"folders/Objects/Debug or GUI objects.yy",},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Action Buttons","folderPath":"folders/Objects/Action Buttons.yy",},
   ],
   "IncludedFiles": [],
   "isEcma": false,

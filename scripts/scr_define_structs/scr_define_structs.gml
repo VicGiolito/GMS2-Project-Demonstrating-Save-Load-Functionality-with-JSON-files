@@ -1522,6 +1522,74 @@
 	
 	#endregion
 	
+	#region Ability
+	
+	function Ability(ability_enum) constructor {
+		
+		abil_enum = ability_enum;
+		
+		abil_min_dmg = 0;
+		abil_max_dmg = 0;
+
+		abil_to_hit_mod = 0;
+		
+		char_min_dmg = 0;
+		char_max_dmg = 0;
+		
+		char_to_hit_mod = 0;
+		
+		abil_name_str = "undefined";
+		abil_tooltip_str = "undefined";
+		
+		//Also updates the abil_tooltip_str for this struct:
+		define_abil_char_stats = function(char_struct_id) {
+			
+			switch(abil_enum) {
+				case ability.arcane_bolt:
+					char_min_dmg = char_struct_id.char_stats_ar[char_stats.cur_int];
+					char_max_dmg = char_struct_id.char_stats_ar[char_stats.cur_int];
+					
+					char_to_hit_mod = char_struct_id.char_stats_ar[char_stats.cur_int] / 2;
+					
+					abil_tooltip_str = $"Fires a single bolt of arcane energy at a target.\nMin-Max Dmg: Min: ({abil_min_dmg})+intelligence*1({char_min_dmg}); Max: ({abil_max_dmg})+intelligence * 1 ({char_max_dmg}) = {abil_min_dmg+char_min_dmg} - {abil_max_dmg+char_max_dmg}.\nAccuracy: intelligence / 2 ({char_to_hit_mod}) = {char_to_hit_mod}.";
+				break;
+				
+				case ability.trade_with_npc:
+					abil_tooltip_str = "Trade with an adjacent friendly NPC.";
+				break;
+			}
+		}
+		
+		reset_abil_char_stats = function() {
+			
+			char_min_dmg = 0;
+			char_max_dmg = 0;
+			char_to_hit_mod = 0;
+			
+			abil_tooltip_str = "undefined";
+		}
+		
+		switch(abil_enum) {
+			
+			case ability.arcane_bolt:
+				
+				abil_name_str = "ARCANE BOLT";
+				
+				abil_min_dmg = 1;
+				abil_max_dmg = 2;
+				
+				abil_to_hit_mod = 1;
+				
+			break;
+			
+			default:
+				show_debug_message($"Ability struct constructor for ability with ability_enum: {ability_enum}, ability_enum not captured by switch-case. For now, that's expected; I haven't bothered to flesh out every one.");
+			break;
+		}
+	}
+	
+	#endregion
+	
 	#region DEFUNCT - Loot drop (container for items in the world) - items simply belong to an array in the grid cell instead - or they exist in player inventory - only in those 2 places.
 	
 	/*

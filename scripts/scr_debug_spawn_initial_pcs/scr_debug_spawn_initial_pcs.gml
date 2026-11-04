@@ -43,15 +43,19 @@ function scr_debug_spawn_initial_pcs(dungeon_enum_int){
 					}
 					
 					//Debug: add many items to backpack to test the scroll feature:
-					
+					var repeat_val = 0;
 					repeat(global.max_backpack_slots_per_page+6) {
 						//Add ran items:
 						//var item_struct_in_inv = new Item(irandom_range(item_enum.wep_axe_two_hand_rusty, item_enum.misc_gold_necklace), floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
 						//Add light weight items:
-						var item_struct_in_inv = new Item(item_enum.misc_gold_necklace, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true);
+						var item_qual = irandom_range(item_quality.crude, item_quality.excellent);
+						if repeat_val == 0 item_qual = item_quality.cursed;
+						var item_struct_in_inv = new Item(item_enum.misc_gold_necklace, floor_num_int, dungeon_enum_int, pc_grid_x, pc_grid_y, true, item_qual);
 						
 						array_push(pc_struct_id.inv_ar, item_struct_in_inv);
 						pc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += item_struct_in_inv.weight_val;
+						
+						repeat_val++;
 					}
 					
 					//Debug: add just a few ran items to backpack just for testing purposes:

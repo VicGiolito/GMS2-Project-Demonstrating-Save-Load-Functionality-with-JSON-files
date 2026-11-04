@@ -319,7 +319,9 @@ global.cur_game_state == game_state.view_bio {
 		var stat_bar_h = cur_char_stat_bar_h;
 		var stat_bar_origin_x = portrait_offset_x, stat_bar_origin_y = char_spr_h+portrait_offset_y;
 		var stat_bar_frame_offset = stat_bar_h / 2, stat_cur_val, stat_max_val;
-	
+		
+		var stat_bar_num = 1;
+		
 		repeat(4) {
 		
 			stat_cur = stat_i;
@@ -349,6 +351,15 @@ global.cur_game_state == game_state.view_bio {
 		
 			//Iterate our stat_bar_origin_y
 			stat_bar_origin_y += stat_bar_h+stat_bar_frame_offset;
+			
+			//Define our action_button_origin_x and y; this works because we run the draw_gui event before calling scr_build_action_buttons at the end of this
+			//event with draw_inv_for_load_once, when game first starts
+			if stat_bar_num == 4 {
+				action_button_origin_x = stat_bar_origin_x;
+				action_button_origin_y = stat_bar_origin_y+stat_bar_h+stat_bar_frame_offset+(sprite_get_height(spr_action_button) / 2);
+			}
+			
+			stat_bar_num++;
 		}
 	}
 	
@@ -636,7 +647,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			i++;
 			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Slashing: {char.char_stats_ar[char_stats.cur_res_slashing]}%",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
-			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Piercing: {char.char_stats_ar[char_stats.cur_res_slashing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Piercing: {char.char_stats_ar[char_stats.cur_res_piercing]}%",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
 			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Arcane: {char.char_stats_ar[char_stats.cur_res_arcane]}%",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
@@ -650,7 +661,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			i++;
 			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Light: {char.char_stats_ar[char_stats.cur_res_light]}%",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
-			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dark: {char.char_stats_ar[char_stats.cur_res_fire]}%",txt_c,txt_c,txt_c,txt_c,1);
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dark: {char.char_stats_ar[char_stats.cur_res_dark]}%",txt_c,txt_c,txt_c,txt_c,1);
 			i++;
 		}
 		
@@ -721,6 +732,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			//Draw with inv_bg transparency:
 			draw_set_alpha(global.inv_screen_alpha);
 			
+			//Change bg color if item is cursed:
+			var cursed_bool = false;
+			if lower_box_item_struct_id.item_quality_enum == item_quality.cursed cursed_bool = true;
+			if cursed_bool bg_c = c_purple;
+			
 			//Draw bg:
 			draw_rectangle_color(lower_box_origin_x, lower_box_origin_y, lower_box_origin_x+lower_box_w, 
 			lower_box_origin_y+lower_box_h, bg_c, bg_c, bg_c, bg_c, false);
@@ -768,6 +784,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			//Denote the type of item box we are looking at:
 			draw_text(lb_stat_origin_x, lb_stat_origin_y, $"VIEWING ITEM:");
 			i++;
+			if cursed_bool {
+				//Draw cursed text:	
+				draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"CURSED!",c_red,c_red,c_red,c_red,1);
+				i++;
+			}
 			//Name:
 			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"{lower_box_item_struct_id.item_name}");
 			i++;
@@ -867,6 +888,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 				
 				var bg_c = c_gray;
 				var inner_frame_c = c_white;
+				
+				//Change bg color if item is cursed:
+				var cursed_bool = false;
+				if comparison_equipped_item.item_quality_enum == item_quality.cursed cursed_bool = true;
+				if cursed_bool bg_c = c_purple;
 		
 				var upper_box_origin_x = items_on_ground_box_x+items_on_ground_box_w+(inv_slot_w);
 				var upper_box_origin_y = lower_box_origin_y-lower_box_h;
@@ -905,6 +931,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 				//Denote the type of item box we are looking at:
 				draw_text(upper_stat_origin_x, upper_stat_origin_y, $"EQUIPPED ITEM:");
 				i++;
+				if cursed_bool {
+					//Draw cursed text:	
+					draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"CURSED!",c_red,c_red,c_red,c_red,1);
+					i++;
+				}
 				//Name:
 				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"{comparison_equipped_item.item_name}");
 				i++;
@@ -1042,11 +1073,16 @@ if global.cur_game_state == game_state.access_inv && draw_inv_for_load_once {
 	global.cur_game_state = game_state.main;
 	items_on_ground_ar = -1;
 	if is_struct(global.cur_char) {
+		
+		//Setup items on ground for the first time:
 		items_on_ground_ar = -1;
 		items_on_ground_ar = scr_build_items_on_ground_ar(global.cur_char);
 		if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
 			scr_setup_items_on_ground_boxes();
 		}
+		
+		//Setup action buttons for the first time:
+		scr_build_action_buttons(global.cur_char);
 	}
 }
 

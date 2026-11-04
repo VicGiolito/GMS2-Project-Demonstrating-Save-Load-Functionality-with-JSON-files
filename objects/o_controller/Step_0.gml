@@ -668,61 +668,74 @@ else if global.cur_game_state == game_state.access_inv {
 				
 				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
 					
-					var slot_enum_lifted_from = inv_slot_inst.inv_slot_type;
+					//Only allow unequip if the item isn't cursed:
+					if inv_slot_inst.contents_id.item_quality_enum != item_quality.cursed {
 					
-					//Swap -1 with inv_slot item struct:
-					global.mouse_struct_item = inv_slot_inst.contents_id;
-					inv_slot_inst.contents_id = -1;
+						var slot_enum_lifted_from = inv_slot_inst.inv_slot_type;
 					
-					//Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
-					mouse_item_original_char = global.cur_char;
-					mouse_item_original_index = inv_slot_inst.slot_ind;
-					mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
-					mouse_item_original_ar = global.cur_char.equip_slot_ar;
+						//Swap -1 with inv_slot item struct:
+						global.mouse_struct_item = inv_slot_inst.contents_id;
+						inv_slot_inst.contents_id = -1;
 					
-					//Adjust array:
-					global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = -1;
-					scr_equip_or_unequip_item(global.cur_char, global.mouse_struct_item, false);
-					global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
+						//Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
+						mouse_item_original_char = global.cur_char;
+						mouse_item_original_index = inv_slot_inst.slot_ind;
+						mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
+						mouse_item_original_ar = global.cur_char.equip_slot_ar;
 					
-					//Important! We need to change the is_in_inv boolean var of the item_struct to == false, otherwise this
-					//item will continue to appear as being in this char's inventory, if it was set to true:
-					global.mouse_struct_item.is_in_inv = false;
+						//Adjust array:
+						global.cur_char.equip_slot_ar[inv_slot_inst.slot_ind] = -1;
+						scr_equip_or_unequip_item(global.cur_char, global.mouse_struct_item, false);
+						global.cur_char.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val; //Reduce CC
 					
-					//If this was a 2 handed item, we also need to adjust the opposite hand slot:
-					if global.mouse_struct_item.is_two_hand {
+						//Important! We need to change the is_in_inv boolean var of the item_struct to == false, otherwise this
+						//item will continue to appear as being in this char's inventory, if it was set to true:
+						global.mouse_struct_item.is_in_inv = false;
+					
+						//If this was a 2 handed item, we also need to adjust the opposite hand slot:
+						if global.mouse_struct_item.is_two_hand {
 						
-						//Empty left hand:
-						if slot_enum_lifted_from == inv_slot.rh {
-							global.cur_char.equip_slot_ar[inv_slot.lh] = -1;
-							//Find left hand o_inv_slot:
-							var lh_inv_slot_inst_id;
-							for(var i = 0; i < instance_number(o_inv_slot); i++) {
-								var inst_id = instance_find(o_inv_slot, i);
+							//Empty left hand:
+							if slot_enum_lifted_from == inv_slot.rh {
+								global.cur_char.equip_slot_ar[inv_slot.lh] = -1;
+								//Find left hand o_inv_slot:
+								var lh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var inst_id = instance_find(o_inv_slot, i);
 								
-								if inst_id.inv_slot_type == inv_slot.lh {
-									lh_inv_slot_inst_id = inst_id;
-									break;
+									if inst_id.inv_slot_type == inv_slot.lh {
+										lh_inv_slot_inst_id = inst_id;
+										break;
+									}
 								}
+								lh_inv_slot_inst_id.contents_id = -1;
 							}
-							lh_inv_slot_inst_id.contents_id = -1;
-						}
 						
-						//Empty right hand:
-						else if slot_enum_lifted_from == inv_slot.lh {
-							global.cur_char.equip_slot_ar[inv_slot.rh] = -1;
-							//Find right hand o_inv_slot:
-							var rh_inv_slot_inst_id;
-							for(var i = 0; i < instance_number(o_inv_slot); i++) {
-								var inst_id = instance_find(o_inv_slot, i);
+							//Empty right hand:
+							else if slot_enum_lifted_from == inv_slot.lh {
+								global.cur_char.equip_slot_ar[inv_slot.rh] = -1;
+								//Find right hand o_inv_slot:
+								var rh_inv_slot_inst_id;
+								for(var i = 0; i < instance_number(o_inv_slot); i++) {
+									var inst_id = instance_find(o_inv_slot, i);
 								
-								if inst_id.inv_slot_type == inv_slot.rh {
-									rh_inv_slot_inst_id = inst_id;
-									break;
+									if inst_id.inv_slot_type == inv_slot.rh {
+										rh_inv_slot_inst_id = inst_id;
+										break;
+									}
 								}
+								rh_inv_slot_inst_id.contents_id = -1;
 							}
-							rh_inv_slot_inst_id.contents_id = -1;
 						}
+					}
+					
+					//Draw purple box, show message:
+					else {
+						var inv_slot_spr_w = inv_slot_inst.sprite_width, inv_slot_spr_h = inv_slot_inst.sprite_height;
+						
+						scr_indicate_error_section(inv_slot_inst.x-inv_slot_spr_w/2,inv_slot_inst.y-inv_slot_spr_h/2,inv_slot_inst.sprite_width,inv_slot_inst.sprite_height,c_purple,false,true);
+						
+						scr_create_status_message(mx,my,"ITEM IS CURSED!\nYOU CAN'T REMOVE IT!", c_red, true, true);
 					}
 				}	
 				
@@ -1116,9 +1129,6 @@ else if global.cur_game_state == game_state.access_inv {
 		}
 	}
 	
-	
-	
-	
 	#endregion
 	
 }
@@ -1166,43 +1176,80 @@ else if global.cur_game_state == game_state.main  {
 	
 	#endregion
 	
-	#region Iterate through our items_on_ground_ar (Items on ground):
+	#region Interact with GUI buttons while in the main game state:
 	
-	var scroll_inst = collision_point(win_mouse_x, win_mouse_y, o_items_on_ground_scroll_button, false, true);
+	var button_inst = collision_point(win_mouse_x, win_mouse_y, [o_items_on_ground_scroll_button, o_action_button], false, true);
+	
+	//Tooltip interactions: increase hover count, display tooltip if applicable:
+	if button_inst != noone {
 		
-	if scroll_inst != noone && mouse_check_button_released(mb_left) && global.wait {
+		global.tooltip_hover_count += delta_time;
+		
+		if global.tooltip_hover_count > global.tooltip_hover_max {
+				
+		}
+	}
+	
+	//We are not hovering over any applicable button or stat instance...
+	else {
+		global.tooltip_hover_count = 0;
+	}
+	
+	//lmb click interactions
+	if button_inst != noone && mouse_check_button_released(mb_left) && global.wait {
 		
 		scr_reset_wait(1);
 		
-		var scroll_left_bool = false; //scroll right
+		#region Iterate through our items_on_ground_ar (Items on ground):
 		
-		//This is a left scroll button....
-		if scroll_inst.scroll_left {
-			scroll_left_bool = true; //scroll left (backwards)
-		}
+		if button_inst.object_index == o_items_on_ground_scroll_button {
 		
-		var valid_scroll = false;
+			var scroll_left_bool = false; //scroll right
+		
+			//This is a left scroll button....
+			if button_inst.scroll_left {
+				scroll_left_bool = true; //scroll left (backwards)
+			}
+		
+			var valid_scroll = false;
 				
-		if scroll_left_bool {
-			if items_on_ground_min_range - global.max_items_on_ground_in_box >= 0 {
-				items_on_ground_min_range -= global.max_items_on_ground_in_box;
-				items_on_ground_max_range -= global.max_items_on_ground_in_box;
-				valid_scroll = true;
+			if scroll_left_bool {
+				if items_on_ground_min_range - global.max_items_on_ground_in_box >= 0 {
+					items_on_ground_min_range -= global.max_items_on_ground_in_box;
+					items_on_ground_max_range -= global.max_items_on_ground_in_box;
+					valid_scroll = true;
+				}
 			}
-		}
-		//Scrolling right:
-		else {
-			if items_on_ground_min_range + global.max_items_on_ground_in_box < array_length(items_on_ground_ar)+(global.max_items_on_ground_in_box * 2) {
-				items_on_ground_min_range += global.max_items_on_ground_in_box;
-				items_on_ground_max_range += global.max_items_on_ground_in_box;	
-				valid_scroll = true;
+			//Scrolling right:
+			else {
+				if items_on_ground_min_range + global.max_items_on_ground_in_box < array_length(items_on_ground_ar)+(global.max_items_on_ground_in_box * 2) {
+					items_on_ground_min_range += global.max_items_on_ground_in_box;
+					items_on_ground_max_range += global.max_items_on_ground_in_box;	
+					valid_scroll = true;
+				}
 			}
+		
+			//Rebuild o_items_on_ground slot instances:
+			if valid_scroll scr_setup_items_on_ground_boxes();	
 		}
 		
-		//Rebuild o_items_on_ground slot instances:
-		if valid_scroll scr_setup_items_on_ground_boxes();	
+		#endregion
+		
+		#region Interact with the o_action_buttons:
+	
+		else if button_inst.object_index == o_action_button {
+			
+			
+			
+		}
+	
+		#endregion
 	}
 			
+	
+	
+	
+	
 	#endregion
 	
 	#region Debug placeholder: save game:

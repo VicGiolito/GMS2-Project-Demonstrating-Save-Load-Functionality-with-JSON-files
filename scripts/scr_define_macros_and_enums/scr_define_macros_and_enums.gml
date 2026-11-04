@@ -402,6 +402,13 @@ function scr_define_macros_and_enums(){
 	
 	#endregion
 	
+	//Ability_type enum - used in conjunction with our Ability structs, and elsewhere
+	enum ability_type {
+		activate, //R
+		passive, //passive, but not all chars have it
+		universal //passive, but all chars have it
+	}
+	
 	//Enum for pc char classes:
 	enum char_class {
 		roderick, //ranger
