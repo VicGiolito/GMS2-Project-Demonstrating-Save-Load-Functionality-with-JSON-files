@@ -10,6 +10,8 @@ function scr_build_action_buttons(pc_struct_id){
 	o_controller.action_button_ar = -1;
 	o_controller.action_button_ar = [];
 	
+	if instance_exists(o_action_button) instance_destroy(o_action_button);
+	
 	#region Add our 'basic' attack depending upon the first valid weapon we find equipped, if any:
 		
 		var wep_type_enum = undefined;
@@ -40,6 +42,17 @@ function scr_build_action_buttons(pc_struct_id){
 		
 	#endregion
 	
+	#region Go through our char's ability_ar and add any abilities that are unique to them:
+	
+	if is_array(pc_struct_id.ability_ar) && array_length(pc_struct_id.ability_ar) > 0 {
+		
+		for(var i = 0; i < array_length(pc_struct_id.ability_ar); i++) {
+			array_push(o_controller.action_button_ar, pc_struct_id.ability_ar[i]);	
+		}
+	}
+	
+	#endregion
+	
 	#region Check to see if we're adjacent to a valid NPC we can trade with:
 	
 	var char_struct;
@@ -60,7 +73,8 @@ function scr_build_action_buttons(pc_struct_id){
 	#endregion
 	
 	//Iterate through our action_button_ar, instantiating action_button instances as we go:
-	var ar_len = array_length(o_controller.action_button_ar), abil_enum_, button_h = sprite_get_height(spr_action_button);
+	var ar_len = array_length(o_controller.action_button_ar), abil_enum_;
+	var button_h = sprite_get_height(spr_action_button);
 	
 	for(var i = 0; i < ar_len; i++){ 
 		
@@ -70,11 +84,29 @@ function scr_build_action_buttons(pc_struct_id){
 			
 			ab_title = "undefined";
 			
-			ab_tooltip = "undefined";
+			tooltip_str = "undefined";
 			
 			ab_abil_enum = abil_enum_;
 			
 			abil_struct_id = global.abil_ar[ab_abil_enum];
+			
+			//Some of our structs use stats from a char struct to define their own stats; therefore we have a few methods we call
+			//to further define their stats based upon the char_struct_id provided:
+			if is_struct(abil_struct_id) && abil_struct_id.struct_enum == struct_type.ability {
+			
+				if is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character {
+				
+					ab_title = abil_struct_id.abil_name_str;
+				
+					//Defines the char_* variables for the entire struct! So you need to make sure to reset them afterwards:
+					abil_struct_id.define_abil_char_stats(global.cur_char);
+				
+					tooltip_str = abil_struct_id.abil_tooltip_str;
+				
+					//Reset them:
+					abil_struct_id.reset_abil_char_stats();
+				}
+			}
 		}
 	}
 }

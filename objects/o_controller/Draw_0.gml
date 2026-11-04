@@ -13,7 +13,7 @@
 //will be drawn over those structs that are higher in this event
 
 if global.cur_game_state == game_state.main || global.cur_game_state == game_state.pc_plotting_path || 
-global.cur_game_state == game_state.access_inv {
+global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.select_trader {
 	
 	#region Go through our building team arrays and display buildings AND loot drops that are on the current floor:
 	

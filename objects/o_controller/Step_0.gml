@@ -518,6 +518,10 @@ else if global.cur_game_state == game_state.access_inv {
 			
 			global.cur_game_state = game_state.main;
 			
+			//Reset:
+			global.trading_with_npc_struct_id = -1; 
+			if instance_exists(o_npc_backpack_slot) instance_destroy(o_npc_backpack_slot);
+			
 			if instance_exists(o_inv_slot) instance_destroy(o_inv_slot);
 			if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
 			if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
@@ -1135,9 +1139,79 @@ else if global.cur_game_state == game_state.access_inv {
 
 #endregion
 
+#region game_state == SELECT_TRADER:
+
+else if global.cur_game_state == game_state.select_trader {
+	
+	if keyboard_check_released(vk_escape) && global.wait {
+		scr_reset_wait(1);
+		global.cur_game_state = game_state.main;
+	}
+	
+	var mouse_room_x = mouse_x, mouse_room_y = mouse_y;
+	
+	//Make sure we're within grid bounds:
+	if mouse_room_x >= 0 && mouse_room_x <= room_width && mouse_room_y >= 0 && mouse_room_y <= room_height {
+		//Make sure we're within grid bounds:
+		if scr_check_within_grid_bounds(global.master_level_ar[global.cur_dungeon_ind][global.cur_floor_ind][GRID_INST], mouse_room_x, mouse_room_y) {
+			
+			if mouse_check_button_released(mb_left) && global.wait {
+			
+				scr_reset_wait(1);
+				
+				var pos_ar = [];
+				pos_ar = scr_convert_room_to_grid_coords(pos_ar, mouse_room_x, mouse_room_y);
+				var mouse_grid_x = pos_ar[0], mouse_grid_y = pos_ar[1];
+				pos_ar = -1;
+			
+				var npc_trader_struct_id = scr_return_struct_id(mouse_grid_x, mouse_grid_y, struct_type.character, global.cur_floor_ind, global.cur_dungeon_ind);
+			
+				if is_struct(npc_trader_struct_id) && npc_trader_struct_id.struct_enum == struct_type.character && npc_trader_struct_id.char_stats_ar[char_stats.char_team_enum] == char_team.neutral {
+				
+					if is_array(npc_trader_struct_id.inv_ar) && array_length(npc_trader_struct_id.inv_ar) > 0 {
+						
+						//Define trading_with_npc_struct_id - the whole point of this game state:
+						global.trading_with_npc_struct_id = npc_trader_struct_id;
+					
+						//Transition to inv screen otherwise as normal:
+						//Reset our backpack ranges whenever we're entering the access_inv screen from main:
+						items_in_backpack_min_range = 0;
+						items_in_backpack_max_range = global.max_backpack_slots_per_page-1;
+			
+						scr_setup_equip_slots(global.cur_char);
+						scr_setup_backpack_slots(global.cur_char, "o_con step event: 'I' keypress.");	
+			
+						//If there are no items on the ground at this location, we still want to create the items_on_the_ground 
+						//boxes, so that this char can easily drop their items on the ground if they want:
+						var create_items_on_ground_boxes = false;
+						if !is_array(items_on_ground_ar) create_items_on_ground_boxes = true;
+						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) == 0 create_items_on_ground_boxes = true;
+						if create_items_on_ground_boxes {
+							scr_setup_items_on_ground_boxes();	
+						}
+			
+						//Define our adjacent_pcs_for_inv_ar to enforce passing item restriction to only adjacent pcs:
+						adjacent_pcs_for_inv_ar = -1;
+						adjacent_pcs_for_inv_ar = [];
+						adjacent_pcs_for_inv_ar = scr_define_adjacent_structs_ar(global.cur_char, struct_type.character, char_team.pc);
+			
+						scr_setup_npc_backpack_slots(global.trading_with_npc_struct_id);
+					}
+					else {
+						scr_create_status_message(mouse_room_x, mouse_room_y, $"{npc_trader_struct_id.char_stats_ar[char_stats.name]}\n HAS NOTHING TO TRADE!", c_red, true, true);	
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+#endregion
+
 #region Game state == main:
 
-else if global.cur_game_state == game_state.main  {
+else if global.cur_game_state == game_state.main {
 	
 	var win_mouse_x = window_mouse_get_x(), win_mouse_y = window_mouse_get_y();
 	
@@ -1176,24 +1250,9 @@ else if global.cur_game_state == game_state.main  {
 	
 	#endregion
 	
-	#region Interact with GUI buttons while in the main game state:
+	#region Interact with GUI buttons while in the main game state - including the ACTION BUTTONS:
 	
 	var button_inst = collision_point(win_mouse_x, win_mouse_y, [o_items_on_ground_scroll_button, o_action_button], false, true);
-	
-	//Tooltip interactions: increase hover count, display tooltip if applicable:
-	if button_inst != noone {
-		
-		global.tooltip_hover_count += delta_time;
-		
-		if global.tooltip_hover_count > global.tooltip_hover_max {
-				
-		}
-	}
-	
-	//We are not hovering over any applicable button or stat instance...
-	else {
-		global.tooltip_hover_count = 0;
-	}
 	
 	//lmb click interactions
 	if button_inst != noone && mouse_check_button_released(mb_left) && global.wait {
@@ -1239,7 +1298,16 @@ else if global.cur_game_state == game_state.main  {
 	
 		else if button_inst.object_index == o_action_button {
 			
+			#region Logic for different action buttons:
 			
+			if button_inst.ab_abil_enum == ability.trade_with_npc {
+				
+				global.cur_game_state = game_state.select_trader;
+				
+				scr_create_status_message(win_mouse_x, win_mouse_y, "SELECT AN ADJACENT NPC\nTO TRADE WITH\nESCAPE KEY RETURNS TO MAIN GAME STATE", c_white, true, true);
+			}
+			
+			#endregion
 			
 		}
 	
@@ -1742,6 +1810,9 @@ else if global.cur_game_state == game_state.main  {
 						if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
 							scr_setup_items_on_ground_boxes();
 						}
+						
+						//Reset/rebuild action buttons:
+						scr_build_action_buttons(global.cur_char);
 						
 						/*
 						global.cur_game_state = game_state.pc_plotting_path;

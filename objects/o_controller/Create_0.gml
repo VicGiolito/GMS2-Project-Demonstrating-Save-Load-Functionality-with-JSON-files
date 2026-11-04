@@ -9,7 +9,9 @@ global.reset_full_screen_count = global.reset_full_screen_val;
 
 global.inv_screen_alpha = .7;
 
-global.trading_with_neutral_bool = false;
+global.trading_with_npc_struct_id = -1;
+
+global.portrait_scale = 2; //Used for drawing the current_char portrait sprites and our NPC character portraits larger, possibly other things
 
 //global.version_num = "v002"; //We could incoporate this into save filenames at some point to ensure we're always testing the correct version.
 
@@ -248,8 +250,40 @@ action_button_origin_y = 0;
 
 action_button_ar = -1;
 
+#region Tooltip vars:
+
 global.tooltip_hover_count = 0;
 global.tooltip_hover_max = 2000000; // 2 seconds in microseconds
+
+tooltip_max_box_w   = 512;   // max_tooltip_w, hard cap on box width
+tooltip_padding     = 8;     // space between box edge and text
+tooltip_screen_margin  = 4;     // minimum gap between box and screen edge
+tooltip_cursor_offset = 16; // gap between cursor and box
+tooltip_fnt = fnt_std_16;
+draw_set_font(tooltip_fnt);
+tooltip_line_h  = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ");    // line separation for draw_text_ext
+draw_set_font(global.default_fnt);
+
+tooltip_origin_x = 0;
+tooltip_origin_y = 0;
+tooltip_box_w = 0;
+tooltip_box_h = 0;
+tooltip_txt_origin_x = 0;
+tooltip_txt_origin_y = 0;
+tooltip_inner_frame = tooltip_padding;
+
+calc_tooltip_vars_once = true;
+
+#endregion
+
+npc_trader_bg_origin_x = 0;
+npc_trader_bg_origin_y = 0;
+npc_trader_bg_w = 0;
+npc_trader_bg_h = 0;
+npc_portrait_origin_x = 0;
+npc_portrait_origin_y = 0;
+
+define_positional_vars_once = true; //Used in o_con draw gui event to define various positional variables at the very start of the game.
 
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 

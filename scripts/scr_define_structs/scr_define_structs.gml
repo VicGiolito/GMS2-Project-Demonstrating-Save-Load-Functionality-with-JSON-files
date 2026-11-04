@@ -140,6 +140,11 @@
 
 				char_spr_str = "spr_pc_wizard";
 				char_portrait_spr_str = "spr_pc_wizard";
+				
+				//Starting abilities:
+				ability_ar = [];
+				array_push(ability_ar, ability.arcane_bolt);
+				
 			break;
 			
 			case char_class.roderick:
@@ -1526,12 +1531,17 @@
 	
 	function Ability(ability_enum) constructor {
 		
+		struct_enum = struct_type.ability;
+		
 		abil_enum = ability_enum;
 		
 		abil_min_dmg = 0;
 		abil_max_dmg = 0;
-
 		abil_to_hit_mod = 0;
+		abil_range = 0;
+		
+		abil_mana_cost = 0;
+		abil_stam_cost = 0;
 		
 		char_min_dmg = 0;
 		char_max_dmg = 0;
@@ -1541,7 +1551,11 @@
 		abil_name_str = "undefined";
 		abil_tooltip_str = "undefined";
 		
-		//Also updates the abil_tooltip_str for this struct:
+		abil_type_enum = -1;
+		
+		//Also updates the abil_tooltip_str for this struct; the only reason we do this here in this method rather than
+		//the constructor's switch case below is because A.) We some stats in the tooltip that must be defined in conjunction
+		//with the char's stats first; and B.) consistency:
 		define_abil_char_stats = function(char_struct_id) {
 			
 			switch(abil_enum) {
@@ -1549,9 +1563,9 @@
 					char_min_dmg = char_struct_id.char_stats_ar[char_stats.cur_int];
 					char_max_dmg = char_struct_id.char_stats_ar[char_stats.cur_int];
 					
-					char_to_hit_mod = char_struct_id.char_stats_ar[char_stats.cur_int] / 2;
+					char_to_hit_mod = floor(char_struct_id.char_stats_ar[char_stats.cur_int] / 2);
 					
-					abil_tooltip_str = $"Fires a single bolt of arcane energy at a target.\nMin-Max Dmg: Min: ({abil_min_dmg})+intelligence*1({char_min_dmg}); Max: ({abil_max_dmg})+intelligence * 1 ({char_max_dmg}) = {abil_min_dmg+char_min_dmg} - {abil_max_dmg+char_max_dmg}.\nAccuracy: intelligence / 2 ({char_to_hit_mod}) = {char_to_hit_mod}.";
+					abil_tooltip_str = $"Fires a single bolt of arcane energy at an enemy target within a range of {abil_range}.\nMana cost: {abil_mana_cost}.\nStamina cost: {abil_stam_cost}.\nMin-Max Dmg: Min: ({abil_min_dmg}) + (intelligence * 1)({char_min_dmg}); Max: ({abil_max_dmg}) + (intelligence * 1)({char_max_dmg}) = {abil_min_dmg+char_min_dmg} - {abil_max_dmg+char_max_dmg}.\nAccuracy: (intelligence / 2)(rounded down)({char_to_hit_mod}) = {char_to_hit_mod}.";
 				break;
 				
 				case ability.trade_with_npc:
@@ -1573,12 +1587,23 @@
 			
 			case ability.arcane_bolt:
 				
+				abil_type_enum = ability_type.activate;
+				
 				abil_name_str = "ARCANE BOLT";
 				
 				abil_min_dmg = 1;
 				abil_max_dmg = 2;
-				
 				abil_to_hit_mod = 1;
+				abil_range = 9;
+				
+				abil_mana_cost = 7;
+				abil_stam_cost = 1;
+				
+			break;
+			
+			case ability.trade_with_npc:
+
+				abil_name_str = "TRADE WITH NPC";
 				
 			break;
 			

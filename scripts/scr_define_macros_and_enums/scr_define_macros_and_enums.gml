@@ -31,6 +31,7 @@ function scr_define_macros_and_enums(){
 		character,
 		item,
 		building,
+		ability,
 		loot_drop, //not a struct type in use
 		any //If this struct_type is used for a argument with scr_return_struct_id, and ANY struct is found in that inst_grid location, then that grid returns FALSE 
 		

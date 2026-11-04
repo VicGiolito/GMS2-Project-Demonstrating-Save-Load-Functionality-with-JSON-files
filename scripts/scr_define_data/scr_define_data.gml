@@ -21,6 +21,6 @@ function scr_define_data(){
 	global.abil_ar = array_create(ability.total_ablities);
 	
 	for(var i = 0; i < array_length(global.abil_ar); i++) {
-		global.abil_ar = new Ability(i);	
+		global.abil_ar[i] = new Ability(i);	
 	}
 }

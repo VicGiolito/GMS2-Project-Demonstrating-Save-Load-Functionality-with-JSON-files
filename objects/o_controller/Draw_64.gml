@@ -2,7 +2,7 @@
 
 var win_w = window_get_width(), win_h = window_get_height();
 
-var gui_display_w = display_get_gui_width(); //, gui_display_h = display_get_gui_height();
+var gui_display_w = display_get_gui_width(), gui_display_h = display_get_gui_height();
 
 //Mouse gui vars:
 var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
@@ -270,7 +270,7 @@ else if global.cur_game_state == game_state.load_game_list {
 
 //Using if instead of else-if opens up possibilities of this drawn in the background if other different, separate game states are used:
 if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || 
-global.cur_game_state == game_state.view_bio {
+global.cur_game_state == game_state.view_bio || global.cur_game_state == game_state.select_trader {
 	
 	//Draw current char, if applicable:
 	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
@@ -296,7 +296,8 @@ global.cur_game_state == game_state.view_bio {
 			mouse_within_portrait = true;
 			spr_frame = 1;
 		}
-
+		
+		//Draw cur_char portrait sprite:
 		draw_sprite_ext(cur_char_spr,spr_frame,spr_origin_x,spr_origin_y,cur_char_scale,cur_char_scale,0,c_white,1);
 		
 		scr_center_font_align();
@@ -355,7 +356,7 @@ global.cur_game_state == game_state.view_bio {
 			//Define our action_button_origin_x and y; this works because we run the draw_gui event before calling scr_build_action_buttons at the end of this
 			//event with draw_inv_for_load_once, when game first starts
 			if stat_bar_num == 4 {
-				action_button_origin_x = stat_bar_origin_x;
+				action_button_origin_x = stat_bar_origin_x+(sprite_get_width(spr_action_button) / 2);
 				action_button_origin_y = stat_bar_origin_y+stat_bar_h+stat_bar_frame_offset+(sprite_get_height(spr_action_button) / 2);
 			}
 			
@@ -366,7 +367,7 @@ global.cur_game_state == game_state.view_bio {
 	//Now draw the rest of our party:
 	if is_array(global.pc_team_ar) && array_length(global.pc_team_ar) > 0 {
 		
-		var portrait_scale = 2;
+		var portrait_scale = global.portrait_scale;
 		var char_struct;
 		var char_spr_w = sprite_get_width(asset_get_index("spr_pc_ogre"))*portrait_scale;
 		var char_spr_h = sprite_get_height(asset_get_index("spr_pc_ogre"))*portrait_scale;
@@ -412,10 +413,14 @@ global.cur_game_state == game_state.view_bio {
 					//Only allow change if char is in the same dungeon (they always should be):
 					if char_struct.cur_dungeon_ind == global.cur_dungeon_ind {
 						
-						//We've clicked on a char in our party rather than the specified trader, reset game state (game state was main):
+						//We've clicked on a char in our party rather than the specified trader, reset game state (game state was previously main):
 						if global.cur_game_state = game_state.select_trader {
 							global.cur_game_state = game_state.main;	
 						}
+						
+						//If we were trading with an npc trader -- we're not now!
+						global.trading_with_npc_struct_id = -1; 
+						if instance_exists(o_npc_backpack_slot) instance_destroy(o_npc_backpack_slot);
 						
 						//Change g.cur_char
 						global.cur_char = char_struct;
@@ -470,8 +475,11 @@ global.cur_game_state == game_state.view_bio {
 							if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box);
 							if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
 						}
-					}
-				}
+						
+						//If this is the main game state and we've just changed the g.cur_char, we need to define their action buttons:
+						scr_build_action_buttons(global.cur_char);
+					} //End of if this char's cur_dungeon_ind == global.cur_dungeon_ind
+				} //End of lmb click
 				
 				#endregion
 			} 
@@ -680,23 +688,54 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	draw_text_color(pg_num_x, pg_num_y,$"Page {pg_count}",c_white, c_white, c_white,c_white, 1);
 	
 	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
-	head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
-	head_slot_y = bg_y+inner_frame_offset+slot_h/2;
+	if define_positional_vars_once {
+		define_positional_vars_once = false;
+		
+		head_slot_x = bg_max_w-bg_offset_x-(slot_w*2) //bg_offset_x+(bg_max_w / 2);
+		head_slot_y = bg_y+inner_frame_offset+slot_h/2;
 	
-	items_on_ground_inner_frame_offset = inner_frame_offset;
+		items_on_ground_inner_frame_offset = inner_frame_offset;
 	
-	//This is the ORIGIN X AND Y for the BACKGROUND of the items on ground box... It is NOT the origin of the o_items_on_ground_boxes
-	//themselves; THAT is defined in scr_setup_items_on_ground_boxes
-	items_on_ground_box_y = bg_y+bg_max_h+(cur_char_stat_bar_h*3);
-	items_on_ground_box_x = bg_offset_x;
+		//This is the ORIGIN X AND Y for the BACKGROUND of the items on ground box... It is NOT the origin of the o_items_on_ground_boxes
+		//themselves; THAT is defined in scr_setup_items_on_ground_boxes
+		items_on_ground_box_y = bg_y+bg_max_h+(cur_char_stat_bar_h*3);
+		items_on_ground_box_x = bg_offset_x;
 	
-	//These are used to draw the BACKGROUND of the items on ground box
-	items_on_ground_box_w = (inner_frame_offset*2)+slot_w*9;
-	items_on_ground_box_h = (inner_frame_offset*2)+slot_h*3;
+		//These are used to draw the BACKGROUND of the items on ground box
+		items_on_ground_box_w = (inner_frame_offset*2)+slot_w*9;
+		items_on_ground_box_h = (inner_frame_offset*2)+slot_h*3;
 	
-	//Instance position vars for our o_items_on_ground_scroll_button:
-	items_on_ground_scroll_button_x = items_on_ground_box_x+items_on_ground_box_w;
-	items_on_ground_scroll_button_y = items_on_ground_box_y;
+		//Instance position vars for our o_items_on_ground_scroll_button:
+		items_on_ground_scroll_button_x = items_on_ground_box_x+items_on_ground_box_w;
+		items_on_ground_scroll_button_y = items_on_ground_box_y;
+	
+		//Define instance positional vars for when we're drawing our NPC trader screen:
+		npc_trader_bg_origin_x = gui_display_w-bg_offset_x-bg_max_w;
+		npc_trader_bg_origin_y = bg_y;
+		npc_trader_bg_w = bg_max_w;
+		npc_trader_bg_h = bg_max_h;
+		//We'll just use one of the pc char sprite portraits as a reference:
+		var portrait_spr_w = sprite_get_width(spr_pc_ogre), potrait_spr_h = sprite_get_height(spr_pc_ogre);
+		
+		var portrait_offset = 16;
+		npc_portrait_origin_x = gui_display_w-portrait_offset-(portrait_spr_w + portrait_spr_w / 2);
+		npc_portrait_origin_y = potrait_spr_h+portrait_offset;
+	}
+	
+	//If applicable, draw our NPC portrait sprite and NPC trading background:
+	if is_struct(global.trading_with_npc_struct_id) && global.trading_with_npc_struct_id.struct_enum == struct_type.character {
+		
+		//Draw npc trader portrait:
+		draw_sprite_ext(asset_get_index(global.trading_with_npc_struct_id.char_spr_str), 0, npc_portrait_origin_x, npc_portrait_origin_y, global.portrait_scale, global.portrait_scale, 0, c_white, 1);
+		
+		//Draw BG:
+		var trader_bg_c = c_gray;
+		draw_rectangle_color(npc_trader_bg_origin_x,npc_trader_bg_origin_y,
+		npc_trader_bg_origin_x+npc_trader_bg_w, npc_trader_bg_origin_y+npc_trader_bg_h,
+		trader_bg_c,trader_bg_c,trader_bg_c,trader_bg_c,1);
+		
+		//Draw their relevant stats along the left hand side:
+	}
 	
 	#region Logic for display info boxes in middle of screen:
 		
@@ -1092,12 +1131,59 @@ if global.cur_game_state == game_state.access_inv && draw_inv_for_load_once {
 
 if global.mouse_struct_item != -1 && is_struct(global.mouse_struct_item) && global.mouse_struct_item.struct_enum == struct_type.item {
 	
-	var win_mouse_x = device_mouse_x_to_gui(0), win_mouse_y = device_mouse_y_to_gui(0);
-	
-	draw_sprite(asset_get_index(global.mouse_struct_item.item_spr_str), 0, win_mouse_x, win_mouse_y);
+	draw_sprite(asset_get_index(global.mouse_struct_item.item_spr_str), 0, mouse_win_x, mouse_win_y);
 }
 
+#region - Tooltip interactions: increase hover count, display tooltip if applicable:
 
+//Note: I want this code here because I want our tooltips drawn over everything else:
 
+if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_bio ||
+global.cur_game_state == game_state.view_stats {
+	
+	var button_inst = collision_point(mouse_win_x, mouse_win_y, [o_action_button], false, true);
+	
+	if button_inst != noone {
+		
+		global.tooltip_hover_count += delta_time;
+		
+		if (global.tooltip_hover_count > global.tooltip_hover_max) {
+			
+			//Define tool tip positional and dimension vars:
+			if calc_tooltip_vars_once {
+				scr_calc_tooltip_layout(button_inst.tooltip_str);
+				calc_tooltip_vars_once = false; //reset
+			}
+			
+			//Actually draw our tooltip:
+			draw_set_font(tooltip_fnt); 
+			
+			var tooltip_c = c_gray, tooltip_frame_c = c_white;
+			//Draw gray bg:
+		    draw_rectangle_color(tooltip_origin_x, tooltip_origin_y,
+		                   tooltip_origin_x + tooltip_w, tooltip_origin_y + tooltip_h, 
+						   tooltip_c, tooltip_c, tooltip_c, tooltip_c, false);
+			//Draw white frame:
+			draw_rectangle_color(tooltip_origin_x, tooltip_origin_y,
+		                   tooltip_origin_x + tooltip_w, tooltip_origin_y + tooltip_h, 
+						   tooltip_frame_c, tooltip_frame_c, tooltip_frame_c, tooltip_frame_c, true);
+			
+			draw_text_ext(tooltip_txt_origin_x, tooltip_txt_origin_y, button_inst.tooltip_str, tooltip_line_h, tooltip_w - tooltip_padding * 2 );
+			
+		    // your draw_text_ext() call using tooltip_text_origin_x/y
+		    // wrap width to use: tooltip_w - tooltip_pad * 2
+			draw_set_font(global.default_fnt);
+		}
+	}
+	
+	//We are not hovering over any applicable button or stat instance...
+	else {
+		//Reset:
+		global.tooltip_hover_count = 0;
+		calc_tooltip_vars_once = true;
+	}
+}
+
+#endregion
 
 
