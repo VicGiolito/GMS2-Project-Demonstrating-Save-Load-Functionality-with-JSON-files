@@ -4,6 +4,9 @@ game_set_speed(60, gamespeed_fps);
 
 randomize();
 
+global.resource_food = 10;
+global.resource_gold = 0;
+
 global.reset_full_screen_val = game_get_speed(gamespeed_fps)*4;
 global.reset_full_screen_count = global.reset_full_screen_val;
 
@@ -11,7 +14,8 @@ global.inv_screen_alpha = .7;
 
 global.trading_with_npc_struct_id = -1;
 
-global.portrait_scale = 2; //Used for drawing the current_char portrait sprites and our NPC character portraits larger, possibly other things
+global.portrait_scale = 4; //Used for drawing the current_char portrait sprites and our NPC character portraits larger, possibly other things
+global.pc_party_portrait_scale = 2;
 
 //global.version_num = "v002"; //We could incoporate this into save filenames at some point to ensure we're always testing the correct version.
 
@@ -23,6 +27,8 @@ global.ds_map_revealed_items_on_grid = -1; //Is used as a ds_map in scr_update_v
 global.cur_game_state = game_state.start_menu;
 
 global.default_fnt = fnt_std_12;
+
+global.char_stats_fnt = fnt_std_16;
 
 global.intended_game_spd = game_get_speed(gamespeed_fps);
 
@@ -215,6 +221,9 @@ global.max_backpack_slots_per_page = 24;
 items_in_backpack_min_range = 0;
 items_in_backpack_max_range = global.max_backpack_slots_per_page-1; //subtract 1 b.c array index starts at 0
 
+items_in_npc_backpack_min_range = 0;
+items_in_npc_backpack_max_range = global.max_backpack_slots_per_page-1; //subtract 1 b.c array index starts at 0
+
 items_on_ground_box_x = 0;
 items_on_ground_box_y = 0;
 
@@ -222,6 +231,7 @@ items_on_ground_box_w = 0;
 items_on_ground_box_h = 0;
 
 cur_stat_page_int = 0;
+cur_npc_or_enemy_stat_page_int = 0;
 
 items_on_ground_ar = -1;
 
@@ -282,6 +292,9 @@ npc_trader_bg_w = 0;
 npc_trader_bg_h = 0;
 npc_portrait_origin_x = 0;
 npc_portrait_origin_y = 0;
+
+npc_backpack_slot_x = 0;
+npc_backpack_slot_y = 0;
 
 define_positional_vars_once = true; //Used in o_con draw gui event to define various positional variables at the very start of the game.
 

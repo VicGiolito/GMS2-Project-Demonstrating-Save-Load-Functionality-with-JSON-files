@@ -55,7 +55,7 @@ function scr_build_action_buttons(pc_struct_id){
 	
 	#region Check to see if we're adjacent to a valid NPC we can trade with:
 	
-	var char_struct;
+	var char_struct, valid_trader_found = false;
 	
 	for(var yy = pc_struct_id.char_grid_y-1; yy <= pc_struct_id.char_grid_y+1; yy++) {
 		for(var xx = pc_struct_id.char_grid_x-1; xx <= pc_struct_id.char_grid_x+1; xx++) {
@@ -65,9 +65,12 @@ function scr_build_action_buttons(pc_struct_id){
 			if is_struct(char_struct) && char_struct.char_stats_ar[char_stats.char_team_enum] == char_team.neutral {
 				if is_array(char_struct.inv_ar) && array_length(char_struct.inv_ar)	> 0 {
 					array_push(o_controller.action_button_ar, ability.trade_with_npc);	
+					valid_trader_found = true;
+					break;
 				}
 			}
 		}
+		if valid_trader_found break;
 	}
 	
 	#endregion

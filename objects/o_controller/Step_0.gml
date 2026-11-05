@@ -526,7 +526,10 @@ else if global.cur_game_state == game_state.access_inv {
 			if instance_exists(o_backpack_slot) instance_destroy(o_backpack_slot);
 			if instance_exists(o_drop_item_slot) instance_destroy(o_drop_item_slot);
 			if instance_exists(o_scroll_button) instance_destroy(o_scroll_button);
+			if instance_exists(o_npc_trader_scroll_button) instance_destroy(o_npc_trader_scroll_button);
 			if instance_exists(o_cycle_stats_button) instance_destroy(o_cycle_stats_button);
+			if instance_exists(o_cycle_npc_stats_button) instance_destroy(o_cycle_npc_stats_button);
+			
 			cur_stat_page_int = 0; //reset
 		
 			//'Tidy' up our arrays global.cur_char.inv_ar and our corresponding array of instances in the g.master_level_ar,
@@ -575,19 +578,28 @@ else if global.cur_game_state == game_state.access_inv {
 		
 		scr_reset_wait(1);
 		
-		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button, o_cycle_stats_button], false, true);
+		var inv_slot_inst = collision_point(mx, my, [o_inv_slot, o_backpack_slot, o_items_on_ground_box, o_scroll_button, o_items_on_ground_scroll_button, o_cycle_stats_button, o_npc_backpack_slot, o_npc_trader_scroll_button], false, true);
 		
 		if inv_slot_inst != noone {
 			
 			#region Iterate through cycle_stats ranges:
 			
-			if inv_slot_inst.object_index == o_cycle_stats_button {
+			if inv_slot_inst.object_index == o_cycle_stats_button || inv_slot_inst.object_index == o_cycle_npc_stats_button{
 				
-				//Increment:
-				cur_stat_page_int++;
+				if inv_slot_inst.object_index == o_cycle_stats_button {
+					//Increment:
+					cur_stat_page_int++;
 				
-				//Cap:
-				if cur_stat_page_int > 1 cur_stat_page_int = 0;	
+					//Cap:
+					if cur_stat_page_int > 1 cur_stat_page_int = 0;	
+				}
+				else {
+					//Increment:
+					cur_npc_or_enemy_stat_page_int++;
+				
+					//Cap:
+					if cur_npc_or_enemy_stat_page_int > 1 cur_npc_or_enemy_stat_page_int = 0;	
+				}
 			}
 			
 			#endregion
@@ -625,6 +637,43 @@ else if global.cur_game_state == game_state.access_inv {
 		
 				//Rebuild o_items_on_ground slot instances:
 				if valid_scroll scr_setup_backpack_slots(global.cur_char, $"o_con step event: access_inv game state: click scroll button to scroll through g.cur_char backpack slots, iterating through inv_ar.");
+			}
+			
+			#endregion
+			
+			#region Iterate through our g.trader_npc_struct_id backpack
+			
+			else if inv_slot_inst.object_index == o_npc_trader_scroll_button {
+				
+				d($"LMB CLICK DETECTED FOR O_SCROLL_BUTTON!!! o_scroll button inst_id: {inv_slot_inst}, its scroll left var: {inv_slot_inst.scroll_left}");
+		
+				var scroll_left_bool = false; //scroll right
+		
+				//This is a left scroll button....
+				if inv_slot_inst.scroll_left {
+					scroll_left_bool = true; //scroll left (backwards)
+				}
+		
+				var valid_scroll = false;
+				
+				if scroll_left_bool {
+					if items_in_npc_backpack_min_range - global.max_backpack_slots_per_page >= 0 {
+						items_in_npc_backpack_min_range -= global.max_backpack_slots_per_page;
+						items_in_backpack_max_range -= global.max_backpack_slots_per_page;
+						valid_scroll = true;
+					}
+				}
+				//Scrolling right:
+				else {
+					if items_in_npc_backpack_min_range + global.max_backpack_slots_per_page < array_length(global.cur_char.inv_ar) * 3 {
+						items_in_npc_backpack_min_range += global.max_backpack_slots_per_page;
+						items_in_backpack_max_range += global.max_backpack_slots_per_page;	
+						valid_scroll = true;
+					}
+				}
+		
+				//Rebuild o_items_on_ground slot instances:
+				if valid_scroll scr_setup_npc_backpack_slots(global.trading_with_npc_struct_id, $"o_con step event: access_inv game state: click scroll button to scroll through g.trading_with_npc_struct_id backpack slots, iterating through inv_ar.");
 			}
 			
 			#endregion
@@ -1031,7 +1080,8 @@ else if global.cur_game_state == game_state.access_inv {
 					if passed_cc_check {
 						
 						//We first need to check and make sure that the size of the global.cur_char.inv_ar can actually 
-						//accomodate the inv_slot_inst.slot_ind index position:
+						//accomodate the inv_slot_inst.slot_ind index position; not actually necessary anymore with GMS2,
+						//so long as you're using array write functions, but still good practice:
 						if inv_slot_inst.slot_ind >= array_length(global.cur_char.inv_ar) {
 							array_resize(global.cur_char.inv_ar, inv_slot_inst.slot_ind);
 						}
@@ -1130,6 +1180,85 @@ else if global.cur_game_state == game_state.access_inv {
 			
 			#endregion
 			
+			#region o_npc_backpack_slot interactions:
+			
+			else if inv_slot_inst.object_index == o_npc_backpack_slot {
+				
+				#region Pickup item from o_npc_backpack_slot - BUY
+				
+				if global.mouse_struct_item == -1 && is_struct(inv_slot_inst.contents_id) {
+					
+					//Determine if we have sufficient gold for this purchase:
+					if global.resource_gold >= (inv_slot_inst.contents_id.gold_value*2) {
+						
+						//Reduce gold resource:
+						global.resource_gold -= inv_slot_inst.contents_id.gold_value*2;
+						
+						//Swap -1 with inv_slot item struct:
+						global.mouse_struct_item = inv_slot_inst.contents_id;
+						inv_slot_inst.contents_id = -1;
+					
+						//DEFUNCT - not in use - Set mouse_item_original_* vars for if user exits inventory while still floating item in mouse:
+						mouse_item_original_char = global.cur_char;
+						mouse_item_original_index = inv_slot_inst.slot_ind;
+						mouse_item_original_inv_type = inv_slot_inst.inv_slot_type;
+						mouse_item_original_ar = global.cur_char.inv_ar;
+					
+						//Adjust array:
+						global.trading_with_npc_struct_id.inv_ar[inv_slot_inst.slot_ind] = -1;
+						//Reduce CC
+						global.trading_with_npc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] -= global.mouse_struct_item.weight_val;
+					
+						//Important! We need to change the is_in_inv var of the item_struct to = false, b.c if it was set to true,
+						//it will still show as being in that char's inventory, even if on the ground
+						global.mouse_struct_item.is_in_inv = false;
+						
+						scr_create_status_message(mx, my, $"BOUGHT FOR {global.mouse_struct_item.gold_value*2} GOLD!",c_blue, true,true);
+					}
+					
+					else {
+						scr_create_status_message(mx,my,"NOT ENOUGH GOLD!", c_red,true,true);	
+					}
+				}
+				
+				#endregion
+				
+				#region Drop item into o_npc_backpack_slot - SELL:
+				
+				else if is_struct(global.mouse_struct_item) && inv_slot_inst.contents_id == -1 {
+				
+					//Give us the corresponding gold:
+					global.resource_gold += global.mouse_struct_item.gold_value;
+				
+					//We first need to check and make sure that the size of the global.cur_char.inv_ar can actually 
+					//accomodate the inv_slot_inst.slot_ind index position; not actually necessary anymore with GMS2,
+					//so long as you're using array write functions, but still good practice:
+					if inv_slot_inst.slot_ind >= array_length(global.trading_with_npc_struct_id.inv_ar) {
+						array_resize(global.trading_with_npc_struct_id.inv_ar, inv_slot_inst.slot_ind);
+					}
+						
+					//Swap positions:
+					inv_slot_inst.contents_id = global.mouse_struct_item;
+					global.mouse_struct_item = -1;
+						
+					//Add weight to cc:
+					global.trading_with_npc_struct_id.char_stats_ar[char_stats.cur_carrying_capacity] += inv_slot_inst.contents_id.weight_val;
+						
+					//Update array:
+					global.trading_with_npc_struct_id.inv_ar[inv_slot_inst.slot_ind] = inv_slot_inst.contents_id;
+						
+					//Important! We need to change the is_in_inv boolean var of the item_struct to == true, otherwise this
+					//item will continue to appear as being on the ground, if it was false:
+					inv_slot_inst.contents_id.is_in_inv = true;
+					
+					scr_create_status_message(mx, my, $"SOLD FOR {inv_slot_inst.contents_id.gold_value} GOLD!",c_green, true,true);
+				}
+				
+				#endregion
+				
+			}
+			
+			#endregion
 		}
 	}
 	
@@ -1169,6 +1298,9 @@ else if global.cur_game_state == game_state.select_trader {
 				if is_struct(npc_trader_struct_id) && npc_trader_struct_id.struct_enum == struct_type.character && npc_trader_struct_id.char_stats_ar[char_stats.char_team_enum] == char_team.neutral {
 				
 					if is_array(npc_trader_struct_id.inv_ar) && array_length(npc_trader_struct_id.inv_ar) > 0 {
+						
+						//Change game state to access_inv:
+						global.cur_game_state = game_state.access_inv
 						
 						//Define trading_with_npc_struct_id - the whole point of this game state:
 						global.trading_with_npc_struct_id = npc_trader_struct_id;
@@ -1304,7 +1436,13 @@ else if global.cur_game_state == game_state.main {
 				
 				global.cur_game_state = game_state.select_trader;
 				
-				scr_create_status_message(win_mouse_x, win_mouse_y, "SELECT AN ADJACENT NPC\nTO TRADE WITH\nESCAPE KEY RETURNS TO MAIN GAME STATE", c_white, true, true);
+				//Destroy our buttons:
+				if instance_exists(o_action_button) instance_destroy(o_action_button);
+				
+				//We must also destroy our items_on_ground_ar and instances, if they exist:
+				items_on_ground_ar = -1;
+				if instance_exists(o_items_on_ground_box) instance_destroy(o_items_on_ground_box);
+				if instance_exists(o_items_on_ground_scroll_button) instance_destroy(o_items_on_ground_scroll_button);
 			}
 			
 			#endregion
@@ -1757,6 +1895,9 @@ else if global.cur_game_state == game_state.main {
 					if is_array(items_on_ground_ar) && array_length(items_on_ground_ar) > 0 {
 						scr_setup_items_on_ground_boxes();
 					}
+					
+					//Also build action buttons:
+					scr_build_action_buttons(global.cur_char);
 					
 					//Update los and enemy visibility:
 					if !global.debug_disable_los {

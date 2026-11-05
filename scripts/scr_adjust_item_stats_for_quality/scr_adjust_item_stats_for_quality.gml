@@ -15,14 +15,16 @@ function scr_adjust_item_stats_for_quality(item_struct_id){
 	//For now, all items receive a gradation +/- 1 for each level of quality away from average, but only if there was an actual stat there to begin with 
 	//(the stat != 0); we also don't let their values modify below 0, unless it's a cursed item:
 	var crude_mod = -2, poor_mod = -1, good_mod = 1, excellent_mod = 2, cursed_mod = -10;
+	var cursed_gold_val_mod = -.5, crude_gold_val_mod = -.25, poor_gold_val_mod = -.1, good_gold_val_mod = .35, excellent_gold_val_mod = .65;
 	
 	var stat_mod = 0;
 	
-	if item_quality_enum_ == item_quality.cursed stat_mod = cursed_mod;
-	else if item_quality_enum_ == item_quality.crude stat_mod = crude_mod;
-	else if item_quality_enum_ == item_quality.poor stat_mod = poor_mod;
-	else if item_quality_enum_ == item_quality.good stat_mod = good_mod;
-	else if item_quality_enum_ == item_quality.excellent stat_mod = excellent_mod;
+	//Define stat mod, adjust gold_value:
+	if item_quality_enum_ == item_quality.cursed { stat_mod = cursed_mod; item_struct_id.gold_value += item_struct_id.gold_value*cursed_gold_val_mod; ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.crude { stat_mod = crude_mod; item_struct_id.gold_value += item_struct_id.gold_value*crude_gold_val_mod; ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.poor { stat_mod = poor_mod; item_struct_id.gold_value += item_struct_id.gold_value*poor_gold_val_mod; ceil(item_struct_id.gold_value);}
+	else if item_quality_enum_ == item_quality.good { stat_mod = good_mod; item_struct_id.gold_value += item_struct_id.gold_value*good_gold_val_mod; ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.excellent { stat_mod = excellent_mod; item_struct_id.gold_value += item_struct_id.gold_value*excellent_gold_val_mod; ceil(item_struct_id.gold_value); }
 	
 	//min dmg:
 	if item_struct_id.min_dmg != 0 {

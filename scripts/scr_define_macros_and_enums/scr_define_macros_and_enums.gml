@@ -92,6 +92,7 @@ function scr_define_macros_and_enums(){
 		hands, //should stay as last equipment slot
 		backpack,
 		item_on_ground,
+		npc_backpack,
 		total_inv_slots
 	}
 	

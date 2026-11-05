@@ -40,29 +40,32 @@ if window_has_focus() == true { //We use this because the window_get_width() and
 
 #region Main game state - Draw debug information:
 
-if global.cur_game_state == game_state.main {
-	
+ //Indicates game has already been loaded for the first time
+if draw_inv_for_load_once == false {
+
 	var title_y_buff = 16;
 
 	scr_center_font_align();
 	
-	draw_text(gui_display_w / 2, title_y_buff,string($"\"{global.cur_save_filename_str}\" - "+level_type_str_ar[global.cur_dungeon_ind])+", FLOOR: "+string(global.cur_floor_ind) );
-
+	draw_text(display_get_gui_width() / 2, title_y_buff, $"\"{global.cur_save_filename_str}\" - {level_type_str_ar[global.cur_dungeon_ind]}, FLOOR: {global.cur_floor_ind}, FOOD: {global.resource_food}, GOLD: {global.resource_gold}" );
+	d("DRAWING GLOBAL RESOURCES!");
 	scr_reset_font_align();
-
+	
+	/* //Defunct:
 	var debug_str = "UNDEFINED";
 	if debug_place_struct == 1 debug_str = "CHAR";
 	else if debug_place_struct == 2 debug_str = "ITEM";
 	else if debug_place_struct == 3 debug_str = "BUILDING";
 
 	draw_text_color(gui_display_w-256,24,"PLACING: "+string(debug_str),c_white,c_white,c_white,c_white,1);
+	*/
 }
 
 #endregion
 
 #region Start Menu or debug_new_game_choose_maze_type:
 
-else if global.cur_game_state == game_state.start_menu || global.cur_game_state == game_state.debug_new_game_choose_maze_type {
+if global.cur_game_state == game_state.start_menu || global.cur_game_state == game_state.debug_new_game_choose_maze_type {
 	
 	//Blacken the screen:
 	draw_rectangle_color(0,0,win_w,win_h,c_black,c_black,c_black,c_black,false);
@@ -275,10 +278,9 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 	//Draw current char, if applicable:
 	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 	
-		var cur_char_scale = 4;
 		var cur_char_spr = asset_get_index(global.cur_char.char_spr_str);
-		var char_spr_w = sprite_get_width(cur_char_spr)*cur_char_scale;
-		var char_spr_h = sprite_get_height(cur_char_spr)*cur_char_scale;
+		var char_spr_w = sprite_get_width(cur_char_spr)*global.portrait_scale;
+		var char_spr_h = sprite_get_height(cur_char_spr)*global.portrait_scale;
 		var half_char_spr_w = char_spr_w / 2, half_char_spr_h = char_spr_h / 2;
 	
 		var portrait_offset_x = 16, portrait_offset_y = 16;
@@ -298,7 +300,7 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 		}
 		
 		//Draw cur_char portrait sprite:
-		draw_sprite_ext(cur_char_spr,spr_frame,spr_origin_x,spr_origin_y,cur_char_scale,cur_char_scale,0,c_white,1);
+		draw_sprite_ext(cur_char_spr,spr_frame,spr_origin_x,spr_origin_y,global.portrait_scale,global.portrait_scale,0,c_white,1);
 		
 		scr_center_font_align();
 		var stat_c = c_black, icon_w = sprite_get_width(spr_generic_icon), icon_h = sprite_get_height(spr_generic_icon);
@@ -367,7 +369,7 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 	//Now draw the rest of our party:
 	if is_array(global.pc_team_ar) && array_length(global.pc_team_ar) > 0 {
 		
-		var portrait_scale = global.portrait_scale;
+		var portrait_scale = global.pc_party_portrait_scale;
 		var char_struct;
 		var char_spr_w = sprite_get_width(asset_get_index("spr_pc_ogre"))*portrait_scale;
 		var char_spr_h = sprite_get_height(asset_get_index("spr_pc_ogre"))*portrait_scale;
@@ -571,7 +573,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	if global.cur_char != -1 && is_struct(global.cur_char) {
 		
-		draw_set_font(fnt_std_16);
+		draw_set_font(global.char_stats_fnt);
 		
 		var txt_origin_x = bg_offset_x*2, txt_origin_y = bg_y+bg_offset_y, txt_c = c_white;
 		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
@@ -715,26 +717,148 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		npc_trader_bg_w = bg_max_w;
 		npc_trader_bg_h = bg_max_h;
 		//We'll just use one of the pc char sprite portraits as a reference:
-		var portrait_spr_w = sprite_get_width(spr_pc_ogre), potrait_spr_h = sprite_get_height(spr_pc_ogre);
+		var scaled_portrait_spr_w = sprite_get_width(spr_pc_ogre)*global.portrait_scale;
+		var scaled_potrait_spr_h = sprite_get_height(spr_pc_ogre)*global.portrait_scale;
 		
 		var portrait_offset = 16;
-		npc_portrait_origin_x = gui_display_w-portrait_offset-(portrait_spr_w + portrait_spr_w / 2);
-		npc_portrait_origin_y = potrait_spr_h+portrait_offset;
+		npc_portrait_origin_x = gui_display_w-portrait_offset-(scaled_portrait_spr_w/2);
+		npc_portrait_origin_y = (scaled_potrait_spr_h/2)+portrait_offset;
+		
+		npc_backpack_slot_x = npc_trader_bg_origin_x+npc_trader_bg_w-(bg_offset_x+(slot_w*4));
+		npc_backpack_slot_y = bg_y+inner_frame_offset+slot_h/2;;
 	}
 	
-	//If applicable, draw our NPC portrait sprite and NPC trading background:
+	//If applicable, draw our NPC (or, later, enemy) portrait sprite and NPC (or, later, enemy) inventory background:
 	if is_struct(global.trading_with_npc_struct_id) && global.trading_with_npc_struct_id.struct_enum == struct_type.character {
 		
 		//Draw npc trader portrait:
 		draw_sprite_ext(asset_get_index(global.trading_with_npc_struct_id.char_spr_str), 0, npc_portrait_origin_x, npc_portrait_origin_y, global.portrait_scale, global.portrait_scale, 0, c_white, 1);
 		
+		var trader_bg_c = c_gray, inner_frame_offset = 8, inner_frame_c = c_white;
+		
+		draw_set_alpha(global.inv_screen_alpha);
+		
 		//Draw BG:
-		var trader_bg_c = c_gray;
 		draw_rectangle_color(npc_trader_bg_origin_x,npc_trader_bg_origin_y,
 		npc_trader_bg_origin_x+npc_trader_bg_w, npc_trader_bg_origin_y+npc_trader_bg_h,
-		trader_bg_c,trader_bg_c,trader_bg_c,trader_bg_c,1);
+		trader_bg_c,trader_bg_c,trader_bg_c,trader_bg_c,false);
 		
-		//Draw their relevant stats along the left hand side:
+		//Draw inner frame:
+		draw_rectangle_color(npc_trader_bg_origin_x+inner_frame_offset,npc_trader_bg_origin_y+inner_frame_offset,
+		npc_trader_bg_origin_x+npc_trader_bg_w-inner_frame_offset, npc_trader_bg_origin_y+npc_trader_bg_h-inner_frame_offset,
+		inner_frame_c,inner_frame_c,inner_frame_c,inner_frame_c, true);
+		
+		draw_set_alpha(1);
+		
+		#region Draw relevant stats for our NPC or enemy along the left hand side:
+		
+		draw_set_font(global.char_stats_fnt);
+		
+		var bg_offset_x = 16, bg_offset_y = 16;
+		var txt_origin_x = npc_trader_bg_origin_x+bg_offset_x*2;
+		var txt_origin_y = npc_trader_bg_origin_y+bg_offset_y, txt_c = c_white;
+		var line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), i= 0;
+		var char = global.trading_with_npc_struct_id;
+		
+		if cur_npc_or_enemy_stat_page_int == 0 {
+		
+			//Name, HP, Mana, Stamina, Morale:
+			draw_text_color(txt_origin_x, txt_origin_y,$"{char.char_stats_ar[char_stats.name]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hit Points: {char.char_stats_ar[char_stats.hp_cur]}/{char.char_stats_ar[char_stats.hp_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Mana: {char.char_stats_ar[char_stats.mana_cur]}/{char.char_stats_ar[char_stats.mana_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Stamina: {char.char_stats_ar[char_stats.stam_cur]}/{char.char_stats_ar[char_stats.stam_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Morale: {char.char_stats_ar[char_stats.morale_cur]}/{char.char_stats_ar[char_stats.morale_max]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			//Combat related stats: 
+		
+			//Armor values:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Head Armor: {char.armor_cur_head} / {char.armor_max_head}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Body Armor: {char.armor_cur_body} / {char.armor_max_body}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Hands Armor: {char.armor_cur_hands} / {char.armor_max_hands}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Feet Armor: {char.armor_cur_feet} / {char.armor_max_feet}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+		
+			//melee and ranged to_hit, melee and ranged dmg, 
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Hit: {char.base_melee_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Melee Dmg: {char.base_melee_min_dmg} - {char.base_melee_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Hit: {char.base_ranged_tohit_mod}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ranged Dmg: {char.base_ranged_min_dmg} - {char.base_ranged_max_dmg}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			//Dodge, Crit Chance:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dodge: {char.base_evasion}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crit Chance: {char.cur_crit_chance}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+		
+			//Carrying Capacity and Max:
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"C.C./Max: {char.char_stats_ar[char_stats.cur_carrying_capacity]}/{char.char_stats_ar[char_stats.max_carrying_capacity]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+		}
+		
+		else if cur_stat_page_int == 1 {
+			
+			//Other stats: strength, wisdom, etc.
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Stats:",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Strength: {char.char_stats_ar[char_stats.cur_str]}/{char.char_stats_ar[char_stats.base_str]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Agility: {char.char_stats_ar[char_stats.cur_agil]}/{char.char_stats_ar[char_stats.base_agil]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Constitution: {char.char_stats_ar[char_stats.cur_con]}/{char.char_stats_ar[char_stats.base_con]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Willpower: {char.char_stats_ar[char_stats.cur_will]}/{char.char_stats_ar[char_stats.base_will]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Intelligence: {char.char_stats_ar[char_stats.cur_int]}/{char.char_stats_ar[char_stats.base_int]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Wisdom: {char.char_stats_ar[char_stats.cur_wis]}/{char.char_stats_ar[char_stats.base_wis]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Perception: {char.char_stats_ar[char_stats.cur_per]}/{char.char_stats_ar[char_stats.base_per]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Charisma: {char.char_stats_ar[char_stats.cur_charisma]}/{char.char_stats_ar[char_stats.base_charisma]}",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Resistances:",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			i++; //Space
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Crushing: {char.char_stats_ar[char_stats.cur_res_crushing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Slashing: {char.char_stats_ar[char_stats.cur_res_slashing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Piercing: {char.char_stats_ar[char_stats.cur_res_piercing]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Arcane: {char.char_stats_ar[char_stats.cur_res_arcane]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Poison: {char.char_stats_ar[char_stats.cur_res_poison]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Ice: {char.char_stats_ar[char_stats.cur_res_ice]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Fire: {char.char_stats_ar[char_stats.cur_res_fire]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Shock: {char.char_stats_ar[char_stats.cur_res_shock]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Light: {char.char_stats_ar[char_stats.cur_res_light]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+			draw_text_color(txt_origin_x, txt_origin_y+(line_h*i),$"Dark: {char.char_stats_ar[char_stats.cur_res_dark]}%",txt_c,txt_c,txt_c,txt_c,1);
+			i++;
+		}
+		
+		draw_set_font(global.default_fnt);
+		
+		#endregion
 	}
 	
 	#region Logic for display info boxes in middle of screen:
@@ -1133,6 +1257,24 @@ if global.mouse_struct_item != -1 && is_struct(global.mouse_struct_item) && glob
 	
 	draw_sprite(asset_get_index(global.mouse_struct_item.item_spr_str), 0, mouse_win_x, mouse_win_y);
 }
+
+#region If game_state == select_trader - Draw instructions above mouse for player:
+
+if global.cur_game_state == game_state.select_trader {
+	
+	scr_center_font_align();
+	
+	var instruction_txt = "SELECT ADJACENT\nFRIENDLY NPC";
+	
+	var str_h = string_height(instruction_txt);
+	
+	draw_text_color(mouse_win_x, mouse_win_y-str_h, instruction_txt,c_white,c_white,c_white,c_white,1);
+	
+	scr_reset_font_align();
+	
+}
+
+#endregion
 
 #region - Tooltip interactions: increase hover count, display tooltip if applicable:
 
