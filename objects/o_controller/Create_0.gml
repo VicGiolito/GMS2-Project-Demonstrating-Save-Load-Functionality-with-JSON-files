@@ -30,6 +30,8 @@ global.default_fnt = fnt_std_12;
 
 global.char_stats_fnt = fnt_std_16;
 
+global.default_draw_c = c_white; //This is the DEFAULT COLOR THAT GMS2 USES WITH THE draw_set_color() function.
+
 global.intended_game_spd = game_get_speed(gamespeed_fps);
 
 draw_set_font(global.default_fnt);

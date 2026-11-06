@@ -2,7 +2,7 @@
 
 var win_w = window_get_width(), win_h = window_get_height();
 
-var gui_display_w = display_get_gui_width(), gui_display_h = display_get_gui_height();
+var gui_display_w = display_get_gui_width(); //, gui_display_h = display_get_gui_height();
 
 //Mouse gui vars:
 var mouse_win_x = device_mouse_x_to_gui(0), mouse_win_y = device_mouse_y_to_gui(0);
@@ -47,8 +47,9 @@ if draw_inv_for_load_once == false {
 
 	scr_center_font_align();
 	
-	draw_text(display_get_gui_width() / 2, title_y_buff, $"\"{global.cur_save_filename_str}\" - {level_type_str_ar[global.cur_dungeon_ind]}, FLOOR: {global.cur_floor_ind}, FOOD: {global.resource_food}, GOLD: {global.resource_gold}" );
-	d("DRAWING GLOBAL RESOURCES!");
+	draw_text(gui_display_w / 2, title_y_buff, $"{global.cur_save_filename_str} - {level_type_str_ar[global.cur_dungeon_ind]}, FLOOR: {global.cur_floor_ind}, FOOD: {global.resource_food}, GOLD: {global.resource_gold}" );
+	//d("DRAWING GLOBAL RESOURCES!");
+	
 	scr_reset_font_align();
 	
 	/* //Defunct:
@@ -366,7 +367,8 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 		}
 	}
 	
-	//Now draw the rest of our party:
+	#region Draw the rest of our party - AND logic for clicking on other pc members along the top row:
+	
 	if is_array(global.pc_team_ar) && array_length(global.pc_team_ar) > 0 {
 		
 		var portrait_scale = global.pc_party_portrait_scale;
@@ -543,6 +545,8 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 			stat_bar_origin_x += stat_bar_offset_x;
 		}
 	}
+	
+	#endregion
 	
 } //End of game_state == main
 
@@ -728,7 +732,8 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		npc_backpack_slot_y = bg_y+inner_frame_offset+slot_h/2;;
 	}
 	
-	//If applicable, draw our NPC (or, later, enemy) portrait sprite and NPC (or, later, enemy) inventory background:
+	#region If applicable, draw our NPC (or, later, enemy) portrait sprite and NPC (or, later, enemy) inventory background:
+	
 	if is_struct(global.trading_with_npc_struct_id) && global.trading_with_npc_struct_id.struct_enum == struct_type.character {
 		
 		//Draw npc trader portrait:
@@ -861,6 +866,8 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		#endregion
 	}
 	
+	#endregion
+	
 	#region Logic for display info boxes in middle of screen:
 		
 	var hovered_inst = collision_point(mouse_win_x, mouse_win_y, [o_inv_slot, o_backpack_slot, o_items_on_ground_box], false, true);
@@ -941,11 +948,11 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			var i = 0;
 			
 			//Set text color and font:
-			draw_set_color(c_white);
+			var item_stat_c = c_white;
 			draw_set_font(fnt_std_14);
 			
 			//Denote the type of item box we are looking at:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y, $"VIEWING ITEM:");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y, $"VIEWING ITEM:",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			if cursed_bool {
 				//Draw cursed text:	
@@ -953,38 +960,38 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 				i++;
 			}
 			//Name:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"{lower_box_item_struct_id.item_name}");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"{lower_box_item_struct_id.item_name}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			//Quality:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(lower_box_item_struct_id.item_quality_enum)}");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(lower_box_item_struct_id.item_quality_enum)}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			//Item type:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(lower_box_item_struct_id.item_weapon_type_enum)}");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(lower_box_item_struct_id.item_weapon_type_enum)}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			//Weight:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"WEIGHT: {lower_box_item_struct_id.weight_val}");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"WEIGHT: {lower_box_item_struct_id.weight_val}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			//Value:
-			draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"VALUE: {lower_box_item_struct_id.gold_value}");
+			draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"VALUE: {lower_box_item_struct_id.gold_value}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			i++;
 			
 			//Now we draw different stats depending upon the item type:
 				//Armors:
 			if lower_box_item_struct_id.item_weapon_type_enum >= wep_type.cloth && lower_box_item_struct_id.item_weapon_type_enum <= wep_type.plate {
 				//Protective value:
-				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ARMOR: {lower_box_item_struct_id.base_protect_val}");
+				draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ARMOR: {lower_box_item_struct_id.base_protect_val}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//Evasion:
-				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"EVASION: {lower_box_item_struct_id.evasion_mod}");
+				draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"EVASION: {lower_box_item_struct_id.evasion_mod}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 			}
 				//Weapons:
 			else if lower_box_item_struct_id.item_weapon_type_enum >= wep_type.mace && lower_box_item_struct_id.item_weapon_type_enum <= wep_type.firearm {
 				//Min-max damage:
-				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {lower_box_item_struct_id.min_dmg}-{lower_box_item_struct_id.max_dmg}");
+				draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {lower_box_item_struct_id.min_dmg}-{lower_box_item_struct_id.max_dmg}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//ToHit Mod:
-				draw_text(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {lower_box_item_struct_id.to_hit_mod}");
+				draw_text_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {lower_box_item_struct_id.to_hit_mod}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 			}
 				//Misc: various stat mods:
@@ -996,7 +1003,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 			var item_desc_str = lower_box_item_struct_id.description;
 			var max_str_w = lower_box_w-(inner_frame_offset*4); //We multiply by 4 b.c with draw_text_ext(), if there is no white-space inside of a particularly long word, it will still run over the max-width
 			
-			draw_text_ext(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w);
+			draw_text_ext_color(lb_stat_origin_x, lb_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w,item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			
 			#endregion
 			
@@ -1088,11 +1095,10 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 				var i = 0;
 			
 				//Set text color and font:
-				draw_set_color(c_white);
 				draw_set_font(fnt_std_14);
 			
 				//Denote the type of item box we are looking at:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y, $"EQUIPPED ITEM:");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y, $"EQUIPPED ITEM:",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				if cursed_bool {
 					//Draw cursed text:	
@@ -1100,38 +1106,38 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 					i++;
 				}
 				//Name:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"{comparison_equipped_item.item_name}");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"{comparison_equipped_item.item_name}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//Quality:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(comparison_equipped_item.item_quality_enum)}");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"QUALITY: {scr_convert_item_quality_enum_to_str(comparison_equipped_item.item_quality_enum)}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//Item type:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(comparison_equipped_item.item_weapon_type_enum)}");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"CLASS: {scr_convert_item_type_to_str(comparison_equipped_item.item_weapon_type_enum)}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//Weight:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"WEIGHT: {comparison_equipped_item.weight_val}");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"WEIGHT: {comparison_equipped_item.weight_val}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 				//Value:
-				draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"VALUE: {comparison_equipped_item.gold_value}");
+				draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"VALUE: {comparison_equipped_item.gold_value}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 				i++;
 			
 				//Now we draw different stats depending upon the item type:
 					//Armors:
 				if comparison_equipped_item.item_weapon_type_enum >= wep_type.cloth && comparison_equipped_item.item_weapon_type_enum <= wep_type.plate {
 					//Protective value:
-					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ARMOR: {comparison_equipped_item.base_protect_val}");
+					draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ARMOR: {comparison_equipped_item.base_protect_val}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 					i++;
 					//Evasion:
-					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"EVASION: {comparison_equipped_item.evasion_mod}");
+					draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"EVASION: {comparison_equipped_item.evasion_mod}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 					i++;
 				}
 					//Weapons:
 				else if comparison_equipped_item.item_weapon_type_enum >= wep_type.mace && comparison_equipped_item.item_weapon_type_enum <= wep_type.firearm {
 					//Min-max damage:
-					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {comparison_equipped_item.min_dmg}-{comparison_equipped_item.max_dmg}");
+					draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"MIN-MAX DMG: {comparison_equipped_item.min_dmg}-{comparison_equipped_item.max_dmg}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 					i++;
 					//ToHit Mod:
-					draw_text(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {comparison_equipped_item.to_hit_mod}");
+					draw_text_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), $"ACCURACY MODIFIER: {comparison_equipped_item.to_hit_mod}",item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 					i++;
 				}
 					//Misc: various stat mods:
@@ -1143,13 +1149,12 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 				var item_desc_str = comparison_equipped_item.description;
 				var max_str_w = lower_box_w-(inner_frame_offset*4); //We multiply by 4 b.c with draw_text_ext(), if there is no white-space inside of a particularly long word, it will still run over the max-width
 			
-				draw_text_ext(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w);
+				draw_text_ext_color(upper_stat_origin_x, upper_stat_origin_y+(i*line_h), item_desc_str, line_h, max_str_w,item_stat_c,item_stat_c,item_stat_c,item_stat_c,1);
 			}
 			
 			#endregion
 			
-			//Reset color and font:
-			draw_set_color(c_black);
+			//Reset font:
 			draw_set_font(global.default_fnt);
 		}
 	}

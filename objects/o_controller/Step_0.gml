@@ -555,6 +555,9 @@ else if global.cur_game_state == game_state.access_inv {
 		
 			//Reset adjacent_pcs_for_inv_ar:
 			adjacent_pcs_for_inv_ar = -1;
+			
+			//Need to build our action buttons again:
+			scr_build_action_buttons(global.cur_char);
 		
 			scr_reset_wait(1);
 		}
@@ -1354,6 +1357,9 @@ else if global.cur_game_state == game_state.main {
 		if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 		
 			global.cur_game_state = game_state.access_inv;
+			
+			//Remove action buttons:
+			if instance_exists(o_action_button) instance_destroy(o_action_button);
 			
 			//Reset our backpack ranges whenever we're entering the access_inv screen from main:
 			items_in_backpack_min_range = 0;

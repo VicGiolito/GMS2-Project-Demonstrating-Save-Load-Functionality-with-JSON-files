@@ -5,7 +5,9 @@
 
 */
 
-function scr_adjust_item_stats_for_quality(item_struct_id){
+function scr_adjust_item_stats_for_quality(item_struct_id, called_from_str){
+	
+	d("Entering scr_adjust_item_stats_for_quality, it was called from: {called_from_str}");
 	
 	var item_quality_enum_ = item_struct_id.item_quality_enum;
 	var item_class_ = item_struct_id.item_class;
@@ -20,11 +22,11 @@ function scr_adjust_item_stats_for_quality(item_struct_id){
 	var stat_mod = 0;
 	
 	//Define stat mod, adjust gold_value:
-	if item_quality_enum_ == item_quality.cursed { stat_mod = cursed_mod; item_struct_id.gold_value += item_struct_id.gold_value*cursed_gold_val_mod; ceil(item_struct_id.gold_value); }
-	else if item_quality_enum_ == item_quality.crude { stat_mod = crude_mod; item_struct_id.gold_value += item_struct_id.gold_value*crude_gold_val_mod; ceil(item_struct_id.gold_value); }
-	else if item_quality_enum_ == item_quality.poor { stat_mod = poor_mod; item_struct_id.gold_value += item_struct_id.gold_value*poor_gold_val_mod; ceil(item_struct_id.gold_value);}
-	else if item_quality_enum_ == item_quality.good { stat_mod = good_mod; item_struct_id.gold_value += item_struct_id.gold_value*good_gold_val_mod; ceil(item_struct_id.gold_value); }
-	else if item_quality_enum_ == item_quality.excellent { stat_mod = excellent_mod; item_struct_id.gold_value += item_struct_id.gold_value*excellent_gold_val_mod; ceil(item_struct_id.gold_value); }
+	if item_quality_enum_ == item_quality.cursed { stat_mod = cursed_mod; item_struct_id.gold_value += item_struct_id.gold_value*cursed_gold_val_mod; item_struct_id.gold_value = ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.crude { stat_mod = crude_mod; item_struct_id.gold_value += item_struct_id.gold_value*crude_gold_val_mod; item_struct_id.gold_value = ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.poor { stat_mod = poor_mod; item_struct_id.gold_value += item_struct_id.gold_value*poor_gold_val_mod; item_struct_id.gold_value = ceil(item_struct_id.gold_value);}
+	else if item_quality_enum_ == item_quality.good { stat_mod = good_mod; item_struct_id.gold_value += item_struct_id.gold_value*good_gold_val_mod; item_struct_id.gold_value = ceil(item_struct_id.gold_value); }
+	else if item_quality_enum_ == item_quality.excellent { stat_mod = excellent_mod; item_struct_id.gold_value += item_struct_id.gold_value*excellent_gold_val_mod; item_struct_id.gold_value = ceil(item_struct_id.gold_value); }
 	
 	//min dmg:
 	if item_struct_id.min_dmg != 0 {

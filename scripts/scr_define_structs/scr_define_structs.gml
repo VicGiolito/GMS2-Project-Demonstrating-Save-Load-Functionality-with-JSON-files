@@ -1406,7 +1406,7 @@
 		
 		#endregion
 		
-		scr_adjust_item_stats_for_quality(self);
+		scr_adjust_item_stats_for_quality(self, "item constructor event");
 		
 		//Default values:
 		dura_max = dura_cur;
