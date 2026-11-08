@@ -1,0 +1,56 @@
+
+
+The core problem with this type of game that you've wanted to create for many years (and have many different iterations of) is this:
+	You're trying to combine two different types of genre: solo rogue-like which focuses on exploration and seamlessly transitions into combat; and relatively quick, intense, grid based, tactical, squad-based combat games, like Battle Brothers and others. So pacing is a huge problem.
+	There's a reason games like this don't really exists—usually they focus on one or the other, or may have elements of both, but minimize one to further serve the other. 
+	
+
+Possible solutions:
+
+--FORCE the player at the start of the game, or at the start of each level, to choose one character of each character class (probably 3 total), and then fill every dungeon with all sorts of traps and challenges that only characters of the corresponding class will excel at solving. Or, allow the player, through trial and error, to pick the correct heroes for each level.
+	Try to emulate the Lost Vikings in this regard, 
+	Each character class will
+	Ex:
+	There are certain traps/challenges that only a strength based character can overcome: lifting heavy stones and placing them into a specific order, forcing doors, lifting grates (and holding them so that others may pass through), acting as an anchor for ropes so that other characters can descend down them, only some strength based characters of sufficient skill  
+	Thief/Scout solves dexterity traps. Only they can pick lock, disarm traps, leap across 1 tile chasms. Neleera has magic rope that hold massive weight, span almost any distance, and become rigid, so that a character with sufficient agility can cross it like a tight wire. 
+	Wizard solves magic based traps, is sort of like a catch all for whatever the hell you can think, support type class mostly.
+
+	Specific puzzles/challenges:
+	
+	Strength/Warrior: 
+
+	The rope challenge: This action button becomes available if the player is standing adjacent to a chasm that actually has a bottom (only chasms on the final floor are considered 'bottomless'). 
+	The player then chooses the type of anchor for the rope: game_state = select rope anchor, it's a prompt screen (we need to make our prompts VERY versatile), and the player is prompted with 3 choices: use either a rope piton (just a spike with a hole on the top for attaching the rope, the first piton from that player's inventory is automatically consumed, they're all the same; describe how much weight this can carry), or hold on to the rope/tie the rope round their body (describe how much weight this can carry).
+	Using a piton can carry a decent amount, usually 1-2 lighter characters; holding the rope or tying it can potentially carry much more, if the character is heavy or strong. Will need to come up with formulas for all of these.
+	Pitons can't be used on all terrain, which therefore makes the strength/warrior's class invaluable here.
+	The player is then directed to choose a rope in their inventory, if there's more than one (game_state = select_rope). They are then directed to choose the adjacent chasm cell, if there's more than 1 (game_state = select_rope_chasm). Ropes MAY differ in length and the amount of weight they can carry, but more than likely, for simplicity sake, just make them all the same.
+	Once placed, both the anchor piton (if exists) and the rope that is on the chasm cell, are considered buildings. When attempting to move on to a chasm tile with a vertical rope, a check is performed to see if the anchor (either the piton or the character) can support the weight. If they can, perhaps the anchor character makes a dialogue comment ('no problem'), and we're informed how much more weight the anchor can carry. If the anchor can't support the additional weight, forbid the character from moving on to the chasm, let them know how much weight the anchor can support, and much weight they'll need to shed before using the rope.
+	Moving up/down on z-levels via a rope consumes a significant amount of move points.
+	
+	Holding a portcullis for other characters. Will likely need to pass a strength test, perhaps every turn they start holding it; drains stamina every turn as well; ends that character's turn.
+
+	Pushing rocks, either out of the way or forming specific combinations to solve sliding-tile type puzzles, or answering riddles by selecting the correct order of icons, etc.
+	You could, for instance, have a strong character push the rocks over a cliff, and the rocks have to land in specific spots several floors below where the heavy and strong character can reach, so a scout character has to reveal the vision around these lower floors, so the strong character knows where to drop the boulders.
+
+	Fighting monsters (obviously).
+
+	Thief/Scout:
+
+	Wizard/Cleric/Weird Specialist/Magic User:
+
+	Spells/abilities to augment challenges or provide solutions to them:
+
+	Flight (wizard spell): Has limited charges that require camp resting in order to restore. Can be cast on other characters or only self? Other characters. Allows the character to ignore terrain movement modifiers, become immune to melee attacks, gain significant evasion, and traverse z-levels (chasms). 
+
+	Magic Mirror (wizard spell and specific warrior ability): Reflect a projectile back to its source. Useful for crossing narrow corridors where the projectile of a trap is unavoidable.
+
+	Troll Regeneration / Skeleton Durability / Stone Golem Durability: The troll character can regenerate limbs and is nearly impossible to kill, unless killed while on fire, or starved. You can, due to this, do things like have him jump down a chasm, land on the bottom and explode, then slowly regenerate himself, and go about his business. 
+	The ghoul/skeleton character and the stone golem are similarly hard to kill, and could be used in similar ways.
+
+	Scout/Ranger/Thief: Additional movement and vision: Very often have more move points, and/or reduced terrain movement costs on difficult terrain that the other classes would struggle on, and/or better vision in forests and in the darker dungeons that are caves and dungeons and other dimly lit indoor places.
+
+	The Druid character (Day'ara): Bear, Wolf, Hawk, Earthworm (or mouse). 
+
+AI Prompt:
+
+
