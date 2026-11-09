@@ -1,0 +1,13 @@
+
+
+I don't want to have to fuck around with determining what line we're on, or skipping lines when drawing from the global.main_txt_ar. I simply want all of the text in the global.main_txt_ar to be formatted so that if it exceeds our dimension variables, it's broken up and the remainder of the text is added to the next index in the array.
+	So now when we draw our global.main_txt_ar, it's as simple as iterating through each line in the array.
+
+scr_parse_str_for_main_txt_ar:
+
+We create a temp_str_ar, an empty array. cur_txt = “”, ar_ind = 0, cur_char_ind = 0, char_count_int = 0. 
+
+We iterate through each character in our string, adding them to our cur_text string variable as we do. 
+	If our char_count exceeds our global.main_txt_max_str_w and the current_char is not a space, then we start iterating backwards, decrementing cur_char_ind  and removing each char from our cur_text variable as we do so, until we encounter a space character, at which point we add our cur_txt to our temp_str_ar, increment ar_ind, reset cur_txt = “” and char_count_int = 0, and continue in our main loop.
+
+	Else if char_count exceeds our global.main_txt_max_str_w and the current_char IS a space, then we simply add the cur_text to our temp_str_ar, advance everything as normal.

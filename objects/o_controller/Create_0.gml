@@ -298,7 +298,33 @@ npc_portrait_origin_y = 0;
 npc_backpack_slot_x = 0;
 npc_backpack_slot_y = 0;
 
-define_positional_vars_once = true; //Used in o_con draw gui event to define various positional variables at the very start of the game.
+//Our main txt dialogue box:
+main_txt_box_x = 0;
+main_txt_box_y = 0;
+main_txt_box_w = 0;
+main_txt_box_h = 0;
+
+main_txt_inner_frame_offset = 0;
+global.main_txt_max_str_w = 0;
+main_txt_line_h = 0;
+main_txt_max_str_w = 0;
+main_txt_max_str_pixel_h = 0;
+global.main_txt_max_lines = 0;
+
+default_main_txt_fnt = fnt_std_18;
+default_main_txt_fnt_c = c_white;
+
+global.main_txt_ar = [];
+
+global.main_txt_ar_min_range = 0;
 
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
+
+define_positional_vars_once = true; //Used in o_con draw gui event to define various positional variables at the very start of the game, most of GUI elements.
+
+sample_txt = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+
+
+
 

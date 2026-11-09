@@ -270,13 +270,14 @@ else if global.cur_game_state == game_state.load_game_list {
 
 #endregion
 
-#region Game_state == main - Draw our g.cur_char portrait and other party members with stats on top left of screen:
+#region Most of our 'game has started' game states -
 
 //Using if instead of else-if opens up possibilities of this drawn in the background if other different, separate game states are used:
 if global.cur_game_state == game_state.main || global.cur_game_state == game_state.access_inv || global.cur_game_state == game_state.view_stats || 
 global.cur_game_state == game_state.view_bio || global.cur_game_state == game_state.select_trader {
 	
-	//Draw current char, if applicable:
+	#region Draw current char, if applicable:
+	
 	if global.cur_char != -1 && is_struct(global.cur_char) && global.cur_char.struct_enum == struct_type.character && global.cur_char.char_stats_ar[char_stats.char_team_enum] == char_team.pc {
 	
 		var cur_char_spr = asset_get_index(global.cur_char.char_spr_str);
@@ -366,6 +367,8 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 			stat_bar_num++;
 		}
 	}
+	
+	#endregion
 	
 	#region Draw the rest of our party - AND logic for clicking on other pc members along the top row:
 	
@@ -548,9 +551,51 @@ global.cur_game_state == game_state.view_bio || global.cur_game_state == game_st
 	
 	#endregion
 	
-} //End of game_state == main
+	#region Draw our main txt bg and txt:
+	
+	//Draw our main txt bg:
+	var main_txt_bg_c = c_dkgray, main_txt_bg_inner_frame_c = c_white, inner_frame_offset = 8;
+	
+	//Draw slightly transparent
+	draw_set_alpha(.7);
+	
+	//Draw BG:
+	draw_rectangle_color(main_txt_box_x, main_txt_box_y, main_txt_box_x+main_txt_box_w, main_txt_box_y+main_txt_box_h,
+	main_txt_bg_c,main_txt_bg_c,main_txt_bg_c,main_txt_bg_c,false);
+	//Draw inner frame:
+	draw_rectangle_color(main_txt_box_x+inner_frame_offset, main_txt_box_y+inner_frame_offset, 
+	main_txt_box_x+main_txt_box_w-inner_frame_offset, main_txt_box_y+main_txt_box_h-inner_frame_offset,
+	main_txt_bg_inner_frame_c,main_txt_bg_inner_frame_c,main_txt_bg_inner_frame_c,main_txt_bg_inner_frame_c,true);
+	
+	draw_set_alpha(1);
+	
+	if is_array(global.main_txt_ar) && array_length(global.main_txt_ar) > 0 {
+		
+		draw_set_font(default_main_txt_fnt);
+		
+		var ar_len = array_length(global.main_txt_ar);
+		
+		//Simply iterate through the ranges we've already defined and draw our global.main_txt_ar:
+			//Define, cap our upper_range:
+		var upper_range = global.main_txt_ar_min_range+global.main_txt_max_lines;
+		if upper_range >= ar_len upper_range = ar_len - 1;
+		
+		var yy = 0;
+		
+		for(var i = global.main_txt_ar_min_range; i <= upper_range; i++) {
+			
+			draw_text_color(main_txt_box_x+inner_frame_offset, main_txt_box_y+inner_frame_offset+(main_txt_line_h*yy), string(global.main_txt_ar[i]), default_main_txt_fnt_c, default_main_txt_fnt_c, default_main_txt_fnt_c, default_main_txt_fnt_c, 1);		
+			yy++;
+		}
+		
+		draw_set_font(global.default_fnt);
+	}
+	
+	#endregion
+	
+} 
 
-#endregion
+#endregion //End of most of 'game has started' game states
 
 #region Draw inventory screen - Draws above main game state:
 
@@ -693,7 +738,8 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 	draw_text_color(pg_num_x, pg_num_y,$"Page {pg_count}",c_white, c_white, c_white,c_white, 1);
 	
-	//Define vars - these are used in scr_setup_backpack_slots and scr_setup_equip_slots:
+	#region Define positional vars - these are used in scr_setup_backpack_slots, scr_setup_equip_slots, main_txt box, and others:
+	
 	if define_positional_vars_once {
 		define_positional_vars_once = false;
 		
@@ -729,8 +775,59 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 		npc_portrait_origin_y = (scaled_potrait_spr_h/2)+portrait_offset;
 		
 		npc_backpack_slot_x = npc_trader_bg_origin_x+npc_trader_bg_w-(bg_offset_x+(slot_w*4));
-		npc_backpack_slot_y = bg_y+inner_frame_offset+slot_h/2;;
+		npc_backpack_slot_y = bg_y+inner_frame_offset+slot_h/2;
+		
+		var on_ground_scroll_button_w = sprite_get_width(spr_on_ground_scroll_right);
+		
+		main_txt_box_x = items_on_ground_box_x+items_on_ground_box_w+on_ground_scroll_button_w;
+		main_txt_box_y = items_on_ground_box_y;
+		
+		main_txt_box_w = gui_display_w-((items_on_ground_box_w)+(on_ground_scroll_button_w*2)+(bg_offset_x*2));
+		main_txt_box_h = items_on_ground_box_h;
+		main_txt_inner_frame_offset = 8;
+		main_txt_max_str_w = main_txt_box_w-(main_txt_inner_frame_offset*2);
+		
+		draw_set_font(default_main_txt_fnt);
+		main_txt_line_h = string_height("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		
+		global.main_txt_max_str_w = main_txt_box_w-(main_txt_inner_frame_offset*2);
+		main_txt_max_str_pixel_h = main_txt_box_h-(main_txt_inner_frame_offset*4);
+		global.main_txt_max_lines = main_txt_max_str_pixel_h div main_txt_line_h;
+		
+		var scroll_button_h = sprite_get_height(spr_main_txt_button_scroll_down);
+		
+		//Create our two scroll buttons:
+			//Create up scroll:
+		with(instance_create_layer(main_txt_box_x+main_txt_box_w,main_txt_box_y,"layer_action_buttons", o_main_txt_box_scroll_button)) {
+			sprite_index = spr_main_txt_button_scroll_up;
+			is_up_scroll = true;
+		}
+			//Create down scroll:
+		with(instance_create_layer(main_txt_box_x+main_txt_box_w,main_txt_box_y+scroll_button_h,"layer_action_buttons", o_main_txt_box_scroll_button)) {
+			sprite_index = spr_main_txt_button_scroll_down;	
+			is_up_scroll = false;
+		}
+		
+		draw_set_font(global.default_fnt);
+		
+		//Debug only: add some text to our main txt ar:
+		var debug_txt_box = true;
+		if debug_txt_box {
+			repeat(10) {
+				var debug_ar = -1;
+				debug_ar = []; 
+				debug_ar = scr_parse_str_for_main_txt_ar(sample_txt);
+
+				for(var i = 0; i < array_length(debug_ar); i++) {
+					array_push(global.main_txt_ar, debug_ar[i]);	
+				}
+			}
+
+			debug_ar = -1;
+		}
 	}
+	
+	#endregion
 	
 	#region If applicable, draw our NPC (or, later, enemy) portrait sprite and NPC (or, later, enemy) inventory background:
 	
@@ -1163,7 +1260,7 @@ if global.cur_game_state == game_state.access_inv || global.cur_game_state == ga
 	
 }
 
-#endregion
+#endregion 
 
 #region Draw our items on ground box frame:
 
