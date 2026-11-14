@@ -60,10 +60,6 @@ global.grid_offset_y = 128;
 global.terrain_tile_id = layer_tilemap_get_id(layer_get_id("tile_terrain"));
 global.fow_tile_id = layer_tilemap_get_id(layer_get_id("tile_fow"));
 
-//For pathing algorithms/maze generation, like recursive backtracker
-global.visited_grid = ds_grid_create(global.grid_w,global.grid_h); 
-ds_grid_clear(global.visited_grid,UNVISITED_CELL);
-
 global.save_file_ar = [];
 
 //This always represents the terrain grid of our CURRENT floor:
@@ -105,10 +101,6 @@ global.cur_save_filename_str = "T";
 global.master_struct_ar = -1; 
 
 global.master_struct_json_str_ar = -1; //Not in use; Becomes a nested array in scr_load_file(); saves the raw json strings of structs from our external file, waiting to be instantiated.
-
-global.frontier_queue = -1; //Is used as a ds_priority queue
-
-global.steps_grid = -1; //Used as a ds_grid with pathing algorithms
 
 path_start_grid_x = -1;
 path_start_grid_y = -1;
@@ -318,11 +310,64 @@ global.main_txt_ar = [];
 
 global.main_txt_ar_min_range = 0;
 
+#region Pathing algorithm vals:
+
+path_points_ar = -1;
+
+directional_ar = [];
+for(var i = 0; i < 8; i++) {
+	if i == 0 {
+		array_push(directional_ar,{ check_dir_x : -1, check_dir_y : 0 }); //west	
+	}
+	else if i == 1 {
+		array_push(directional_ar,{ check_dir_x : 0, check_dir_y : -1 }); //north	
+	}
+	else if i == 2 {
+		array_push(directional_ar,{ check_dir_x : 1, check_dir_y : 0 }); //east	
+	}
+	else if i == 3 {
+		array_push(directional_ar,{ check_dir_x : 0, check_dir_y : 1 }); //south	
+	}
+	else if i == 4 {
+		array_push(directional_ar,{ check_dir_x : -1, check_dir_y : -1 }); //NW	
+	}
+	else if i == 5 {
+		array_push(directional_ar,{ check_dir_x : 1, check_dir_y : -1 }); //NE	
+	}
+	else if i == 6 {
+		array_push(directional_ar,{ check_dir_x : 1, check_dir_y : 1 }); //SE	
+	}
+	else if i == 7 {
+		array_push(directional_ar,{ check_dir_x : -1, check_dir_y : 1 }); //SW	
+	}
+}
+
+global.frontier_queue = -1; //ds_priority_create(); 
+
+origin_x = -1;
+origin_y = -1;
+dest_x = -1;
+dest_y = -1;
+pather_x = -1;
+pather_y = -1;
+
+failsafe_val = 0;
+failsafe_max = global.grid_w*global.grid_h+1;
+
+global.plotting_path = false;
+global.path_successful = false;
+
+global.visited_grid = -1;
+global.steps_grid = -1;
+
+#endregion
+
 alarm[0] = 2; //Defines the vars after our camera/display dimensions have settled
 
 define_positional_vars_once = true; //Used in o_con draw gui event to define various positional variables at the very start of the game, most of GUI elements.
 
 sample_txt = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
 
 
 

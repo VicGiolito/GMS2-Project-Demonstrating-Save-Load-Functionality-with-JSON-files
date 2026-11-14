@@ -2,14 +2,14 @@
 
 The core problem with this type of game that you've wanted to create for many years (and have many different iterations of) is this:
 	You're trying to combine two different types of genre: solo rogue-like which focuses on exploration and seamlessly transitions into combat; and relatively quick, intense, grid based, tactical, squad-based combat games, like Battle Brothers and others. So pacing is a huge problem.
-	There's a reason games like this don't really exists—usually they focus on one or the other, or may have elements of both, but minimize one to further serve the other. 
+	There's a reason games like this don't really exists—usually they focus on one or the other, or may have elements of both, but minimize one to further serve the purpose of the other. 
 	
 
 Possible solutions:
 
 --FORCE the player at the start of the game, or at the start of each level, to choose one character of each character class (probably 3 total), and then fill every dungeon with all sorts of traps and challenges that only characters of the corresponding class will excel at solving. Or, allow the player, through trial and error, to pick the correct heroes for each level.
-	Try to emulate the Lost Vikings in this regard, 
-	Each character class will
+	Try to emulate the Lost Vikings in this regard.
+	Each character class will:
 	Ex:
 	There are certain traps/challenges that only a strength based character can overcome: lifting heavy stones and placing them into a specific order, forcing doors, lifting grates (and holding them so that others may pass through), acting as an anchor for ropes so that other characters can descend down them, only some strength based characters of sufficient skill  
 	Thief/Scout solves dexterity traps. Only they can pick lock, disarm traps, leap across 1 tile chasms. Neleera has magic rope that hold massive weight, span almost any distance, and become rigid, so that a character with sufficient agility can cross it like a tight wire. 
@@ -38,13 +38,20 @@ Possible solutions:
 
 	Wizard/Cleric/Weird Specialist/Magic User:
 
+	General challenges/puzzles:
+
+	Copy some stuff from Brogue: 
+	--Rooms with just one entrance/exit, you collect a quest item from the room and the door locks, fire or gas starts spreading throughout the room.
+	--Rope bridges across chasms that can be cut, causing its occupants to plummet.
+	
+
 	Spells/abilities to augment challenges or provide solutions to them:
 
 	Flight (wizard spell): Has limited charges that require camp resting in order to restore. Can be cast on other characters or only self? Other characters. Allows the character to ignore terrain movement modifiers, become immune to melee attacks, gain significant evasion, and traverse z-levels (chasms). 
 
 	Magic Mirror (wizard spell and specific warrior ability): Reflect a projectile back to its source. Useful for crossing narrow corridors where the projectile of a trap is unavoidable.
 
-	Troll Regeneration / Skeleton Durability / Stone Golem Durability: The troll character can regenerate limbs and is nearly impossible to kill, unless killed while on fire, or starved. You can, due to this, do things like have him jump down a chasm, land on the bottom and explode, then slowly regenerate himself, and go about his business. 
+	Troll Regeneration / Skeleton Durability / Stone Golem Durability: The troll character can regenerate limbs and is nearly impossible to kill, unless killed while on fire, or starved. You can, due to this, do things like have him jump down a chasm, land on the bottom and explode, then slowly regenerate himself, and go about his business. So the player could do this if they had no other way to get to the bottom of a chasm. 
 	The ghoul/skeleton character and the stone golem are similarly hard to kill, and could be used in similar ways.
 
 	Scout/Ranger/Thief: Additional movement and vision: Very often have more move points, and/or reduced terrain movement costs on difficult terrain that the other classes would struggle on, and/or better vision in forests and in the darker dungeons that are caves and dungeons and other dimly lit indoor places.

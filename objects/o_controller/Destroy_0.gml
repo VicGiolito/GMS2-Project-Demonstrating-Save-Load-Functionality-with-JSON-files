@@ -44,7 +44,10 @@ if ds_exists(global.ds_map_revealed_items_on_grid, ds_type_map) {
 	global.ds_map_revealed_items_on_grid = -1;
 }
 
-
+if ds_exists(global.frontier_queue, ds_type_queue) {
+	ds_queue_destroy(global.frontier_queue);
+	global.frontier_queue = -1;
+}
 
 
 

@@ -7,7 +7,7 @@ function scr_debug_spawn_trader(dungeon_enum_int){
 	
 	#region Place pc chars:
 	
-	var failsafe_val = 0, failsafe_max = 1000, npc_count = 0, max_neutrals = 50;
+	var failsafe_val = 0, failsafe_max = 1000, npc_count = 0, max_neutrals = 2;
 	
 	//Choose random first floor:
 	var floor_num_int = 0; //Always spawn our first pc on the first floor so I can debug easily

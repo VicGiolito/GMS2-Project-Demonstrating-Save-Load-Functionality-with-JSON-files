@@ -1457,10 +1457,6 @@ else if global.cur_game_state == game_state.main {
 	
 		#endregion
 	}
-			
-	
-	
-	
 	
 	#endregion
 	
@@ -1984,6 +1980,8 @@ else if global.cur_game_state == game_state.main {
 	}
 	
 	#endregion
+	
+	
 	
 }
 

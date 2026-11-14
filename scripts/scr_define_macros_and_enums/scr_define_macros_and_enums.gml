@@ -116,11 +116,7 @@ function scr_define_macros_and_enums(){
 	
 	//Inst grid macros:
 	#macro INST_FREE_CELL 0
-	
-	//visited grid macros:
-	#macro UNVISITED_CELL 0
-	#macro VISITED_CELL 1
-	
+
 	//macros to be used with global.master_level_ar:
 	#macro GRID_TERRAIN 0
 	#macro GRID_INST 1
@@ -133,7 +129,7 @@ function scr_define_macros_and_enums(){
 	#macro AR_NEUTRAL 2
 	#macro AR_BUILDING_PC 3
 	#macro AR_BUILDING_ENEMY 4 
-	#macro AR_BUILDING_NEUTRAL 5 //This is where loot drop structs are stored, as well as up/down stairs and portals
+	#macro AR_BUILDING_NEUTRAL 5 //This is where up/down stairs and portals and etc. are stored
 	#macro AR_ITEMS 6
 	#macro AR_TOTAL_ARS 7
 	
@@ -141,6 +137,25 @@ function scr_define_macros_and_enums(){
 	#macro LOS_VISIBLE 0
 	#macro LOS_SHROUD 1
 	#macro LOS_FOW 2
+	
+	//Macros for pathing algorithms:
+	#macro UNVISITED_CELL 0
+	#macro VISITED_CELL 1
+	
+	#macro UNVISITED_STEP_VAL 999999999 //Needs to simply be a very large number that our pathing alogirithm is NOT going to want to choose.
+	
+	#macro TERRAIN_VAL_PLAINS 2
+	#macro TERRAIN_VAL_GRASS 2
+	#macro TERRAIN_VAL_DUNGEON 1
+	#macro TERRAIN_VAL_CAVE 2
+	#macro TERRAIN_VAL_ROAD 1
+	#macro TERRAIN_VAL_SWAMP 8
+	#macro TERRAIN_VAL_MOUNTAIN 6
+	#macro TERRAIN_VAL_HILLS 3
+	#macro TERRAIN_VAL_FOREST 4
+	
+	#macro GRID_ENCODE 1000000  // must be larger than your max grid width; removes the need for creating structs to store separate grid_x and grid_y vars. Stores coordinates as a single number instead, represented by: encoded_val = checking_cell_x + checking_cell_y * GRID_ENCODE. We unpack this number into x and y coordinates by using: pather_x = encoded_val mod GRID_ENCODE; and pather_y = encoded_val div GRID_ENCODE. So essentially, we just use math to store coordinates as a single number, rather than storing them in something with multiple data points, such as an array or a struct.
+	
 	
 	//Terrain cell enum - must match spr_terrain_*:
 	enum terrain_type {
@@ -155,6 +170,7 @@ function scr_define_macros_and_enums(){
 		
 		wall_dungeon, //should always be our first wall_* type, and there should never be other traversable terrain types beyond this one
 		wall_cave,
+		
 		total_terrain_type
 	}
 	
@@ -582,3 +598,9 @@ function scr_define_macros_and_enums(){
 	}
 	
 }
+
+/*A note on 'heuristic tie-breaking'; ex: var dist_to_dest = scr_return_chebyshev_dist(checking_cell_x, checking_cell_y, dest_x, dest_y) * 1.001;
+When two nodes have the same f(n) value, A* has no preference between them and may explore both. In open areas this happens a lot — many cells will have identical f values, so A* fans out and explores a bunch of nodes that are all equally scored.
+Tie-breaking gives A* a slight preference so it picks one path and commits rather than exploring many equivalent options. The idea is to favor nodes with a higher g(n), because a higher g means you've traveled further from the start, which means you're closer to the goal. 
+Between two nodes with the same f, the one that's closer to the goal is more likely to be on the final path.
+The simplest way to implement it is to multiply your heuristic by a tiny factor just above 1:
